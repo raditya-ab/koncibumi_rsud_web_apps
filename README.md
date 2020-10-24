@@ -37,3 +37,4 @@ You must update files manually if files in `application` folder or `index.php` c
 * [Composer Installation](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 * [CodeIgniter](https://github.com/bcit-ci/CodeIgniter)
 * [Translations for CodeIgniter System](https://github.com/bcit-ci/codeigniter3-translations)
+* [Phil Sturgeon's Template Library](https://github.com/philsturgeon/codeigniter-template)
