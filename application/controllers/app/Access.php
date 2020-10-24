@@ -1,13 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('vendor/autoload.php');
+
 use \Firebase\JWT\JWT;
 header('Content-type: application/json');
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET,PUT,DELETE,POST, OPTIONS");
+header("Access-Control-Allow-Methods: GET,PUT,DELETE,POST,OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
-
 
 class Access extends CI_Controller {
 
@@ -70,7 +69,7 @@ class Access extends CI_Controller {
 		$data['message'] = "User authorized";
 		$data['access_token'] = $access_token;
 		$data['profile_id'] = $data_profile[0]['id'];
-			
+
 		echo json_encode($data);
 
 	}
@@ -132,7 +131,7 @@ class Access extends CI_Controller {
             "uid" => $patient_profile_id
         );
         $access_token = JWT::encode($token, $secret_key);
-    
+
 		$this->db->query("UPDATE patient_login set last_activity = now(), date_created = '$created_at', password = '$password', last_login = now(), remember_token = '$access_token' WHERE id = '$patient_login_id'");
 
 
@@ -145,7 +144,7 @@ class Access extends CI_Controller {
 
 	public function logout(){
 		session_destroy();
-		
+
 		$data['status'] = "200";
 		$data['message'] = "Logout Success";
 	}

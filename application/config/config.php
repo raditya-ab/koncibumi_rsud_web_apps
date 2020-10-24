@@ -23,7 +23,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/hospitalapp';
+$protocol = is_https() ? "https://" : "http://";
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "";
+
+if(is_cli()){
+   $allowed_hosts = ['36.78.27.51:8186', 'localhost'];
+   $config['base_url'] = in_array($host, $allowed_hosts) ? $protocol.$host."/" : "we-do-not-recognise-this-host.com";
+}
+else if( (stristr($host, "localhost") !== FALSE) || (stristr($host, '192.168.') !== FALSE) || (stristr($host, '127.0.0') !== FALSE) ){
+   $config['base_url'] = $protocol.$host."/koncibumi-web-apps/public";
+}
+else{
+    $allowed_hosts = ['36.78.27.51:8186','koncibumi.wedocreative.work','koncibumi.raditya.site'];
+    $config['base_url'] = in_array($host, $allowed_hosts) ? $protocol.$host : "we-do-not-recognise-this-host.com";
+}
+
+$config['modules_locations'] = array(
+    APPPATH.'modules/' => '../modules/',
+);
 
 /*
 |--------------------------------------------------------------------------
@@ -136,7 +153,7 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = TRUE;
+$config['composer_autoload'] = realpath(APPPATH . '../vendor/autoload.php');
 
 /*
 |--------------------------------------------------------------------------
@@ -521,11 +538,3 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
-$config['secret_key'] = 'HOSPITAL_APPS';
-$config['status_order'] = array(
-	"1" => "Status Order 1",
-	"2" => "Status Order 2",
-	"3" => "Status Order 3",
-	"4" => "Status Order 4", 
-	"5" => "Status Order 5"
-);
