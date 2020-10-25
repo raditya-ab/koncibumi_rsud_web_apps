@@ -200,6 +200,10 @@ class Profile extends CI_Controller {
 	public function history(){
 		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 			$access_token = $_SERVER['HTTP_TOKEN'];
+			$status = true;
+			if ( isset($_GET['status']) ) {
+				$status = $_GET['status'];
+			}
 
 			if ( $this->profile->check_token($access_token) == false ){
 				header("HTTP/1.1 401");
@@ -209,12 +213,18 @@ class Profile extends CI_Controller {
 				exit();
 			}
 
+			$whereClause = " AND status != '6'";
+			if ( $status == "false" ){
+				$whereClause = " AND status = '6'";
+			}
+
+
 			$secret_key = $this->config->item('secret_key');
 			$status_order = $this->config->item('status_order');
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 			$array_history = array();
-			$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? ";
+			$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? $whereClause";
 			$run_check_order = $this->db->query($qry_check_order,array($patient_profile_id));
 			if ( $run_check_order->num_rows() > 0 ){
 				$res_check_order = $run_check_order->result_array();
@@ -350,82 +360,6 @@ class Profile extends CI_Controller {
 		$data['code']= "200";
 		echo json_encode($data);
 	}
-
-	public function order_history(){
-		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
-			$access_token = $_SERVER['HTTP_TOKEN'];
-			if ( $this->profile->check_token($access_token) == false ){
-				header("HTTP/1.1 401");
-				$data['code'] = "401";
-				$data['message'] = "INVALID TOKEN";
-				echo json_encode($data);
-				exit();
-			}
-
-			$clause_status = "AND status != '6' ";
-			if ( $_GET['status'] == false){
-				$clause_status = "AND status = '6'";
-			}
-
-			$secret_key = $this->config->item('secret_key');
-			$status_order = $this->config->item('status_order');
-			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
-			$patient_profile_id = $decoded->profile_data->patient_profile_id;
-			$array_history = array();
-			$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? $clause_status ";
-			$run_check_order = $this->db->query($qry_check_order,array($patient_profile_id));
-			if ( $run_check_order->num_rows() > 0 ){
-				$res_check_order = $run_check_order->result_array();
-				$profile_id = $res_check_order[0]['patient_id'];
-
-				$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
-				$run_profile = $this->db->query($check_profile,array($profile_id));
-				$detail_profile = array();
-				
-				if ( $run_profile->num_rows() > 0 ){
-					$res_profile = $run_profile->result_array();
-					$detail_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
-					$detail_profile['medic_number'] = $res_profile[0]['medical_number'];
-					$detail_profile['shipping_method'] = $res_check_order[0]['delivery_type'];
-					$detail_profile['received_date'] = date("d-M-Y",strtotime($res_check_order[0]['delivery_date']));
-					$detail_profile['address'] = $res_check_order[0]['delivery_address'];
-					$detail_profile['lat'] = $res_profile[0]['latitude'];
-					$detail_profile['long'] = $res_profile[0]['longitude'];
-				}
-
-				$detail_obat = array();
-				$detail_obat['name'] = "Paracetamol";
-				$detail_obat['group'] = "A";
-				$detail_obat['quantity'] = "2";
-				$detail_obat['limit'] = "10";
-				$detail_obat['unit_type'] = "Kapsul";
-				$array_list_obat[] = $detail_obat;
-				$detail_profile['ordered_drugs'] = $array_list_obat;
-
-				$detail_array_history = array();
-				$detail_array_history['id'] = $res_check_order[0]['id'];
-				$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
-				$detail_array_history['order_date'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
-				$detail_array_history['doctor_name'] = "Docter A";
-				$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
-				$detail_array_history['qr'] = "www.google.com";
-				$detail_array_history['details'] = $detail_profile;
-				$array_history[] = $detail_array_history;
-
-			}
-
-			$data['code'] = "200";
-			$data['message'] = "All history loaded";
-			$data['history'] = $array_history;
-			echo json_encode($data);
-			exit();
-
-		}
-
-		$data['code'] = "200";
-		echo json_encode($data);
-	}
-
 
 
 }
