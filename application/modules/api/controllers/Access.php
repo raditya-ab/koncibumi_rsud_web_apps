@@ -65,7 +65,6 @@ class Access extends CI_Controller {
 
 				$data['code'] = "200";
 				$data['message'] = "User can Register";
-				$data['profile_data'] = $data_profile;
 				echo json_encode($data);
 			}else{
 
@@ -107,6 +106,8 @@ class Access extends CI_Controller {
 				}
 				$res_bpjs = $run_bpjs->result_array();
 				$login_id = $res_bpjs[0]['id'];
+				$first_name = $res_bpjs[0]['first_name'];
+				$last_name = $res_bpjs[0]['last_name'];
 
 				$array_insert = array(
 					"patient_login_id" => $res_bpjs[0]['id'],
@@ -116,7 +117,7 @@ class Access extends CI_Controller {
 					"created_at" => date("Y-m-d H:i:s"),
 					"mobile_number" => $mobile_number,
 					"bpjs_number" => $bpjs_number,
-					"medical_number" => $medical_number
+					"medical_number" => $medic_number
 				);
 				$this->db->insert("patient_profile", $array_insert);
 				$patient_profile_id = $this->db->insert_id();
