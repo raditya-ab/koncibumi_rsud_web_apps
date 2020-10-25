@@ -218,12 +218,42 @@ class Profile extends CI_Controller {
 			$run_check_order = $this->db->query($qry_check_order,array($patient_profile_id));
 			if ( $run_check_order->num_rows() > 0 ){
 				$res_check_order = $run_check_order->result_array();
+				$profile_id = $res_check_order[0]['patient_id'];
+
+				$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
+				$run_profile = $this->db->query($check_profile,array($profile_id));
+				$detail_profile = array();
+				
+				if ( $run_profile->num_rows() > 0 ){
+					$res_profile = $run_profile->result_array();
+					$detail_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
+					$detail_profile['medic_number'] = $res_profile[0]['medical_number'];
+					$detail_profile['shipping_method'] = $res_check_order[0]['delivery_type'];
+					$detail_profile['received_date'] = date("d-M-Y",strtotime($res_check_order[0]['delivery_date']));
+					$detail_profile['address'] = $res_check_order[0]['delivery_address'];
+					$detail_profile['lat'] = $res_profile[0]['latitude'];
+					$detail_profile['long'] = $res_profile[0]['longitude'];
+				}
+
+				$detail_obat = array();
+				$detail_obat['name'] = "Paracetamol";
+				$detail_obat['group'] = "A";
+				$detail_obat['quantity'] = "2";
+				$detail_obat['limit'] = "10";
+				$detail_obat['unit_type'] = "Kapsul";
+				$array_list_obat[] = $detail_obat;
+				$detail_profile['ordered_drugs'] = $array_list_obat;
+
 				$detail_array_history = array();
+				$detail_array_history['id'] = $res_check_order[0]['id'];
 				$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
-				$detail_array_history['created'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
-				$detail_array_history['doctor'] = "Docter A";
+				$detail_array_history['order_date'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
+				$detail_array_history['doctor_name'] = "Docter A";
 				$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
+				$detail_array_history['qr'] = "www.google.com";
+				$detail_array_history['details'] = $detail_profile;
 				$array_history[] = $detail_array_history;
+
 			}
 
 			$data['status'] = "200";
@@ -255,11 +285,40 @@ class Profile extends CI_Controller {
 			$run_check_order = $this->db->query($qry_check_order,array($order_id));
 			if ( $run_check_order->num_rows() > 0 ){
 				$res_check_order = $run_check_order->result_array();
+				$profile_id = $res_check_order[0]['patient_id'];
+
+				$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
+				$run_profile = $this->db->query($check_profile,array($profile_id));
+				$detail_profile = array();
+
+				if ( $run_profile->num_rows() > 0 ){
+					$res_profile = $run_profile->result_array();
+					$detail_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
+					$detail_profile['medic_number'] = $res_profile[0]['medical_number'];
+					$detail_profile['shipping_method'] = $res_check_order[0]['delivery_type'];
+					$detail_profile['received_date'] = date("d-M-Y",strtotime($res_check_order[0]['delivery_date']));
+					$detail_profile['address'] = $res_check_order[0]['delivery_address'];
+					$detail_profile['lat'] = $res_profile[0]['latitude'];
+					$detail_profile['long'] = $res_profile[0]['longitude'];
+				}
+
+				$detail_obat = array();
+				$detail_obat['name'] = "Paracetamol";
+				$detail_obat['group'] = "A";
+				$detail_obat['quantity'] = "2";
+				$detail_obat['limit'] = "10";
+				$detail_obat['unit_type'] = "Kapsul";
+				$array_list_obat[] = $detail_obat;
+				$detail_profile['ordered_drugs'] = $array_list_obat;
+
 				$detail_array_history = array();
+				$detail_array_history['id'] = $res_check_order[0]['id'];
 				$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
-				$detail_array_history['created'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
-				$detail_array_history['doctor'] = "Docter A";
+				$detail_array_history['order_date'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
+				$detail_array_history['doctor_name'] = "Docter A";
 				$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
+				$detail_array_history['qr'] = "www.google.com";
+				$detail_array_history['details'] = $detail_profile;
 			}
 
 			$data['status'] = "200";
@@ -273,6 +332,33 @@ class Profile extends CI_Controller {
 		echo json_encode($data);
 		
 	}
+
+	public function update_pesanan(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			if ( isset($edata->order_id)) {
+				$status = $edata->status;
+				$order_id = $edata->order_id;
+				$this->db->query("UPDATE order_patient set status = '$status' where order_id = '$order_id'");
+				$data['status'] = "200";
+				$data['message'] = "Order ".$order_id ." has been update to status ".$status;
+				echo json_encode($data);
+				exit();
+			}
+		}
+		$data['code']= "200";
+		echo json_encode($data);
+	}
+
+	public function order_history(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+		}
+
+		$data['code'] = "200";
+		echo json_encode($data);
+	}
+
 
 }
 
