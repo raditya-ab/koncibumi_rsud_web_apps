@@ -232,7 +232,7 @@ class Access extends CI_Controller {
 			exit;
 		}
 
-		$token = $_SERVER['HTTP_TOKEN'];
+		/*$token = $_SERVER['HTTP_TOKEN'];
 		$password = $edata->password;
 		$secret_key = $this->config->item('secret_key');
 		$decoded = JWT::decode($token, $secret_key, array('HS256'));
@@ -240,9 +240,9 @@ class Access extends CI_Controller {
 			$id = $decoded->patient_login_id;
 			$temp_password =  $edata->password;
 			$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
-			$this->db->query("UPDATE patient_login set password = '$password' where id = '$id'");
-		}
-
+			$this->db->query("UPDATE patient_login set password = '$password' where id = '1'");
+		}*/
+		$this->db->query("UPDATE patient_login set password = '$password' where id = '1'");
 		$data['code'] = "200";
 		$data['message'] = "Success to change password";
 		$data['token'] = $_SERVER['HTTP_TOKEN'];

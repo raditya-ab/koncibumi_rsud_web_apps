@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once('vendor/autoload.php');
+require_once('../vendor/autoload.php');
 use \Firebase\JWT\JWT;
 
 class Profile_model extends CI_Model {
@@ -38,15 +38,7 @@ class Profile_model extends CI_Model {
       $check_token = "SELECT  * FROM patient_login WHERE remember_token = ? ";
       $run_token = $this->db->query($check_token, array($token));
       if ( $run_token->num_rows() > 0 ){
-        $secret_key = $this->config->item('secret_key');
-        $decoded = JWT::decode($token, $secret_key, array('HS256'));
-        $result = $run_token->result_array();
-        if ( isset($decoded->uid)){
-          if ( $decoded->uid != $result[0]['id'] ){
-            return false;
-          }
-          return true;
-        }
+        return true;
       }
       return false;
     }
