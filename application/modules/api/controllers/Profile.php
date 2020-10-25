@@ -256,7 +256,7 @@ class Profile extends CI_Controller {
 
 			}
 
-			$data['status'] = "200";
+			$data['code'] = "200";
 			$data['message'] = "All history loaded";
 			$data['history'] = $array_history;
 			echo json_encode($data);
@@ -341,7 +341,7 @@ class Profile extends CI_Controller {
 				$status = $edata->status;
 				$order_id = $edata->order_id;
 				$this->db->query("UPDATE order_patient set status = '$status' where order_id = '$order_id'");
-				$data['status'] = "200";
+				$data['code'] = "200";
 				$data['message'] = "Order ".$order_id ." has been update to status ".$status;
 				echo json_encode($data);
 				exit();
@@ -358,6 +358,24 @@ class Profile extends CI_Controller {
 		$data['code'] = "200";
 		echo json_encode($data);
 	}
+
+	 public function update_pesanan(){
+               if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+                       $obj = file_get_contents('php://input');
+                       $edata = json_decode($obj);
+                       if ( isset($edata->order_id)) {
+                               $status = $edata->status;
+                               $order_id = $edata->order_id;
+                               $this->db->query("UPDATE order_patient set status = '$status' where id = '$order_id'");
+                               $data['status'] = "200";
+                               $data['message'] = "Order ".$order_id ." has been update to status ".$status;
+                               echo json_encode($data);
+                               exit();
+                      }
+               }
+               $data['code']= "200";
+               echo json_encode($data);
+       }
 
 
 }
