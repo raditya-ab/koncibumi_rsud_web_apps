@@ -9,12 +9,12 @@ Class Order extends Public_controller
 
     public function index()
     {
-        $this->template->build('order_list');
+        $this->template->build('farmasi/order/order_list');
     }
 
     public function new()
     {
-        $this->template->build('new_order_list');
+        $this->template->build('farmasi/order/new_order_list');
     }
     public function proses(){
         $this->data['sidebar_header'] = $this->template->load_view('pages/partials/sidebar_header');
@@ -22,11 +22,7 @@ Class Order extends Public_controller
         $this->template->set_partial('sidebar','partials/_sidebar.php', $this->data);
 
         $this->template->set_layout('main_with_sidebar');
-        $this->template->build('proses_pesanan');
+        $this->template->build('farmasi/order/proses_pesanan');
     }
-
-    public function kurir()
-    {
-        $this->template->build('kurir');
-    }
+    public function proses_farmasi() {}
 }

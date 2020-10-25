@@ -2,7 +2,7 @@
 
 	<!--begin::Logo-->
 	<a href="index.html">
-		<img alt="Logo" src="<?php echo base_url('assets/media/logos/logo-letter-1.png');?>"
+		<img alt="Logo" src="<?php echo base_url('assets/media/logos/rsud-logo-main.png');?>"
 			class="logo-default max-h-30px" />
 	</a>
 

@@ -13,6 +13,6 @@ Class Dashboard extends Public_controller
     public function index(){
         $this->data['new_orders'] = $this->order_m->fetch_orders(1,5);
         $this->data['list_orders'] = $this->order_m->fetch_orders(NULL,5);
-        $this->template->build('dashboard', $this->data);
+        $this->template->build('farmasi/pages/dashboard', $this->data);
     }
 }

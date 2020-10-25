@@ -175,7 +175,7 @@ $(document).ready(function () {
                                         Choose an action:\
                                     </li>\
                                     <li class="navi-item">\
-                                        <a href="order_detail.html?orders_id=' + pesanan_id + '" class="navi-link">\
+                                        <a href="'+ HOST_URL + 'order/proses/' + pesanan_id + '" class="navi-link">\
                                             <span class="navi-icon"><i class="la la-check-circle"></i></span>\
                                             <span class="navi-text">Proses</span>\
                                         </a>\
@@ -496,5 +496,26 @@ $(document).ready(function () {
 
 
         })
+    }
+
+    if($("#datepicker-inline").exists()){
+        var arrows;
+    if (KTUtil.isRTL()) {
+        arrows = {
+            leftArrow: '<i class="la la-angle-right"></i>',
+            rightArrow: '<i class="la la-angle-left"></i>'
+        }
+    } else {
+        arrows = {
+            leftArrow: '<i class="la la-angle-left"></i>',
+            rightArrow: '<i class="la la-angle-right"></i>'
+        }
+    }
+        $('#datepicker-inline').datepicker({
+            rtl: KTUtil.isRTL(),
+            todayHighlight: true,
+            templates: arrows,
+            daysOfWeekDisabled: [0,2,4,6]
+        });
     }
 })

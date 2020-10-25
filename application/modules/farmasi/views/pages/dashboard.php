@@ -12,7 +12,11 @@
 												<p class="text-inverse-info pb-5 font-size-h6">Anda mempunyai</p>
 												<p class="text-inverse-info pb-5 display-1 font-weight-bolder"><?php echo count($new_orders);?></p>
 												<p class="text-inverse-info pb-5 font-size-h6">permohonan obat baru.</p>
-												
+												<?php 
+												echo "<pre>";
+												print_r ($new_orders);
+												echo "</pre>";
+												?>
 												<a href="<?php echo site_url('order/new');?>"
 													class="btn btn-success font-weight-bold py-2 px-6 mt-20">Buka<i
 														class="fas fa-arrow-right ml-3"
@@ -92,22 +96,61 @@
 																<td>
 																	<a href="https://icd.who.int/browse10/2019/en#/H66.3" target="_blank"
 																		class="text-primary font-weight-bold font-size-sm">
-																		<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
+																		H66.3 - OMSK (OTITIS MEDIA SUPURATIF KRONIS)
 																	</a>
 																</td>
 																<td>
 																	<span
 																		class="label label-inline label-light-primary font-weight-bold"
-																		style="font-size: 12px;">
-																			<?php 
-																				$expired = strtotime($order['created_at'])+ (8*3600);
-																				$left = time() - $expired;
-																				echo date("H:i:s", $left);
-																			?>
-																		</span>
+																		style="font-size: 12px;">05:00:00</span>
 																</td>
 															</tr>
-														<?php endforeach;?>
+														<?php endforeach;;?>
+														
+														<tr>
+															<td class="pl-3">
+																2
+															</td>
+															<td class="pr-0">
+																<div class="symbol symbol-50 symbol-light mt-1">
+																	<span class="symbol-label">
+																		<img src="assets/media/svg/avatars/018-girl-9.svg"
+																			class="h-75 align-self-end" alt="" />
+																	</span>
+																</div>
+															</td>
+															<td class="pl-0">
+																<a href="#"
+																	class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg"
+																	style="margin-left: -80px;">
+																	Yahyani Fulanah
+																</a>
+																<span
+																		class="text-muted font-weight-bold text-muted d-block font-size-sm"
+																		style="margin-left: -80px;">02020203</span>
+																<span
+																	class="text-muted font-weight-bold text-muted d-block font-size-sm"
+																	style="margin-left: -80px;">Perempuan</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">12:00</span>
+															</td>
+															<td>
+																<a href="https://icd.who.int/browse10/2019/en#/H66.3" target="_blank"
+																	class="text-primary font-weight-bold font-size-sm">
+																	H66.3 - OMSK (OTITIS MEDIA SUPURATIF KRONIS)
+																</a>
+															</td>
+															<td>
+																<span
+																	class="label label-inline label-light-danger font-weight-bold"
+																	style="font-size: 12px;">00:10:00</span>
+															</td>
+														</tr>
 													</tbody>
 												</table>
 											</div>
