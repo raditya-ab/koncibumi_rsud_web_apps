@@ -137,6 +137,25 @@ class Profile extends CI_Controller {
 				'description' => $edata->complaint_description
 			);
 			$this->db->insert("order_patient", $array_insert);
+			$order_id = $this->db->insert_id();
+
+			if ( $edata->complaint == 0 ){
+				$array_receipt = array(
+					"kunjungan_id" => $order_id,
+					"doctor_id" => NULL,
+					"created_at" => date("Y-m-d H:i:s"),
+					"restricted" => 1
+				);
+				$this->db->insert("receipt_header",$array_receipt);
+				$receipt_id = $this->db->insert_id();
+				$array_receipt_detail = array(
+					"receipt_header_id" => $receipt_id,
+					"obat" => 1,
+					"dosis" => rand(1,10) * 10
+				);
+
+				$this->db->insert("receipt_detail",$array_receipt_detail);
+			}
 
 			if ( $edata->complaint == "1" ){
 				header("HTTP/1.1 406");
@@ -245,13 +264,36 @@ class Profile extends CI_Controller {
 					$detail_profile['long'] = $res_profile[0]['longitude'];
 				}
 
-				$detail_obat = array();
-				$detail_obat['name'] = "Paracetamol";
-				$detail_obat['group'] = "A";
-				$detail_obat['quantity'] = "2";
-				$detail_obat['limit'] = "10";
-				$detail_obat['unit_type'] = "Kapsul";
-				$array_list_obat[] = $detail_obat;
+				$qry_check_receipt = "SELECT * FROM receipt_header WHERE 1 AND kunjungan_id = ? ";
+				$run_check_receipt = $this->db->query($qry_check_receipt, array($res_check_order[0]['id']));
+				$array_list_obat = array();
+				if ( $run_check_receipt->num_rows() > 0 ){
+					$res_check_receipt = $run_check_receipt->result_array();
+					$receipt_id = $res_check_receipt[0]['id'];
+
+					$qry_detail_receipt = "SELECT * FROM receipt_detail where 1 AND receipt_header_id = ? ";
+					$run_detail_receipt = $this->db->query($qry_detail_receipt,array($receipt_id));
+					if ( $run_detail_receipt->num_rows() > 0 ){
+						$res_detail_recept = $run_detail_receipt->result_array();
+						foreach ($res_detail_recept as $key_detail_receipt => $value_detail_receipt) {
+							$obat_id = $value_detail_receipt['obat'];
+							$qry_get_obat = "SELECT * FROM master_medicine WHERE 1 AND id = ? ";
+							$run_get_obat = $this->db->query($qry_get_obat,array($obat_id));
+							if ( $run_get_obat->num_rows() > 0 ){
+								$res_get_obat = $run_get_obat->result_array();
+								$detail_obat = array();
+								$detail_obat['name'] = $res_get_obat[0]['name'];
+								$detail_obat['group'] = $res_get_obat[0]['golongan'];
+								$detail_obat['quantity'] = $value_detail_receipt['dosis'];
+								$detail_obat['limit'] = $res_get_obat[0]['qty'];
+								$detail_obat['unit_type'] = $res_get_obat[0]['satuan'];
+								$array_list_obat[] = $detail_obat;
+							}
+						}
+					}
+				}
+
+				
 				$detail_profile['ordered_drugs'] = $array_list_obat;
 
 				$detail_array_history = array();
@@ -312,14 +354,34 @@ class Profile extends CI_Controller {
 					$detail_profile['long'] = $res_profile[0]['longitude'];
 				}
 
-				$detail_obat = array();
-				$detail_obat['name'] = "Paracetamol";
-				$detail_obat['group'] = "A";
-				$detail_obat['quantity'] = "2";
-				$detail_obat['limit'] = "10";
-				$detail_obat['unit_type'] = "Kapsul";
-				$array_list_obat[] = $detail_obat;
-				$detail_profile['ordered_drugs'] = $array_list_obat;
+				$qry_check_receipt = "SELECT * FROM receipt_header WHERE 1 AND kunjungan_id = ? ";
+				$run_check_receipt = $this->db->query($qry_check_receipt, array($res_check_order[0]['id']));
+				$array_list_obat = array();
+				if ( $run_check_receipt->num_rows() > 0 ){
+					$res_check_receipt = $run_check_receipt->result_array();
+					$receipt_id = $res_check_receipt[0]['id'];
+
+					$qry_detail_receipt = "SELECT * FROM receipt_detail where 1 AND receipt_header_id = ? ";
+					$run_detail_receipt = $this->db->query($qry_detail_receipt,array($receipt_id));
+					if ( $run_detail_receipt->num_rows() > 0 ){
+						$res_detail_recept = $run_detail_receipt->result_array();
+						foreach ($res_detail_recept as $key_detail_receipt => $value_detail_receipt) {
+							$obat_id = $value_detail_receipt['obat'];
+							$qry_get_obat = "SELECT * FROM master_medicine WHERE 1 AND id = ? ";
+							$run_get_obat = $this->db->query($qry_get_obat,array($obat_id));
+							if ( $run_get_obat->num_rows() > 0 ){
+								$res_get_obat = $run_get_obat->result_array();
+								$detail_obat = array();
+								$detail_obat['name'] = $res_get_obat[0]['name'];
+								$detail_obat['group'] = $res_get_obat[0]['golongan'];
+								$detail_obat['quantity'] = $value_detail_receipt['dosis'];
+								$detail_obat['limit'] = $res_get_obat[0]['qty'];
+								$detail_obat['unit_type'] = $res_get_obat[0]['satuan'];
+								$array_list_obat[] = $detail_obat;
+							}
+						}
+					}
+				}
 
 				$detail_array_history = array();
 				$detail_array_history['id'] = $res_check_order[0]['id'];
