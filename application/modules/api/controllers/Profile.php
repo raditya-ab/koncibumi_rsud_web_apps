@@ -90,11 +90,12 @@ class Profile extends CI_Controller {
 	}
 
 	public function order(){
-		$obj = file_get_contents('php://input');
-		$edata = json_decode($obj);
-		$access_token = $_SERVER['HTTP_TOKEN'];
-
 		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			$access_token = $_SERVER['HTTP_TOKEN'];
+
+		
 			if ( $this->profile->check_token($access_token) == false ){
 				header("HTTP/1.1 401");
 				$data['code'] = "401";
@@ -155,11 +156,12 @@ class Profile extends CI_Controller {
 	}
 
 	public function update_address(){
-		$obj = file_get_contents('php://input');
-		$edata = json_decode($obj);
-		$access_token = $_SERVER['HTTP_TOKEN'];
-
 		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			$access_token = $_SERVER['HTTP_TOKEN'];
+
+		
 			if ( $this->profile->check_token($access_token) == false ){
 				header("HTTP/1.1 401");
 				$data['code'] = "401";
