@@ -270,6 +270,12 @@ class Profile extends CI_Controller {
 				if ( $run_check_receipt->num_rows() > 0 ){
 					$res_check_receipt = $run_check_receipt->result_array();
 					$receipt_id = $res_check_receipt[0]['id'];
+					$restricted = $res_check_receipt[0]['restricted'];
+					$restricted_drug = false;
+					if ( $restricted == "1"){
+						$restricted_drug = true;
+					}
+					$detail_profile['restricted_drugs'] = $restricted_drug;
 
 					$qry_detail_receipt = "SELECT * FROM receipt_detail where 1 AND receipt_header_id = ? ";
 					$run_detail_receipt = $this->db->query($qry_detail_receipt,array($receipt_id));
