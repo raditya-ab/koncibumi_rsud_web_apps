@@ -83,6 +83,7 @@ class Profile extends CI_Controller {
 	    	$data['order'] = $enabled_order;
 
 	    	echo json_encode($data);
+	    	exit();
     	}
 
     	$data['code'] = "200";
@@ -148,6 +149,7 @@ class Profile extends CI_Controller {
 			$data['code'] = "200";
 			$data['message'] = "Success Order";
 			echo json_encode($data);
+			exit();
 		}
 
 		$data['code'] = "200";
@@ -188,6 +190,7 @@ class Profile extends CI_Controller {
 			$data['code'] = "200";
 			$data['message'] = "Address has been updated";
 			echo json_encode($data);
+			exit();
 		}
 
 		$data['code'] = "200";
@@ -195,67 +198,80 @@ class Profile extends CI_Controller {
 	}
 
 	public function history(){
-		$access_token = $_SERVER['HTTP_TOKEN'];
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$access_token = $_SERVER['HTTP_TOKEN'];
 
-		if ( $this->profile->check_token($access_token) == false ){
-			header("HTTP/1.1 401");
-			$data['code'] = "401";
-			$data['message'] = "INVALID TOKEN";
+			if ( $this->profile->check_token($access_token) == false ){
+				header("HTTP/1.1 401");
+				$data['code'] = "401";
+				$data['message'] = "INVALID TOKEN";
+				echo json_encode($data);
+				exit();
+			}
+
+			$secret_key = $this->config->item('secret_key');
+			$status_order = $this->config->item('status_order');
+			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+			$patient_profile_id = $decoded->profile_data->patient_profile_id;
+			$array_history = array();
+			$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? ";
+			$run_check_order = $this->db->query($qry_check_order,array($patient_profile_id));
+			if ( $run_check_order->num_rows() > 0 ){
+				$res_check_order = $run_check_order->result_array();
+				$detail_array_history = array();
+				$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
+				$detail_array_history['created'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
+				$detail_array_history['doctor'] = "Docter A";
+				$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
+				$array_history[] = $detail_array_history;
+			}
+
+			$data['status'] = "200";
+			$data['message'] = "All history loaded";
+			$data['history'] = $array_history;
 			echo json_encode($data);
 			exit();
 		}
-
-		$secret_key = $this->config->item('secret_key');
-		$status_order = $this->config->item('status_order');
-		$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
-		$patient_profile_id = $decoded->profile_data->patient_profile_id;
-		$array_history = array();
-		$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? ";
-		$run_check_order = $this->db->query($qry_check_order,array($patient_profile_id));
-		if ( $run_check_order->num_rows() > 0 ){
-			$res_check_order = $run_check_order->result_array();
-			$detail_array_history = array();
-			$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
-			$detail_array_history['created'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
-			$detail_array_history['doctor'] = "Docter A";
-			$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
-			$array_history[] = $detail_array_history;
-		}
-
-		$data['status'] = "200";
-		$data['message'] = "All history loaded";
-		$data['history'] = $array_history;
+		$data['code'] = "200";
 		echo json_encode($data);
+		
 	}
 
 	public function detail_order(){
-		$access_token = $_SERVER['HTTP_TOKEN'];
-		$order_id = $_GET['order_id'];
-		$status_order = $this->config->item('status_order');
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$access_token = $_SERVER['HTTP_TOKEN'];
+			$order_id = $_GET['order_id'];
+			$status_order = $this->config->item('status_order');
 
-		if ( $this->profile->check_token($access_token) == false ){
-			header("HTTP/1.1 401");
-			$data['code'] = "401";
-			$data['message'] = "INVALID TOKEN";
+			if ( $this->profile->check_token($access_token) == false ){
+				header("HTTP/1.1 401");
+				$data['code'] = "401";
+				$data['message'] = "INVALID TOKEN";
+				echo json_encode($data);
+				exit();
+			}
+
+			$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND id = ? ";
+			$run_check_order = $this->db->query($qry_check_order,array($order_id));
+			if ( $run_check_order->num_rows() > 0 ){
+				$res_check_order = $run_check_order->result_array();
+				$detail_array_history = array();
+				$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
+				$detail_array_history['created'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
+				$detail_array_history['doctor'] = "Docter A";
+				$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
+			}
+
+			$data['status'] = "200";
+			$data['message'] = "All history loaded";
+			$data['history'] = $detail_array_history;
 			echo json_encode($data);
 			exit();
 		}
 
-		$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND id = ? ";
-		$run_check_order = $this->db->query($qry_check_order,array($order_id));
-		if ( $run_check_order->num_rows() > 0 ){
-			$res_check_order = $run_check_order->result_array();
-			$detail_array_history = array();
-			$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
-			$detail_array_history['created'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
-			$detail_array_history['doctor'] = "Docter A";
-			$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
-		}
-
-		$data['status'] = "200";
-		$data['message'] = "All history loaded";
-		$data['history'] = $detail_array_history;
+		$data['code'] = "200";
 		echo json_encode($data);
+		
 	}
 
 }
