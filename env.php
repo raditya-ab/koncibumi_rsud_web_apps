@@ -8,6 +8,7 @@
             // case 'www.n-bri.org' :
             //     define('ENVIRONMENT', 'production');
             //     break;
+            case 'koncibumi.raditya.site':
             case '36.78.27.51' :
                 define('ENVIRONMENT', 'staging');
                 break;

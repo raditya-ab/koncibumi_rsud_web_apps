@@ -6,9 +6,7 @@ $config['accepted_origin'] = array(
 	'http://127.0.0.1',
 	'::1',
 	'http://13.229.78.30',
-	'https://www.n-bri.org',
-	'http://www.n-bri.org',
-    'http://n-bri.local',
-    'http://nbri.raditya.site'
+	'https://koncibumi.raditya.site',
+	'http://koncibumi.raditya.site'
 );
  ?>
