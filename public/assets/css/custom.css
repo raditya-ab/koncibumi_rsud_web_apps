@@ -1,0 +1,11 @@
+.dataTables_filter label
+{
+    width: 100%;
+}
+@media only screen and (max-width: 575.98px)
+{
+    .dataTables_wrapper label
+    {
+        width: 100% !important;
+    }
+}
