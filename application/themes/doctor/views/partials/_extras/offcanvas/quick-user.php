@@ -22,16 +22,16 @@
 				<i class="symbol-badge bg-success"></i>
 			</div>
 			<div class="d-flex flex-column">
-				<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">dr.H.Yordian Y.,Sp.S</a>
-				<div class="text-muted mt-1">Poli Syaraf</div>
+				<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name']?></a>
+				<div class="text-muted mt-1"><?php echo $user_detail[0]['jabatan']?></div>
 				<div class="navi mt-2">
 					<a href="#" class="navi-item">
 						<span class="navi-link p-0 pb-2">
 							<span class="navi-text text-muted text-hover-primary mr-3">NIK</span>
-							<span class="navi-text font-weight-bolder text-hover-primary">19580811 198512 1 001</span>
+							<span class="navi-text font-weight-bolder text-hover-primary"><?php echo $user_detail[0]['nik']?></span>
 						</span>
 					</a>
-					<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Sign Out</a>
+					<a href="<?php echo base_url().'access/logout';?>" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Sign Out</a>
 				</div>
 			</div>
 		</div>
@@ -121,17 +121,16 @@
 				</span>
 				<div class="d-flex flex-column flex-grow-1 mr-2">
 					<a href="#"
-						class="font-weight-normal text-dark-75 text-hover-primary font-size-lg mb-1">Another
-						purpose persuade</a>
+						class="font-weight-normal text-dark-75 text-hover-primary font-size-lg mb-1">New Order</a>
 					<span class="text-muted font-size-sm">Due in 2 Days</span>
 				</div>
-				<span class="font-weight-bolder text-warning py-1 font-size-lg">+28%</span>
+				<span class="font-weight-bolder text-warning py-1 font-size-lg"><?php echo count($new_orders);?></span>
 			</div>
 
 			<!--end::Item-->
 
 			<!--begin::Item-->
-			<div class="d-flex align-items-center bg-light-success rounded p-5 gutter-b">
+			<div class= align-items-center bg-light-success rounded p-5 gutter-b" style="display: none;">
 				<span class="svg-icon svg-icon-success mr-5">
 					<span class="svg-icon svg-icon-lg">
 
@@ -165,7 +164,7 @@
 			<!--end::Item-->
 
 			<!--begin::Item-->
-			<div class="d-flex align-items-center bg-light-danger rounded p-5 gutter-b">
+			<div class=" align-items-center bg-light-danger rounded p-5 gutter-b" style="display: none;">
 				<span class="svg-icon svg-icon-danger mr-5">
 					<span class="svg-icon svg-icon-lg">
 
@@ -198,7 +197,7 @@
 			<!--end::Item-->
 
 			<!--begin::Item-->
-			<div class="d-flex align-items-center bg-light-info rounded p-5">
+			<div class="align-items-center bg-light-info rounded p-5" style="display: none;">
 				<span class="svg-icon svg-icon-info mr-5">
 					<span class="svg-icon svg-icon-lg">
 

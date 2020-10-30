@@ -104,8 +104,7 @@
 								<!--begin::Dropdown-->
 								<div class="dropdown dropdown-inline" data-toggle="tooltip" title="Quick actions"
 									data-placement="left">
-									<a href="#" class="btn btn-dark font-weight-bold px-6" data-toggle="dropdown"
-										aria-haspopup="true" aria-expanded="false">Create</a>
+									
 									<div
 										class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-md dropdown-menu-right">
 

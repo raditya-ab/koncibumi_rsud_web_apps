@@ -82,7 +82,7 @@ $(document).ready(function () {
         table.DataTable({
             responsive: true,
             ajax: {
-                url: HOST_URL + 'assets/api/pesanan/fetch_list_pesanan.json',
+                url: HOST_URL + 'order/list_order/new',
                 type: 'POST',
                 data: {
                     pagination: {

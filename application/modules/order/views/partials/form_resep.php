@@ -46,9 +46,9 @@
         <label>Nama Obat:</label>
         <select name="obat[]" class="form-control select2">
             <option value="">Pilih Obat</option>
-            <option value="gtm.005">Methyl Prednisolon tab 4mg</option>
-            <option value="tm.002" selected>Megabal Caps /100s</option>
-            <option value="gtc.006">Cefixime 100mg</option>
+            <?php if(count($obat) > 0 ){ foreach ( $obat as $key => $value) { ?>
+            <option value="<?php echo $value['id']?>" selected><?php echo $value['name']?></option>
+            <?php } } ?>
         </select>
         <div class="d-md-none mb-2"></div>
     </div>
@@ -89,9 +89,9 @@
         <label>Nama Obat:</label>
         <select name="obat[]" class="form-control select2">
             <option value="">Pilih Obat</option>
-            <option value="gtm.005" selected>Methyl Prednisolon tab 4mg</option>
-            <option value="tm.002">Megabal Caps /100s</option>
-            <option value="gtc.006">Cefixime 100mg</option>
+            <?php if(count($obat) > 0 ){ foreach ( $obat as $key => $value) { ?>
+            <option value="<?php echo $value['id']?>" selected><?php echo $value['name']?></option>
+            <?php } } ?>
         </select>
         <div class="d-md-none mb-2"></div>
     </div>

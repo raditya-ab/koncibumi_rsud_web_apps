@@ -10,6 +10,8 @@
 										</div>
 										<div class="card-body">
 											<div class="my-3">
+
+												<form action="<?php echo base_url();?>order/approve" method="post" name="form1">
 												<div class="row">
 													<div class="col-md-12">
 														<div class="form-group row">
@@ -472,9 +474,9 @@
 																			<label>Nama Obat:</label>
 																			<select name="obat[]" class="form-control select2">
 																				<option value="">Pilih Obat</option>
-																				<option value="gtm.005">Methyl Prednisolon tab 4mg</option>
-																				<option value="tm.002">Megabal Caps /100s</option>
-																				<option value="gtc.006">Cefixime 100mg</option>
+																	            <?php if(count($obat) > 0 ){ foreach ( $obat as $key => $value) { ?>
+																	            <option value="<?php echo $value['id']?>" selected><?php echo $value['name']?></option>
+																	            <?php } } ?>
 																			</select>
 																			<div class="d-md-none mb-2"></div>
 																		</div>
@@ -529,12 +531,13 @@
 														<div class="form-group row">
 															<div class="col-md-12 text-right">
 																<a href="order_list.html" class="btn btn-default mr-3">Kembali</a>
-																<button type="button" class="btn btn-primary">Proses & Simpan Resep</button>
+																<button type="submit" class="btn btn-primary">Proses & Simpan Resep</button>
 
 															</div>
 														</div>
 													</div>
 												</div>
+												</form>
 											</div>
 										</div>
 									</div>

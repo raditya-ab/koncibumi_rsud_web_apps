@@ -28,8 +28,8 @@ Class Order_m extends CI_Model
         $this->db->select($select, FALSE);
         $this->db->from('order_patient o');
         // $this->db->join('patient_login pl', 'pl.id = o.patient_id', 'left');
-        $this->db->join('patient_profile pp', 'pp.id = o.patient_id', 'left');
-        $this->db->join('kunjungan k', 'k.patient_id = pp.id', 'left');
+        //$this->db->join('patient_profile pp', 'pp.id = o.patient_id', 'left');
+        //$this->db->join('kunjungan k', 'k.patient_id = pp.id', 'left');
         $this->db->join('master_doctor d', 'd.id = o.doctor_id', 'left');
         
         

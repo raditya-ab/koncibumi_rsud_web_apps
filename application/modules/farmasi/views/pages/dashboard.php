@@ -12,11 +12,7 @@
 												<p class="text-inverse-info pb-5 font-size-h6">Anda mempunyai</p>
 												<p class="text-inverse-info pb-5 display-1 font-weight-bolder"><?php echo count($new_orders);?></p>
 												<p class="text-inverse-info pb-5 font-size-h6">permohonan obat baru.</p>
-												<?php 
-												echo "<pre>";
-												print_r ($new_orders);
-												echo "</pre>";
-												?>
+												
 												<a href="<?php echo site_url('order/new');?>"
 													class="btn btn-success font-weight-bold py-2 px-6 mt-20">Buka<i
 														class="fas fa-arrow-right ml-3"

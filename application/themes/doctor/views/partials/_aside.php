@@ -43,16 +43,7 @@
 	<!--begin::Footer-->
 	<div class="aside-footer d-flex flex-column align-items-center flex-column-auto py-8">
 		
-		<!--begin::Quick Panel-->
-		<a href="#" class="btn btn-icon btn-hover-text-primary btn-lg mb-1 position-relative" id="kt_quick_panel_toggle"
-			data-toggle="tooltip" data-placement="right" data-container="body" data-boundary="window"
-			title="Quick Panel">
-			<span class="svg-icon svg-icon-xxl">
-				<i class="flaticon2-notification"></i>
-			</span>
-			<span class="label label-sm label-light-danger label-rounded font-weight-bolder position-absolute top-0 right-0 mt-1 mr-1">3</span>
-		</a>
-		<!--end::Quick Panel-->
+		
 	</div>
 	<!--end::Footer-->
 </div>
