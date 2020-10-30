@@ -538,3 +538,12 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+$config['secret_key'] = 'HOSPITAL_APPS';
+$config['status_order'] = array(
+	"1" => "Menunggu Konfirmasi Dokter",
+	"2" => "Menunggu Konfirmasi Farmasi",
+	"3" => "Dijadwalkan Pengambilan/Pengiriman",
+	"4" => "Sedang Dikirim/Siap diambil", 
+	"5" => "Ditolak",
+	"6" => "Selesai"
+);
