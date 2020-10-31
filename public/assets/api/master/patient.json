@@ -1,0 +1,16 @@
+{
+    "status": "success",
+    "data": {
+        "patient_name": "Toni Abadi",
+        "no_medical_record": "804749-19",
+        "no_bpjs": "0001129000779",
+        "place_of_birth": "Sumedang",
+        "date_of_birth": "1980-10-09",
+        "sex": "L",
+        "blood_type": "-",
+        "rhesus": ".",
+        "address": "Lembur Tengah RT 02 RW 017 Situ Kecamatan Sumedang Utara Kabupaten Sumedang Jawa Barat",
+        "mobile_no": "-",
+        "marital_status": "Kawin"
+    }
+}

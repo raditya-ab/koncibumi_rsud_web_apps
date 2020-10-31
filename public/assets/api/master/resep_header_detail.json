@@ -1,0 +1,41 @@
+{
+    "status": "success",
+    "data": [
+        {
+            "medrek": "804749-19",
+            "id_resep_detail": "200102134157",
+            "id_resep_header": "200102095357P",
+            "id_obat": "-",
+            "kode_obat": "gtc.006",
+            "nama_obat": "Cefixime 100mg",
+            "qty": "10",
+            "unit": "Tablet",
+            "dosis": "2 x 1",
+            "frekuensi_minum": "-"
+        },
+        {
+            "medrek": "804749-19",
+            "id_resep_detail": "200102134211",
+            "id_resep_header": "200102095357P",
+            "id_obat": "-",
+            "kode_obat": "tm.002",
+            "nama_obat": "Megabal Caps /100s",
+            "qty": "10",
+            "unit": "Tablet",
+            "dosis": "2 x 1",
+            "frekuensi_minum": "-"
+        },
+        {
+            "medrek": "804749-19",
+            "id_resep_detail": "200102134224",
+            "id_resep_header": "200102095357P",
+            "id_obat": "-",
+            "kode_obat": "gtm.005",
+            "nama_obat": "Methyl Prednisolon tab 4mg",
+            "qty": "10",
+            "unit": "Tablet",
+            "dosis": "2 x 1",
+            "frekuensi_minum": "-"
+        }
+    ]
+}

@@ -1,0 +1,47 @@
+{ 
+    "status": "success",
+    "data": [
+        {
+            "id_dokter": "37",
+            "NIK": "19851128 201903 2 004",
+            "nama_dokter": "drg.Tiara Resmi",
+            "spesialis": "-",
+            "poli": "Poli Gigi & Mulut"
+        },
+        {
+            "id_dokter": "89",
+            "NIK": "19580811 198512 1 001",
+            "nama_dokter": "dr.H.Yordian Y.,Sp.S",
+            "spesialis": "-",
+            "poli": "Poli Syaraf"
+        },
+        {
+            "id_dokter": "90",
+            "NIK": "19720408 200212 1 008",
+            "nama_dokter": "dr.H.Swastika, Sp.S",
+            "spesialis": "-",
+            "poli": "Poli Syaraf"
+        },
+        {
+            "id_dokter": "91",
+            "NIK": "19780421 201001 1 011",
+            "nama_dokter": "dr.A. Wahyudi R,ST",
+            "spesialis": "-",
+            "poli": "Poli Syaraf"
+        },
+        {
+            "id_dokter": "105",
+            "NIK": "19691005 199903 2 005",
+            "nama_dokter": "dr. Hj. Sri Dwi Omarsari, M.K.M.",
+            "spesialis": "-",
+            "poli": "Poli Syaraf"
+        },
+        {
+            "id_dokter": "106",
+            "NIK": "19670820 200604 2 004",
+            "nama_dokter": "dr. Yanti Isdaryanti",
+            "spesialis": "-",
+            "poli": "Poli Syaraf"
+        }
+    ]
+}

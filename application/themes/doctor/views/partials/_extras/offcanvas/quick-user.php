@@ -22,6 +22,9 @@
 				<i class="symbol-badge bg-success"></i>
 			</div>
 			<div class="d-flex flex-column">
+				<?php
+					if ( count($user_detail) > 0 ){
+				?>
 				<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name']?></a>
 				<div class="text-muted mt-1"><?php echo $user_detail[0]['jabatan']?></div>
 				<div class="navi mt-2">
@@ -33,6 +36,7 @@
 					</a>
 					<a href="<?php echo base_url().'access/logout';?>" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Sign Out</a>
 				</div>
+				<?php } ?>
 			</div>
 		</div>
 

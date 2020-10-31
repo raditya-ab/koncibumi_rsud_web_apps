@@ -1,0 +1,35 @@
+{
+    "status": "success",
+    "data": [
+        {
+            "id_kunjungan": "191210094311A",
+            "tgl_kunjungan": "2019-12-10",
+            "no_medical_record": "804749-19",
+            "id_dokter": "dr.Fari A.D. Sp.THT-KL, M.Kes",
+            "id_poli": "Poli THT",
+            "icd_code": "H66.3",
+            "icd_description": "OMSK (OTITIS MEDIA SUPURATIF KRONIS)",
+            "tindak_lanjut": "Pulang"
+        },
+        {
+            "id_kunjungan": "191216073256P",
+            "tgl_kunjungan": "2019-12-16",
+            "no_medical_record": "804749-19",
+            "id_dokter": "dr.Fari A.D. Sp.THT-KL, M.Kes",
+            "id_poli": "Poli THT",
+            "icd_code": "H66.3",
+            "icd_description": "OMSK (OTITIS MEDIA SUPURATIF KRONIS)",
+            "tindak_lanjut": "Pulang"
+        },
+        {
+            "id_kunjungan": "200102095357P",
+            "tgl_kunjungan": "2020-01-02",
+            "no_medical_record": "804749-19",
+            "id_dokter": "dr.Fari A.D. Sp.THT-KL, M.Kes",
+            "id_poli": "Poli THT",
+            "icd_code": "H66.3",
+            "icd_description": "OMSK (OTITIS MEDIA SUPURATIF KRONIS)",
+            "tindak_lanjut": "Pulang"
+        }
+    ]
+}

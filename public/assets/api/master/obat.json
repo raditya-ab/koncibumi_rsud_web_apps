@@ -1,0 +1,185 @@
+{
+    "status": "success",
+    "data": [
+		{
+			"id_obat": "-",
+			"kode_obat": "a1.003",
+			"nama_sales": "1.5mm Cps 20 Hole Plate",
+			"nama_dagang": "1.5mm Cps 20 Hole Plate",
+			"stock_qty": "10",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "a1.001",
+			"nama_sales": "1.6mmx6mm Auto- Drive Screw",
+			"nama_dagang": "1.6mmx6mm Auto- Drive Screw",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "a1.002",
+			"nama_sales": "10 Hole Straight Plate 1.6mm",
+			"nama_dagang": "10 Hole Straight Plate 1.6mm",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "a2.003",
+			"nama_sales": "2.0mmx10mm Screw",
+			"nama_dagang": "2.0mmx10mm Screw",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "a2.002",
+			"nama_sales": "22mm Left L Plate",
+			"nama_dagang": "22mm Left L Plate",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "a2.001",
+			"nama_sales": "22mm Right L Plate",
+			"nama_dagang": "22mm Right L Plate",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "a2.004",
+			"nama_sales": "24 Ga. Stainless Steel Wire 3m",
+			"nama_dagang": "24 Ga. Stainless Steel Wire 3m",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "ia.001",
+			"nama_sales": "ABU 5 Ml",
+			"nama_dagang": "ABU  Polivalen",
+			"stock_qty": "0",
+			"unit": "Ampul",
+			"golongan": "I",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "gta.019",
+			"nama_sales": "Acarbose Tab 100 Mg/100s",
+			"nama_dagang": "Acarbose Tab 100 Mg/100s",
+			"stock_qty": "3142",
+			"unit": "Tablet",
+			"golongan": "GT",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "gta.018",
+			"nama_sales": "Acarbose Tab 50 Mg/100s",
+			"nama_dagang": "Acarbose Tab 50 Mg/100s",
+			"stock_qty": "2222",
+			"unit": "Tablet",
+			"golongan": "GT",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "aa.008",
+			"nama_sales": "Accessories Kit (map)- Merit",
+			"nama_dagang": "Accessories Kit (map)- Merit",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "gta.021",
+			"nama_sales": "Acetylcystein 200 Mg/60s",
+			"nama_dagang": "Acetylcystein 200 Mg/60s",
+			"stock_qty": "326",
+			"unit": "Tablet",
+			"golongan": "GT",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "aa.005",
+			"nama_sales": "Achbar",
+			"nama_dagang": "Achbar",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "aa.022",
+			"nama_sales": "Across Cto",
+			"nama_dagang": "Across Cto",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "aa.010",
+			"nama_sales": "Across Hp 2.5x15",
+			"nama_dagang": "Across Hp 2.5x15",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "ia.018",
+			"nama_sales": "Actilyse 50 Mg Inj.",
+			"nama_dagang": "Actilyse 50 Mg Inj.",
+			"stock_qty": "0",
+			"unit": "Vial",
+			"golongan": "I",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "aa.004",
+			"nama_sales": "Actimove Mitela M",
+			"nama_dagang": "Actimove Mitela M",
+			"stock_qty": "0",
+			"unit": "Pcs",
+			"golongan": "A",
+			"keterangan": "-"
+		},
+		{
+			"id_obat": "-",
+			"kode_obat": "ia.015",
+			"nama_sales": "Actrapid Hm Penfill 100iu/ml X 3ml /5s",
+			"nama_dagang": "Actrapid Hm Penfill 100iu/ml X 3ml /5s",
+			"stock_qty": "0",
+			"unit": "Vial",
+			"golongan": "I",
+			"keterangan": "-"
+		}
+	]
+}

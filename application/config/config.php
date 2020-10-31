@@ -545,5 +545,6 @@ $config['status_order'] = array(
 	"3" => "Dijadwalkan Pengambilan/Pengiriman",
 	"4" => "Sedang Dikirim/Siap diambil", 
 	"5" => "Ditolak",
-	"6" => "Selesai"
+	"6" => "Selesai",
+	"7" => ""
 );

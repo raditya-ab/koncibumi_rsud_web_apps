@@ -33,7 +33,7 @@ function tolakPesanan(idPesanan) {
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
                 if (result.isConfirmed) {
-                    return fetch(HOST_URL + 'assets/api/pesanan/tolak_pesanan.json', {
+                    return fetch(HOST_URL + 'order/reject', {
                             method: 'post',
                             body: JSON.stringify({
                                 dismiss_reason: result.value.reason,
@@ -82,7 +82,7 @@ $(document).ready(function () {
         table.DataTable({
             responsive: true,
             ajax: {
-                url: HOST_URL + 'order/list_order/new',
+                url: HOST_URL + 'order/list_detail_order/new',
                 type: 'POST',
                 data: {
                     pagination: {
@@ -175,7 +175,7 @@ $(document).ready(function () {
                                         Choose an action:\
                                     </li>\
                                     <li class="navi-item">\
-                                        <a href="'+ HOST_URL + 'order/proses/' + pesanan_id + '" class="navi-link">\
+                                        <a href="'+ HOST_URL + 'order/proses/?order_id=' + pesanan_id + '" class="navi-link">\
                                             <span class="navi-icon"><i class="la la-check-circle"></i></span>\
                                             <span class="navi-text">Proses</span>\
                                         </a>\
@@ -194,14 +194,14 @@ $(document).ready(function () {
             }],
         });
     }
-    if ($('#table_order').exists()) {
+    if ($('#table_order_').exists()) {
         var table = $('#table_order');
 
         // begin first table
         table.DataTable({
             responsive: true,
             ajax: {
-                url: HOST_URL + 'assets/api/pesanan/fetch_list_pesanan.json',
+                url: HOST_URL + 'order/list_detail_order/',
                 type: 'POST',
                 data: {
                     pagination: {
@@ -274,7 +274,7 @@ $(document).ready(function () {
 
                     return '<span class="btn btn-sm btn-pill font-weight-bold font-size-sm' + status[data.code].class + '">' + data.label + '</span>';
                 }
-            }, {
+            }/*, {
                 targets: -1,
                 title: 'Actions',
                 orderable: false,
@@ -309,7 +309,7 @@ $(document).ready(function () {
                         </div>\
                     ';
                 },
-            }],
+            }*/],
         });
     }
 

@@ -1,0 +1,12 @@
+{
+    "status": "success",
+    "data": [
+        {
+            "id_resep_header": "200102095357P",
+            "no_resep": "200102134146D",
+            "id_dokter": "dr.Fari A.D. Sp.THT-KL, M.Kes",
+            "no_medical_record": "804749-19",
+            "tgl_resep": "2020-01-02"
+        }
+    ]
+}

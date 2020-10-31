@@ -75,7 +75,7 @@
 			<div class="card-body">
 				
 				<div class="table-responsive">
-					<table class="table table-hover" id="table_order_new">
+					<table class="table table-hover" id="table_order_<?php echo $type;?>">
 						<thead>
 							<tr>
 								<th>#</th>

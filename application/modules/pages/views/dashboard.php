@@ -3,11 +3,14 @@
 								<div class="col-xl-4">
 									<!--[html-partial:begin:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 									<!--begin::Mixed Widget 4-->
+									<?php
+										if ( count($user_detail) > 0 ){
+									?>
 									<div class="card card-custom card-stretch gutter-b">
 										<div class="card-body d-flex p-0">
 											<div class="flex-grow-1 bg-info p-12 pb-20 card-rounded flex-grow-1 bgi-no-repeat"
 												style="background-position: right bottom; background-size: 55% auto; background-image: url(<?php echo base_url('assets/media/svg/humans/custom-6.svg');?>)">
-												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, dr. <?php echo $user_detail[0]['first_name'];?>
+												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, <?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name'];?>
 												</h3>
 												<p class="text-inverse-info pb-5 font-size-h6">Anda mempunyai</p>
 												<p class="text-inverse-info pb-5 display-1 font-weight-bolder"><?php echo count($new_orders);?></p>
@@ -20,6 +23,7 @@
 											</div>
 										</div>
 									</div>
+									<?php } ?>
 									<!--end::Mixed Widget 4-->
 									<!--[html-partial:end:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 								</div>
@@ -34,7 +38,7 @@
 													Obat Terbaru</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order/list/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -92,7 +96,12 @@
 																<td>
 																	<a href="https://icd.who.int/browse10/2019/en#/H66.3" target="_blank"
 																		class="text-primary font-weight-bold font-size-sm">
-																		<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
+
+																		<?php 
+																			if ( isset($order['icd_code']) && isset($order['icd_description'])){
+																				echo $order['icd_code'];?> - <?php echo $order['icd_description'];
+																			}
+																		?>
 																	</a>
 																</td>
 																<td>
@@ -133,7 +142,7 @@
 													Obat</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order/list/');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -159,7 +168,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<?php foreach($new_orders as $i => $order){ ?>
+														<?php foreach($list_orders as $i => $order){ ?>
 														<tr>
 															<td class="pl-3">1</td>
 															<td>
@@ -201,7 +210,11 @@
 																<?php } ?>
 															</td>
 															<td>
-																<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
+																<?php 
+																	if ( isset($order['icd_code']) && isset($order['icd_description'])){
+																		echo $order['icd_code'];?> - <?php echo $order['icd_description'];
+																	}
+																?>
 															</td>
 															<td>
 																<a href="#">

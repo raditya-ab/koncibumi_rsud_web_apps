@@ -29,7 +29,6 @@ Class Order_m extends CI_Model
         // $this->db->join('patient_login pl', 'pl.id = o.patient_id', 'left');
         $this->db->join('patient_profile pp', 'pp.id = o.patient_id', 'inner');
         $this->db->join('master_doctor md', 'md.id = o.doctor_id','inner');
-        
         if($status != NULL){
             $this->db->where('o.status', $status);
         }
@@ -89,5 +88,22 @@ Class Order_m extends CI_Model
         $res = $run->result_array();
         $obat = $res;
         return $obat;
+    }
+
+    public function order_detail($id){
+        $qry_detail_order = "SELECT * FROM order_patient WHERE 1 AND id = ?" ;
+        $run_detail_order = $this->db->query($qry_detail_order,array($id));
+        $res_detail_order = $run_detail_order->result_array();
+        return $res_detail_order;
+    }
+
+    public function latest_visit($id = ""){
+        $data = array();
+        return $data;
+    }
+
+    public function latest_receipt($id = ""){
+        $data = array();
+        return $data;
     }
 }
