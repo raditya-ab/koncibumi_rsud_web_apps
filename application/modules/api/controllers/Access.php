@@ -14,6 +14,7 @@ class Access extends CI_Controller {
 	    parent::__construct();
 	    $this->load->model('access_model','access');
 	    $this->config->load('config');
+	    $this->load->library('ciqrcode');
 
 	    if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 
@@ -47,6 +48,7 @@ class Access extends CI_Controller {
 			    	$data['code'] = "422 ";
 			    	$data['message'] = "No BPJS atau No Medical tidak ada";
 			    	echo json_encode($data);
+			    	exit();
 				}
 
 				$array_data = $run_bpjs->result_array();
@@ -108,6 +110,7 @@ class Access extends CI_Controller {
 				$login_id = $res_bpjs[0]['id'];
 				$first_name = $res_bpjs[0]['first_name'];
 				$last_name = $res_bpjs[0]['last_name'];
+				$address = $res_bpjs[0]['address'];
 
 				$array_insert = array(
 					"patient_login_id" => $res_bpjs[0]['id'],
@@ -117,12 +120,13 @@ class Access extends CI_Controller {
 					"created_at" => date("Y-m-d H:i:s"),
 					"mobile_number" => $mobile_number,
 					"bpjs_number" => $bpjs_number,
-					"medical_number" => $medic_number
+					"medical_number" => $medic_number,
+					"address" => $address
 				);
 				$this->db->insert("patient_profile", $array_insert);
 				$patient_profile_id = $this->db->insert_id();
 				$current_date = date("Y-m-d H:i:s");
-		        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date' where id = '$login_id'");
+		        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password' where id = '$login_id'");
 
 		        $data['code'] = "200";
 		    	$data['message'] = "Success Registrasi";
@@ -249,6 +253,18 @@ class Access extends CI_Controller {
 		echo json_encode($data);
 		
 
+	}
+
+	public function generateQR(){
+		header("Content-Type: image/png");
+		$order_id = $_GET['order_id'];
+		
+		$params['data'] = base_url().'courier/finish/?order_id='.$order_id;
+		$params['savename'] = './assets/order/order_'.$order_id.'_qr.png';
+		$generate = $this->ciqrcode->generate($params);
+		$qr_path = base_url().str_replace("./assets", "assets", $params['savename']);
+		$this->db->query("UPDATE order_patient set qr = '$qr_path' where id = '$order_id'");
+		return $qr_path;
 	}
 
 }

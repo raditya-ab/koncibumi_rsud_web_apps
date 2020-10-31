@@ -111,7 +111,7 @@
 																			<?php 
 																				$expired = strtotime($order['created_at'])+ (8*3600);
 																				$left = time() - $expired;
-																				echo date("d/M/Y", $expired);
+																				echo date("d/M/Y", strtotime("+7days",strtotime($order['created_at'])));
 																			?>
 																		</span>
 																</td>

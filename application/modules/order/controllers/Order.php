@@ -1,12 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 Class Order extends Public_controller
 {
     public function __construct(){
         parent::__construct();
         $this->load->model('order/order_m','order_m');
         $this->load->model('access/access','access');
+        $this->load->model('api/Profile_model','profile');
         $_SESSION['user_id'] = '1';
         $_SESSION['user_group_id'] = '1';
         $this->config->load('config');
@@ -70,8 +74,9 @@ Class Order extends Public_controller
             $list_status['code'] = $value['status'];
             $list_status['label'] = $status_order[$value['status']];
 
-            $list_diagnose['icd_code'] = "";
-            $list_diagnose['icd_description'] = "";
+            $get_diagones = $this->profile->get_diagones($value['patient_id']);
+            $list_diagnose['icd_code'] = $get_diagones['icd_code'];
+            $list_diagnose['icd_description'] = $get_diagones['icd_description'];
 
             $detail_order['no'] = $key + 1;
             $detail_order['id_pesanan'] = $value['id'];
@@ -80,7 +85,7 @@ Class Order extends Public_controller
             $detail_order['nama_pasien'] = $profile_data[0]['first_name'] .' '.$profile_data[0]['last_name'];
             $detail_order['diagnose'] = $list_diagnose;
             $detail_order['tanggal_pesanan'] = $value['created_at'];
-            $detail_order['total_order_after_last_visit'] = 2;
+            $detail_order['total_order_after_last_visit'] = $get_diagones['total_kunjungan'];
             $detail_order['status'] = $list_status;
             $array_data[] = $detail_order;
         }
@@ -101,5 +106,56 @@ Class Order extends Public_controller
 
     public function submit_receipt(){
         print_r($this->input->post("obat"));
+    }
+
+    public function download($filetype, $datatype = ""){
+        $array_status = array(
+            "new" => 1,
+            "" => NULL
+        );
+
+        $status_order = $this->config->item('status_order');
+        $user_detail = $this->access->get_user($_SESSION['user_id']);
+        $list_order = $this->order_m->fetch_orders($array_status[$datatype],NULL, $_SESSION['user_id']);
+        $spreadsheet = new Spreadsheet;
+        $spreadsheet->setActiveSheetIndex(0)
+        ->setCellValue('A1', 'No')
+        ->setCellValue('B1', 'No.Pesanan')
+        ->setCellValue('C1', 'Tanggal Pesanan')
+        ->setCellValue('D1', 'No. BPJS / Rekam Medis')
+        ->setCellValue('E1', 'Nama Pasien')
+        ->setCellValue('F1', 'Diagnosa Terakhir')
+        ->setCellValue('G1', 'Pesanan Obat')
+        ->setCellValue('H1', 'Status Pesanan');
+
+        $kolom = 2;
+        $nomor = 1;
+        foreach ($list_order as $key => $value) {
+            $icd_description = "";
+            if ( isset($value['icd_description'])){
+                $icd_description = $value['icd_description'];
+            }
+
+            $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A'.$kolom, $nomor)
+            ->setCellValue('B'.$kolom, $value['order_no'])
+            ->setCellValue('C'.$kolom, date("d-M-Y",strtotime($value['created_at'])))
+            ->setCellValue('D'.$kolom, $value['no_bpjs'])
+            ->setCellValue('E'.$kolom, $value['nama_pasien'])
+            ->setCellValue('F'.$kolom, $icd_description)
+            ->setCellValue('G'.$kolom, count($this->order_m->total_receipt($value['id'])))
+            ->setCellValue('H'.$kolom, $status_order[$value['status']]);
+            $kolom++;
+            $nomor++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $doctor_name = $user_detail[0]['first_name'];
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Order_'.$doctor_name.'.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }

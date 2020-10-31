@@ -114,7 +114,7 @@ class Profile extends CI_Controller {
 				exit();
 			}
 
-			$check_bpjs = "SELECT pl.remember_token as remember_token, pp.id as patient_profile_id FROM patient_login as pl 
+			$check_bpjs = "SELECT pl.remember_token as remember_token, pp.id as patient_profile_id,pl.id as patient_login_id,pp.address as delivery_address FROM patient_login as pl 
 				INNER JOIN patient_profile as pp ON (pl.id = pp.patient_login_id) 
 				WHERE 1 AND ( pl.no_bpjs = ? OR pl.no_medrec = ? ) ";
 			$run_bpjs = $this->db->query($check_bpjs,array($edata->bpjs_number, $edata->bpjs_number));
@@ -128,34 +128,29 @@ class Profile extends CI_Controller {
 
 			$res_bpjs = $run_bpjs->result_array();
 			$profile_id = $res_bpjs[0]['patient_profile_id'];
+			$patient_login_id = $res_bpjs[0]['patient_login_id'];
+
+			$doctor_id = "";
+			$qry_get_latest_visit = "SELECT * FROM kunjungan WHERE 1 AND patient_login_id = ? ";
+			$run_get_latest_visit = $this->db->query($qry_get_latest_visit,array($patient_login_id));
+			if ( $run_get_latest_visit->num_rows() > 0 ){
+				$res_get_latest_visit = $run_get_latest_visit->result_array();
+				$doctor_id = $res_get_latest_visit[0]['doctor_id'];
+			}
+
+
 			$array_insert = array(
 				"patient_id" => $profile_id,
 				"delivery_date" => date("Y-m-d H:i:s"),
 				"created_at" => date("Y-m-d H:i:s"),
 				"status" => 1,
 				"keluhan" => $edata->complaint,
-				'description' => $edata->complaint_description
+				'description' => $edata->complaint_description,
+				"doctor_id" => $doctor_id,
+				"delivery_address" => $res_bpjs[0]['delivery_address']
 			);
 			$this->db->insert("order_patient", $array_insert);
 			$order_id = $this->db->insert_id();
-
-			if ( $edata->complaint == 0 ){
-				$array_receipt = array(
-					"kunjungan_id" => $order_id,
-					"doctor_id" => NULL,
-					"created_at" => date("Y-m-d H:i:s"),
-					"restricted" => 1
-				);
-				$this->db->insert("receipt_header",$array_receipt);
-				$receipt_id = $this->db->insert_id();
-				$array_receipt_detail = array(
-					"receipt_header_id" => $receipt_id,
-					"obat" => 1,
-					"dosis" => rand(1,10) * 10
-				);
-
-				$this->db->insert("receipt_detail",$array_receipt_detail);
-			}
 
 			if ( $edata->complaint == "1" ){
 				header("HTTP/1.1 406");
@@ -164,7 +159,9 @@ class Profile extends CI_Controller {
 				echo json_encode($data);
 				exit();
 			}
-
+			
+			$order_no = "KNCBM".$order_id;
+			$this->db->query("UPDATE order_patient set order_no = '$order_no' WHERE id ='$order_id'");
 			$data['code'] = "200";
 			$data['message'] = "Success Order";
 			echo json_encode($data);
@@ -429,7 +426,7 @@ class Profile extends CI_Controller {
 		echo json_encode($data);
 	}
 
-
+	
 }
 
 ?>

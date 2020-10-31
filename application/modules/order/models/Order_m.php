@@ -106,4 +106,18 @@ Class Order_m extends CI_Model
         $data = array();
         return $data;
     }
+
+    public function total_receipt($order_id){
+        $total = 0;
+        $qry_check_receipt = "SELECT * FROM receipt_header where 1 AND kunjungan_id = ? ";
+        $run_check_receipt = $this->db->query($qry_check_receipt,array($order_id));
+        if ( $run_check_receipt->num_rows()){
+            $res_check_receipt = $run_check_receipt->result_array();
+            $qry_total_detail = "SELECT * FROM receipt_detail where 1 AND receipt_header_id = ? ";
+            $run_total_detail = $this->db->query($qry_total_detail,array($res_check_receipt[0]['id']));
+            return $run_total_detail->result_array();
+        }
+
+        return $total;
+    }
 }

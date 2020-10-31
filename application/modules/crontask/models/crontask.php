@@ -89,6 +89,14 @@ Class Crontask extends CI_Model
                 $patient_login_id = $res_login_id[0]['id'];
             }
 
+            $patient_id = "";
+            $qry_profile_id = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
+            $run_profile_id = $this->db->query($qry_profile_id,array($patient_login_idd));
+            if ( $run_profile_id->num_rows() > 0 ){
+                $res_profile_id = $run_profile_id->result_array();
+                $patient_id = $res_profile_id[0]['id'];
+            }
+
             $array_insert = array(
                 "medical_number" => $value->no_medical_record,
                 "icd_code" => $value->icd_code,
@@ -98,7 +106,8 @@ Class Crontask extends CI_Model
                 "id_kunjungan" => $value->id_kunjungan,
                 "patient_login_id" => $patient_login_id,
                 "doctor_id" => 1,
-                "created_at" => date("Y-m-d H:i:s")
+                "created_at" => date("Y-m-d H:i:s"),
+                "patient_id" => $patient_id
             );
             $this->db->insert("kunjungan",$array_insert);
         }

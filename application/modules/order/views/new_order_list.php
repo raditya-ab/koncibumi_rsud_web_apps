@@ -49,7 +49,7 @@
 									</a>
 								</li>
 								<li class="navi-item">
-									<a href="#" class="navi-link">
+									<a href="<?php echo base_url().'order/download/excel/'.$type;?>" class="navi-link">
 										<span class="navi-icon">
 											<i class="la la-file-excel-o"></i>
 										</span>
@@ -57,7 +57,7 @@
 									</a>
 								</li>
 								<li class="navi-item">
-									<a href="#" class="navi-link">
+									<a href="<?php echo base_url().'order/download/csv/'.$type;?>" class="navi-link">
 										<span class="navi-icon">
 											<i class="la la-file-text-o"></i>
 										</span>
