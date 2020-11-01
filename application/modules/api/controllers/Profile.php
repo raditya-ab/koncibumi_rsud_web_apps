@@ -429,6 +429,50 @@ class Profile extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function edit_profile(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$access_token = $_SERVER['HTTP_TOKEN'];
+			$secret_key = $this->config->item('secret_key');
+			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			if ( isset($edata->fullname)){
+				$address = $edata->address;
+				$gender = $edata->gender;
+				$first_name = "";
+				$last_name = "";
+
+				$explode =explode(" ",$edata->fullname);
+				if ( count($explode) > 1 ){
+					$first_name = $explode[0];
+					$last_name = str_replace($explode[0], "", $edata->fullname);
+				}else{
+					$first_name = $edata->fullname;
+				}
+
+				$patient_profile_id = $decoded->profile_data->patient_profile_id;
+				$patient_login_id = $decoded->profile_data->patient_login_id;
+				
+				$array_update = array(
+					"first_name" => $first_name,
+					"last_name" => $last_name,
+					"mobile_number" => $edata->mobile_number,
+					"address" => $edata->address,
+					"latitude" => $edata->lat,
+					"longitude" => $edata->long
+ 				);
+
+ 				$this->db->where("id",$patient_profile_id);
+ 				$this->db->update("patient_profile",$array_update);
+ 				$this->db->query("UPDATE patient_login SET address = '$address', gender = '$gender' WHERE id = '$patient_login_id'");
+			}
+		}
+		$data['code'] = "200";
+		$data['message'] = "Data has been updated";
+		echo json_encode($data);
+	}
+
 
 }
 
