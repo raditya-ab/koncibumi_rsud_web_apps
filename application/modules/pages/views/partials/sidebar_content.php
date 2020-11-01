@@ -8,7 +8,7 @@
                     style="background-image:url('<?php echo base_url('assets/media/users/300_21.jpg');?>'); min-width: 150px; min-height: 150px;">
                 </div>
             </div>
-            <h4 class="font-weight-bolder mt-2 mb-5">Ahmad Fulan</h4>
+            <h4 class="font-weight-bolder mt-2 mb-5"><?php echo $order_detail[0]['first_name']?></h4>
         </div>
         <!--end::User-->
     </div>
@@ -19,16 +19,16 @@
     <div class="card-body p-5">
         <!--begin::User-->
         <div class="text-left mb-5">
-            <div class="mb-2"><span class="font-weight-bold">No. Rekam Medis</span><br>000000-12
+            <div class="mb-2"><span class="font-weight-bold">No. Rekam Medis</span><br><?php echo $order_detail[0]['medical_number']?>
             </div>
-            <div class="mb-2"><span class="font-weight-bold">No. BPJS</span><br>0000000000983</div>
+            <div class="mb-2"><span class="font-weight-bold">No. BPJS</span><br><?php echo $order_detail[0]['bpjs_number']?></div>
         </div>
         <div class="text-left mb-5">
-            <div class="mb-2"><span class="font-weight-bold">Tanggal Lahir</span><br>9 Januari 1980
+            <div class="mb-2"><span class="font-weight-bold">Tanggal Lahir</span><br><?php echo date("d-M-Y", strtotime($order_detail[0]['dob']))?>
             </div>
             <div class="mb-2"><span class="font-weight-bold">Umur</span><br>40 tahun</div>
-            <div class="mb-2"><span class="font-weight-bold">Jenis Kelamin</span><br>Laki-laki</div>
-            <div class="mb-2"><span class="font-weight-bold">Golongan Darah</span><br>O rh.+</div>
+            <div class="mb-2"><span class="font-weight-bold">Jenis Kelamin</span><br><?php echo $array_gender[$order_detail[0]['gender']];?></div>
+            <div class="mb-2"><span class="font-weight-bold">Golongan Darah</span><br><?php echo $order_detail[0]['gol_darah']?></div>
 
             <!-- <span
 									class="label label-light-warning label-inline font-weight-bold label-lg">Active
@@ -52,17 +52,17 @@
                     <div class="mb-2">
                         <span class="font-weight-boldest">Tanggal Kunjungan</span>
                         <br>
-                        <span class="text-navy">9 Januari 2020</span>
+                        <span class="text-navy"><?php echo date("d-M-Y",strtotime($latest_visit[0]['tanggal_kunjungan']))?></span>
                     </div>
                     <div class="mb-2">
                         <span class="font-weight-boldest">Dokter</span>
                         <br>
-                        <span class="text-navy">dr.Fari A.D. Sp.THT-KL, M.Kes</span>
+                        <span class="text-navy"><?php echo $latest_visit[0]['name'];?></span>
                     </div>
                     <div class="mb-2">
                         <span class="font-weight-boldest">Poli</span>
                         <br>
-                        <span class="text-navy">Poli THT</span>
+                        <span class="text-navy"><?php echo $latest_visit[0]['poli'];?></span>
                     </div>
                     <div class="mb-2">
                         <span class="text-navy font-weight-boldest">Systol/Diastol</span>
@@ -72,7 +72,7 @@
                     <div class="mb-2">
                         <span class="text-navy font-weight-boldest">Diagnosa</span>
                         <br>
-                        <span class="text-navy">H66.3 - OMSK (OTITIS MEDIA SUPURATIF KRONIS)</span>
+                        <span class="text-navy"><?php echo $latest_visit[0]['icd_description'];?></span>
                     </div>
                     <div class="mb-2">
                         <span class="text-navy font-weight-boldest">Resep Terakhir</span>

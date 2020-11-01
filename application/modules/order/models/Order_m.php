@@ -91,14 +91,31 @@ Class Order_m extends CI_Model
     }
 
     public function order_detail($id){
-        $qry_detail_order = "SELECT * FROM order_patient WHERE 1 AND id = ?" ;
+        $qry_detail_order = "SELECT op.*,pp.bpjs_number as bpjs_number,pp.medical_number as medical_number,
+            pp.dob as dob,pp.gender as gender,pl.blood_type as gol_darah,
+            md.first_name as first_name, md.poli as poli,op.patient_id as patient_id
+            FROM order_patient as op
+            INNER JOIN patient_profile as pp ON (op.patient_id = pp.id)
+            INNER JOIN patient_login as pl ON (pp.patient_login_id = pl.id)
+            INNER JOIN master_doctor as md ON ( md.id = op.doctor_id )
+            WHERE 1 AND op.id = ?" ;
         $run_detail_order = $this->db->query($qry_detail_order,array($id));
         $res_detail_order = $run_detail_order->result_array();
         return $res_detail_order;
     }
 
-    public function latest_visit($id = ""){
+    public function latest_visit($order_id = ""){
         $data = array();
+        $order_detail = $this->order_detail($order_id);
+        $qry_kunjungan = "SELECT k.id_kunjungan as order_no, k.tanggal_kunjungan as tanggal_kunjungan,
+            md.first_name as name, md.poli as poli, k.icd_code as icd_code, k.icd_description as icd_description
+            FROM kunjungan as k 
+            INNER JOIN patient_profile as pp ON (k.patient_id = pp.id)
+            INNER JOIN master_doctor as md ON (md.id = k.doctor_id)
+            WHERE 1 AND k.patient_id = ? 
+            order by k.id desc limit 0,3";
+        $run_kunjungan = $this->db->query($qry_kunjungan,array($order_detail[0]['patient_id']));
+        $data = $run_kunjungan->result_array();
         return $data;
     }
 
@@ -119,5 +136,49 @@ Class Order_m extends CI_Model
         }
 
         return $total;
+    }
+
+    public function save_receipt($order_id,$doctor_id,$obat,$qty,$unit,$dosis,$frekuensi,$description_receupt){
+        $this->load->model('app/master_model','master');
+
+
+        if ( count($obat) > 0 ){
+            $array_insert_receipt = array(
+                "kunjungan_id" => $order_id,
+                "doctor_id" => $doctor_id,
+                "created_at" => date("Y-m-d H:i:s"),
+                "description" => $description_receupt
+            );
+            $this->db->insert("receipt_header",$array_insert_receipt);
+            $receipt_id = $this->db->insert_id(); 
+            $receipt_no = "KNCBMR".$receipt_id;
+
+            $restricted = 0;
+            foreach ($obat as $key => $value) {
+                $data_obat = $this->master->get_detail_medicine($value);
+                if ( count($data_obat) > 0 ){
+                    $array_insert_receipt_detail = array(
+                        "receipt_header_id" => $receipt_id,
+                        "obat" => $value,
+                        "dosis" => $dosis[$key],
+                        "qty" => $qty[$key],
+                        "satuan" => $unit[$key],
+                        "frekuensi" => $frekuensi[$key]
+                    );
+                    $this->db->insert("receipt_detail",$array_insert_receipt_detail);
+                    if ( $data_obat[0]['restricted'] == "1"){
+                        $restricted = 1;
+                    }
+                }
+            }
+
+            $this->db->query("UPDATE receipt_header set receipt_no = '$receipt_no', restricted = '$restricted' where id = '$receipt_id'");
+
+            $this->db->query("UPDATE order_patient set status = 2, doctor_approve_time = now() where id = '$order_id'");
+        }
+
+
+
+        return true;
     }
 }

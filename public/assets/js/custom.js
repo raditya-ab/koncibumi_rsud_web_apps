@@ -195,13 +195,12 @@ $(document).ready(function () {
         });
     }
     if ($('#table_order_').exists()) {
-        var table = $('#table_order');
-
+        var table = $('#table_order_');
         // begin first table
         table.DataTable({
             responsive: true,
             ajax: {
-                url: HOST_URL + 'order/list_detail_order/',
+                url: HOST_URL + 'order/list_detail_order/all',
                 type: 'POST',
                 data: {
                     pagination: {
@@ -274,7 +273,7 @@ $(document).ready(function () {
 
                     return '<span class="btn btn-sm btn-pill font-weight-bold font-size-sm' + status[data.code].class + '">' + data.label + '</span>';
                 }
-            }/*, {
+            }, {
                 targets: -1,
                 title: 'Actions',
                 orderable: false,
@@ -293,15 +292,9 @@ $(document).ready(function () {
                                         Choose an action:\
                                     </li>\
                                     <li class="navi-item">\
-                                        <a href="order_detail.html?orders_id=' + pesanan_id + '" class="navi-link">\
+                                        <a href="'+ HOST_URL + 'order/proses/?order_id=' + pesanan_id + '" class="navi-link">\
                                             <span class="navi-icon"><i class="la la-check-circle"></i></span>\
                                             <span class="navi-text">Proses</span>\
-                                        </a>\
-                                    </li>\
-                                    <li class="navi-item">\
-                                        <a href="javascript:void(0)" onClick="tolakPesanan(' + pesanan_id + '); return false;" class="navi-link">\
-                                            <span class="navi-icon font-weight-bold"><i class="la la-close"></i></span>\
-                                            <span class="navi-text text-danger">Tolak</span>\
                                         </a>\
                                     </li>\
                                 </ul>\
@@ -309,7 +302,7 @@ $(document).ready(function () {
                         </div>\
                     ';
                 },
-            }*/],
+            }],
         });
     }
 

@@ -29,7 +29,7 @@ Class Dashboard extends Public_controller
         $this->data['user_detail'] = $this->access->get_user($_SESSION['user_id']);
         if ( count($this->data['user_detail']) > 0 ){
             $new_orders = $this->order_m->fetch_orders(1,5, $this->data['user_detail'][0]['id']);
-            $list_orders = $this->order_m->fetch_orders(1,5, $this->data['user_detail'][0]['id']);
+            $list_orders = $this->order_m->fetch_orders(NULL,10, $this->data['user_detail'][0]['id']);
         }
 
         $this->data['new_orders'] = $new_orders;

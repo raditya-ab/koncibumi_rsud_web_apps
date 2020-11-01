@@ -29,7 +29,7 @@
 													data-toggle="collapse"
 													data-target="#kunjungan-1">
 													<i class="flaticon-file-2"></i> No.
-													Kunjungan #191210094311A
+													Kunjungan #<?php echo $value['order_no']?>
 												</div>
 											</div>
 											<div id="kunjungan-1" class="collapse"
@@ -40,25 +40,24 @@
 															<span
 																class="font-weight-bold">No.
 																Kunjungan</span>:
-															200102095357P
+															<?php echo $value['order_no']?>
 														</li>
 														<li>
 															<span
 																class="font-weight-bold">Tanggal
-																Kunjungan</span>: 9 Januari
-															2020
+																Kunjungan <?php echo date("d-M-Y",strtotime($value['tanggal_kunjungan']));?></span>: 
 														</li>
 
 														<li>
 															<span
 																class="font-weight-bold">Dokter
 																yang menangani</span>:
-															dr.Fari A.D. Sp.THT-KL, M.Kes
+															<?php echo $value['name'];?>
 														</li>
 														<li>
 															<span
 																class="font-weight-bold">Poli</span>:
-															Poli THT
+															<?php echo $value['poli']; ?>
 														</li>
 														<li>
 															<span
@@ -71,51 +70,31 @@
 															<ul>
 																<li><span
 																		class="font-weight-bold">ICD
-																		Code</span>: H66.3
+																		Code</span>: <?php echo $value['icd_code']; ?>
 																</li>
 																<li><span
 																		class="font-weight-bold">Description</span>:
-																	OMSK (OTITIS MEDIA
-																	SUPURATIF KRONIS)</li>
+																	<?php echo $value['icd_description']; ?></li>
 															</ul>
 														</li>
-														<li>
-															<span class="font-weight-bold">No.Resep</span>: #200102134146D
-														</li>
-														<li>
-															<span
-																class="font-weight-bold">Resep
-																Kunjungan</span>:
-															<ul>
-																<li>Cefixime 100mg - 10
-																	tablet - 2x1</li>
-																<li>Megabal Caps /100s - 10
-																	tablet - 2x1</li>
-																<li>Methyl Prednisolon tab
-																	4mg - 10 tablet - 2x1
-																</li>
-															</ul>
-														</li>
+														
 													</ul>
-
-													<a href="#resep-form-group"
-														class="btn btn-outline-warning btn-sm font-weight-bold mt-8 btn-fetch-resep" data-category="kunjungan" data-id="1" data-kode="200102134146D">Gunakan
-														Resep Ini untuk meresepkan obat</a>
 												</div>
 											</div>
 										</div>
 									</div>
-									<button type="button" class="btn btn-block bg-dark text-white mt-5">Lihat Semua Riwayat Kunjungan</button>
 									<?php } ?>
+									<button type="button" class="btn btn-block bg-dark text-white mt-5">Lihat Semua Riwayat Kunjungan</button>
 								</div>
 							</div>
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label">Riwayat Pemesanan
 									Obat</label>
-								<?php
-									foreach ($latest_visit as $key => $value) {
-								?>
+
 								<div class="col-md-10">
+								<?php
+									foreach ($latest_receipt as $key => $value) {
+								?>
 									<div class="accordion accordion-solid accordion-toggle-plus"
 										id="accordionPesanan">
 										<div class="card">
@@ -182,12 +161,14 @@
 										</div>
 										
 									</div>
-									<button type="button" class="btn btn-block bg-dark text-white mt-5">Lihat Semua Riwayat Pesanan</button>
-								</div>
 								<?php } ?>
+
+								<button type="button" class="btn btn-block bg-dark text-white mt-5">Lihat Semua Riwayat Pesanan</button>
+								</div>
 							</div>
 
 							<form action="<?php echo base_url();?>order/submit_receipt" method="post" name="form1">
+								<input type="hidden" name="order_id" value="<?php echo $order_detail[0]['id']?>">
 								<div id="kt_repeater_1">
 									<div class="form-group row" id="kt_repeater_1">
 										<label class="col-md-2 col-form-label">Resep:</label>
@@ -251,14 +232,15 @@
 								<div class="form-group row">
 									<div class="col-md-2 col-md-label">Catatan Resep</div>
 									<div class="col-md-10">
-										<textarea class="form-control" name="" id="" rows="5" placeholder="Keterangan tambahan mengenai resep"></textarea>
+										<textarea class="form-control" name="description_receupt" id="" rows="5" placeholder="Keterangan tambahan mengenai resep"></textarea>
 									</div>
 								</div>
 								<div class="form-group row">
 									<div class="col-md-12 text-right">
-										<a href="order_list.html" class="btn btn-default mr-3">Kembali</a>
+										<a href="<?php echo base_url();?>" class="btn btn-default mr-3">Kembali</a>
+										<?php if ( $order_detail[0]['status'] == "1") { ?>
 										<button type="submit" class="btn btn-primary">Proses & Simpan Resep</button>
-
+										<?php } ?>
 									</div>
 								</div>
 							</form>

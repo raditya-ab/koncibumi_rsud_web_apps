@@ -23,10 +23,17 @@ Class Order extends Public_controller
 
     public function list($type = "")
     {
+
+        $array_type = array(
+            "new" => 1,
+            "all" => NULL,
+            "" => NULL
+        );
+
         $this->data['user_detail'] = $this->access->get_user($_SESSION['user_id']);
         $new_orders = array();
         if ( count($this->data['user_detail']) > 0 ){
-            $new_orders = $this->order_m->fetch_orders(1,5,$this->data['user_detail'][0]['id']);
+            $new_orders = $this->order_m->fetch_orders($array_type[$type],5,$this->data['user_detail'][0]['id']);
         }
         $this->data['new_orders'] = $new_orders;
         $this->data['type'] = $type;
@@ -34,16 +41,21 @@ Class Order extends Public_controller
     }
     public function proses(){
         $order_id = $_GET['order_id'];
-        $this->data['sidebar_header'] = $this->template->load_view('pages/partials/sidebar_header');
-        $this->data['sidebar_content'] = $this->template->load_view('pages/partials/sidebar_content');
+        $array_gender = array(
+            "L" => "Laki-laki",
+            "P" => "Perempuan"
+        );
         $this->data['obat'] = $this->order_m->getObat();
         $this->data['user_detail'] = $this->access->get_user($_SESSION['user_id']);
         $this->data['new_orders'] = $this->order_m->fetch_orders(1,5,$this->data['user_detail'][0]['id']);
         $this->data['order_detail'] = $this->order_m->order_detail($order_id);
-        $this->data['latest_visit'] = $this->order_m->latest_visit();
-        $this->data['latest_receipt'] = $this->order_m->latest_receipt();
+        $this->data['latest_visit'] = $this->order_m->latest_visit($order_id);
+        $this->data['latest_receipt'] = $this->order_m->latest_receipt($order_id);
+        $this->data['array_gender'] = $array_gender;
 
         $this->template->set_partial('sidebar','partials/_sidebar.php', $this->data);
+        $this->data['sidebar_header'] = $this->template->load_view('pages/partials/sidebar_header');
+        $this->data['sidebar_content'] = $this->template->load_view('pages/partials/sidebar_content',$this->data);
 
         $this->template->set_layout('main_with_sidebar');
         $this->template->build('proses_pesanan',$this->data);
@@ -57,7 +69,8 @@ Class Order extends Public_controller
     public function list_detail_order($type = "new"){
         $array_type = array(
             "new" => 1,
-            "all" => NULL
+            "all" => NULL,
+            "" => NULL
         );
 
         $data = array();
@@ -102,10 +115,6 @@ Class Order extends Public_controller
         $this->db->query("UPDATE order_patient set status = '5',doctor_approve_time = '$doctor_approval_time',reason ='$reason' where id = '$order_id'");
         $data['status'] = "ok";
         echo json_encode($data);
-    }
-
-    public function submit_receipt(){
-        print_r($this->input->post("obat"));
     }
 
     public function download($filetype, $datatype = ""){
@@ -157,5 +166,22 @@ Class Order extends Public_controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    public function submit_receipt(){
+        $order_id = $this->input->post("order_id");
+        $data_doctor = $this->access->get_user($_SESSION['user_id']);
+        $obat = $this->input->post("obat");
+        $qty = $this->input->post("qty");
+        $unit = $this->input->post("unit");
+        $dosis = $this->input->post("dosis");
+        $frekuensi = $this->input->post("frekuensi");
+        $description_receupt = $this->input->post("description_receupt");
+
+        if ( count($obat) > 0 ){
+            $save_receipt = $this->order_m->save_receipt($order_id,$data_doctor[0]['id'],$obat,$qty,$unit,$dosis,$frekuensi,$description_receupt);
+        }
+
+        redirect(base_url().'order/proses/?order_id='.$order_id); 
     }
 }
