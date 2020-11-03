@@ -201,7 +201,9 @@ class Profile extends CI_Controller {
 			$status_order = $this->config->item('status_order');
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
+			$patient_login_id = $decoded->profile_data->patient_login_id;
 			$this->db->query("UPDATE patient_profile set address = '$address' where id = '$patient_profile_id'");
+			$this->db->query("UPDATE patient_login set address = '$address' where id = '$patient_login_id'");
 
 			$data['code'] = "200";
 			$data['message'] = "Address has been updated";
@@ -426,7 +428,119 @@ class Profile extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	
+
+	public function edit_profile(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$access_token = $_SERVER['HTTP_TOKEN'];
+			$secret_key = $this->config->item('secret_key');
+			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			if ( isset($edata->fullname)){
+				$address = $edata->address;
+				$gender = $edata->gender;
+				$first_name = "";
+				$last_name = "";
+
+				$explode =explode(" ",$edata->fullname);
+				if ( count($explode) > 1 ){
+					$first_name = $explode[0];
+					$last_name = str_replace($explode[0], "", $edata->fullname);
+				}else{
+					$first_name = $edata->fullname;
+				}
+
+				$patient_profile_id = $decoded->profile_data->patient_profile_id;
+				$patient_login_id = $decoded->profile_data->patient_login_id;
+				
+				$array_update = array(
+					"first_name" => $first_name,
+					"last_name" => $last_name,
+					"mobile_number" => $edata->mobile_number,
+					"address" => $edata->address,
+					"latitude" => $edata->lat,
+					"longitude" => $edata->long
+ 				);
+
+ 				$this->db->where("id",$patient_profile_id);
+ 				$this->db->update("patient_profile",$array_update);
+ 				$this->db->query("UPDATE patient_login SET address = '$address', gender = '$gender' WHERE id = '$patient_login_id'");
+			}
+		}
+		$data['code'] = "200";
+		$data['message'] = "Data has been updated";
+		echo json_encode($data);
+	}
+
+	public function about(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$qry_about = "SELECT * FROM about ";
+			$run_about = $this->db->query($qry_about);
+			$res_about = $run_about->result_array();
+			$data['code'] = "200";
+			$data['content'] = $res_about[0]['content'];
+			echo json_encode($data);
+			exit();
+		}
+	}
+
+	public function tnc(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$qry_tnc = "SELECT * FROM tnx ";
+			$run_tnc = $this->db->query($qry_tnc);
+			$res_tnc = $run_tnc->result_array();
+			$tnc = array();
+			if ( count($res_tnc) > 0 ){
+				foreach ($res_tnc as $key => $value) {
+					$detail_tnc = array();
+					$detail_tnc['id'] = $value['id'];
+					$detail_tnc['content'] = $value['content'];
+					$tnc[] = $detail_tnc;
+				}
+			}
+
+			$data['code'] = "200";
+			$data['tnc'] = $tnc;
+			echo json_encode($data);
+			exit();
+		}
+	}
+
+	public function logout(){
+		session_destroy();
+		$secret_key = $this->config->item('secret_key');
+		$access_token = $_SERVER['HTTP_TOKEN'];
+		if ( $this->profile->check_token($access_token) == false ){
+			header("HTTP/1.1 401");
+			$data['code'] = "401";
+			$data['message'] = "INVALID TOKEN";
+			echo json_encode($data);
+			exit();
+		}
+		$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+		$patient_profile_id = $decoded->profile_data->patient_login_id;
+
+		$this->db->query("UPDATE patient_login set remember_token = '' WHERE 1 AND id = '$patient_login_id'");
+		$data['code'] = "200";
+		$data['message'] = "Success Logout";
+		echo json_encode($data);
+		exit();
+
+	}
+
+	public function version(){
+		$qry_version = $this->db->query("SELECT * FROM tag_version order by id desc");
+		$run_version = $qry_version->result_array();	
+		$data['code'] = "200";
+		$data['version'] = $run_version[0]['version'];
+		echo json_encode($data);
+		exit();
+	}
+
+
+
+
 }
 
 ?>

@@ -255,6 +255,7 @@ class Access extends CI_Controller {
 
 	}
 
+
 	public function generateQR(){
 		header("Content-Type: image/png");
 		$order_id = $_GET['order_id'];
@@ -266,6 +267,29 @@ class Access extends CI_Controller {
 		$this->db->query("UPDATE order_patient set qr = '$qr_path' where id = '$order_id'");
 		return $qr_path;
 	}
+
+
+	public function confirm_otp(){
+		$obj = file_get_contents('php://input');
+		$edata = json_decode($obj);
+		$otp_key = "1234";
+		if ( isset($edata->otp)){
+			if ( $edata->otp != $otp_key ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "User not authorized ";
+		    	echo json_encode($data);
+		    	exit;
+			}
+		}
+
+		$data['code'] = "200";
+		$data['message'] = "User Register";
+		echo json_encode($data);
+		exit();
+	}
+
+	
 
 }
 ?>
