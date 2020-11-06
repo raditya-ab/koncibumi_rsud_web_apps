@@ -197,12 +197,15 @@ class Profile extends CI_Controller {
 				exit();
 			}
 			$address = $edata->address;
+			$latitude = $edata->latitude;
+			$longitude = $edata->longitude;
+
 			$secret_key = $this->config->item('secret_key');
 			$status_order = $this->config->item('status_order');
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 			$patient_login_id = $decoded->profile_data->patient_login_id;
-			$this->db->query("UPDATE patient_profile set address = '$address' where id = '$patient_profile_id'");
+			$this->db->query("UPDATE patient_profile set address = '$address',latitude = '$latitude', longitude = '$longitude' where id = '$patient_profile_id'");
 			$this->db->query("UPDATE patient_login set address = '$address' where id = '$patient_login_id'");
 
 			$data['code'] = "200";
@@ -501,7 +504,7 @@ class Profile extends CI_Controller {
 			}
 
 			$data['code'] = "200";
-			$data['tnc'] = $tnc;
+			$data['content'] = $tnc;
 			echo json_encode($data);
 			exit();
 		}
@@ -519,7 +522,7 @@ class Profile extends CI_Controller {
 			exit();
 		}
 		$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
-		$patient_profile_id = $decoded->profile_data->patient_login_id;
+		$patient_login_id = $decoded->profile_data->patient_login_id;
 
 		$this->db->query("UPDATE patient_login set remember_token = '' WHERE 1 AND id = '$patient_login_id'");
 		$data['code'] = "200";
@@ -530,14 +533,92 @@ class Profile extends CI_Controller {
 	}
 
 	public function version(){
-		$qry_version = $this->db->query("SELECT * FROM tag_version order by id desc");
-		$run_version = $qry_version->result_array();	
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			if ( isset($edata->current_version)) {
+				$qry_version = $this->db->query("SELECT * FROM tag_version order by id desc");
+				$run_version = $qry_version->result_array();	
+				$data['code'] = "200";
+				$data['latest_version'] = $run_version[0]['version'];
+				$data['mandatory_update'] = true;
+				if ( $run_version[0]['version'] == $edata->current_version ){
+					$data['mandatory_update'] = false;
+					$data['url_apps'] = "https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree";
+				}
+				echo json_encode($data);
+				exit();
+			}
+		}
+	}
+
+	public function faq(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$list_faq = array();
+
+			for ( $i=0; $i<2; $i++){
+				$detail_list_faq['question'] = "<h3>Question ".$i."</h3>";
+				$detail_list_faq['answer'] = "<p>Sample Faq Content ".$i."</p>";
+				$list_faq[] = $detail_list_faq;
+			}
+
+			$data['code'] = "200";
+			$data['faq'] = $list_faq;
+			echo json_encode($data);
+			exit();
+		}
+	}
+
+
+	public function contact(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			if ( isset($edata->question_type)){
+				$access_token = $_SERVER['HTTP_TOKEN'];
+				$secret_key = $this->config->item('secret_key');
+				$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+				$patient_profile_id = $decoded->profile_data->patient_profile_id;
+				$array_insert = array(
+					"profile_id" => $patient_profile_id,
+					"question_type" => $edata->question_type,
+					"question_subject" => $edata->question_subject,
+					"question_content" => $edata->question_content,
+					"created_at" =>date("Y-m-d H:i:s")
+				);
+				$this->db->insert("contact",$array_insert);
+			}
+		}
+
 		$data['code'] = "200";
-		$data['version'] = $run_version[0]['version'];
+		$data['message'] = "Success Submit";
 		echo json_encode($data);
 		exit();
 	}
 
+	public function update_notifikasi(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+
+			$access_token = $_SERVER['HTTP_TOKEN'];
+			$secret_key = $this->config->item('secret_key');
+			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+			$type = $edata->type;
+			$status = $edata->status;
+			$array_type = array(
+				"sms" => "notif_sms",
+				"app" => "notif_app"
+			);
+			$field = $array_type[$type];
+			$profile_id = $decoded->profile_data->patient_profile_id;
+
+			$this->db->query("UPDATE patient_profile SET $field = '$status' WHERE id ='$profile_id'");
+			$data['code'] = "200";
+			$data['message'] = "Success Update";
+			echo json_encode($data);
+		}
+	}
 
 
 

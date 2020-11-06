@@ -13,8 +13,10 @@ class Access extends CI_Controller {
 
 	    parent::__construct();
 	    $this->load->model('access_model','access');
+	    $this->load->model('master_model','master');
 	    $this->config->load('config');
 	    $this->load->library('ciqrcode');
+	    $this->load->library('zanzifa');
 
 	    if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 
@@ -126,10 +128,39 @@ class Access extends CI_Controller {
 				$this->db->insert("patient_profile", $array_insert);
 				$patient_profile_id = $this->db->insert_id();
 				$current_date = date("Y-m-d H:i:s");
+
 		        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password' where id = '$login_id'");
+
+		        
+
+		        $otp_key = $this->master->generateOtp();
+		    	$sms = $this->zanzifa->sender($otp_key,$mobile_number);
+		    	
+		        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password',verification_code='$otp_key' where id = '$login_id'");
+
+		        $data_profile = array();
+				$data_profile['patient_login_id'] = $res_bpjs[0]['id'];
+				$data_profile['patient_profile_id'] = $patient_profile_id;
+				$data_profile['first_name'] = $first_name;
+				$data_profile['last_name'] = $last_name;
+				$data_profile['mobile_number'] = $mobile_number;
+				$data_profile['address'] = $address;
+				$data_profile['profile_pict'] = NULL;
+				$data_profile['bpjs_number'] = $bpjs_number;
+				$data_profile['medic_number'] = $medic_number;
+
+		        $token = array(
+		            "iss" => $_SERVER['SERVER_NAME'],
+		            "iat" => strtotime($res_bpjs[0]['date_created']),
+		            "profile_data" => $data_profile
+		        );
+		        $secret_key = $this->config->item('secret_key');
+		        $access_token = JWT::encode($token, $secret_key);
+
 
 		        $data['code'] = "200";
 		    	$data['message'] = "Success Registrasi";
+		    	$data['access_token'] = $access_token;
 		    	echo json_encode($data);
 			}
 		}		
@@ -236,17 +267,17 @@ class Access extends CI_Controller {
 			exit;
 		}
 
-		/*$token = $_SERVER['HTTP_TOKEN'];
-		$password = $edata->password;
 		$secret_key = $this->config->item('secret_key');
-		$decoded = JWT::decode($token, $secret_key, array('HS256'));
-		if ( isset($decoded->patient_login_id) ){
-			$id = $decoded->patient_login_id;
-			$temp_password =  $edata->password;
-			$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
-			$this->db->query("UPDATE patient_login set password = '$password' where id = '1'");
-		}*/
-		$this->db->query("UPDATE patient_login set password = '$password' where id = '1'");
+		$decoded = JWT::decode($_SERVER['HTTP_TOKEN'], $secret_key, array('HS256')) ;
+		$patient_login_id = $decoded->profile_data->patient_login_id;
+		$mobile_number = $decoded->profile_data->mobile_number;
+		$otp_key = $this->master->generateOtp();
+		$sms = $this->zanzifa->sender($otp_key,$mobile_number);
+        $temp_password =  $edata->password;
+		$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
+		
+		$this->db->query("UPDATE patient_login set password = '$password',verification_code='$otp_key' where id = $patient_login_id");
+
 		$data['code'] = "200";
 		$data['message'] = "Success to change password";
 		$data['token'] = $_SERVER['HTTP_TOKEN'];
@@ -270,23 +301,45 @@ class Access extends CI_Controller {
 
 
 	public function confirm_otp(){
-		$obj = file_get_contents('php://input');
-		$edata = json_decode($obj);
-		$otp_key = "1234";
-		if ( isset($edata->otp)){
-			if ( $edata->otp != $otp_key ){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			$otp_key = "1234";
+
+			$access_token = $_SERVER['HTTP_TOKEN'];
+			$secret_key = $this->config->item('secret_key');
+			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+			$patient_login_id = $decoded->profile_data->patient_login_id;
+
+			$qry_token = "SELECT * FROM patient_login WHERE 1 AND id = ? ";
+			$run_token = $this->db->query($qry_token,array($patient_login_id));
+
+			if ( !(isset($edata->otp)) || $run_token->num_rows() <= 0 ){
 				header("HTTP/1.1 403");
 				$data['code'] = "403";
 		    	$data['message'] = "User not authorized ";
 		    	echo json_encode($data);
 		    	exit;
+				
 			}
+
+			$res_token = $run_token->result_array();
+			$otp_key = $res_token[0]['verification_code'];
+
+			if ( $edata->otp != $otp_key ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "User not authorized ";
+		    	echo json_encode($data);
+		    	exit();
+			}
+
+			$data['code'] = "200";
+			$data['message'] = "User Register";
+			echo json_encode($data);
+			exit();
 		}
 
-		$data['code'] = "200";
-		$data['message'] = "User Register";
-		echo json_encode($data);
-		exit();
 	}
 
 	
