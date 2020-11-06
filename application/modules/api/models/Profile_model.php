@@ -42,6 +42,23 @@ class Profile_model extends CI_Model {
       }
       return false;
     }
+
+    function get_diagones($profile_id){
+      $data['total_kunjungan'] = 0;
+      $data['icd_code'] = "";
+      $data['icd_description'] = "";
+
+      $qry_kunjungan = "SELECT * FROM kunjungan WHERE 1 AND patient_id = ? order by id desc";
+      $run_kunjungan = $this->db->query($qry_kunjungan,array($profile_id));
+      if ( $run_kunjungan->num_rows() > 0 ){
+        $res_kunjungan = $run_kunjungan->result_array();
+        $data['total_kunjungan'] = $run_kunjungan->num_rows();
+        $data['icd_code'] = $res_kunjungan[0]['icd_code'];
+        $data['icd_description'] = $res_kunjungan[0]['icd_description'];
+      }
+
+      return $data;
+    }
   	
 }
 ?>

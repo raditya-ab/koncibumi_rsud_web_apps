@@ -67,6 +67,16 @@ class Master_model extends CI_Model {
   		return $run_medicine->result_array();
   	}
 
+    function generateOtp(){
+      $otp_key = "";
+      for ( $i=0; $i<6; $i++){
+          $number = rand(0,9);
+          $otp_key .= $number;
+        }
+
+        return $otp_key;
+    }
+
 
   	
 }
