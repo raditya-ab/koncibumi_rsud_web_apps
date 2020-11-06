@@ -548,3 +548,8 @@ $config['status_order'] = array(
 	"6" => "Selesai",
 	"7" => ""
 );
+
+$config['librarysms'] = array(
+	"userkey" => '02434fff22c0',
+	"passkey" => '4428ffe69cc15796064c4ee6'
+);
