@@ -141,7 +141,6 @@ class Profile extends CI_Controller {
 
 			$array_insert = array(
 				"patient_id" => $profile_id,
-				"delivery_date" => date("Y-m-d H:i:s"),
 				"created_at" => date("Y-m-d H:i:s"),
 				"status" => 1,
 				"keluhan" => $edata->complaint,
@@ -234,9 +233,9 @@ class Profile extends CI_Controller {
 				exit();
 			}
 
-			$whereClause = " AND status != '6'";
+			$whereClause = " AND op.status != '6'";
 			if ( $status == "false" ){
-				$whereClause = " AND status = '6'";
+				$whereClause = " AND op.status = '6'";
 			}
 
 
@@ -245,75 +244,62 @@ class Profile extends CI_Controller {
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 			$array_history = array();
-			$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? $whereClause";
+			$detail_profile = array();
+			$qry_check_order = "SELECT op.id as id,op.status as status,op.created_at as created_at,
+			md.first_name as doctor_name,pp.bpjs_number as bpjs_number, pp.medical_number as medical_number, 
+			op.received_date as received_date,pp.address as address,pp.latitude,pp.longitude, pp.id as patient_profile_id
+				FROM order_patient as op
+				INNER JOIN master_doctor as md ON (md.id = op.doctor_id )
+				INNER JOIN patient_profile as pp ON ( pp.id = op.patient_id)
+				WHERE 1 AND op.patient_id = ? $whereClause";
 			$run_check_order = $this->db->query($qry_check_order,array($patient_profile_id));
 			if ( $run_check_order->num_rows() > 0 ){
 				$res_check_order = $run_check_order->result_array();
-				$profile_id = $res_check_order[0]['patient_id'];
-
-				$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
-				$run_profile = $this->db->query($check_profile,array($profile_id));
-				$detail_profile = array();
-				
-				if ( $run_profile->num_rows() > 0 ){
-					$res_profile = $run_profile->result_array();
-					$detail_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
-					$detail_profile['medic_number'] = $res_profile[0]['medical_number'];
-					$detail_profile['shipping_method'] = $res_check_order[0]['delivery_type'];
-					$detail_profile['received_date'] = date("d-M-Y",strtotime($res_check_order[0]['delivery_date']));
-					$detail_profile['address'] = $res_check_order[0]['delivery_address'];
-					$detail_profile['lat'] = $res_profile[0]['latitude'];
-					$detail_profile['long'] = $res_profile[0]['longitude'];
-				}
-
-				$qry_check_receipt = "SELECT * FROM receipt_header WHERE 1 AND kunjungan_id = ? ";
-				$run_check_receipt = $this->db->query($qry_check_receipt, array($res_check_order[0]['id']));
-				$array_list_obat = array();
-				if ( $run_check_receipt->num_rows() > 0 ){
-					$res_check_receipt = $run_check_receipt->result_array();
-					$receipt_id = $res_check_receipt[0]['id'];
-					$restricted = $res_check_receipt[0]['restricted'];
-					$restricted_drug = false;
-					if ( $restricted == "1"){
-						$restricted_drug = true;
+				foreach ($res_check_order as $key => $value) {
+					$restricted_drugs = false;
+					$restricted_message = "";
+					$shipping_detail = "";
+					$qr = "";
+					if ( $value['status'] >= 5 ){
+						$qr = "/api/access/generateQR?order_id=".$value['id'];
 					}
-					$detail_profile['restricted_drugs'] = $restricted_drug;
 
-					$qry_detail_receipt = "SELECT * FROM receipt_detail where 1 AND receipt_header_id = ? ";
-					$run_detail_receipt = $this->db->query($qry_detail_receipt,array($receipt_id));
-					if ( $run_detail_receipt->num_rows() > 0 ){
-						$res_detail_recept = $run_detail_receipt->result_array();
-						foreach ($res_detail_recept as $key_detail_receipt => $value_detail_receipt) {
-							$obat_id = $value_detail_receipt['obat'];
-							$qry_get_obat = "SELECT * FROM master_medicine WHERE 1 AND id = ? ";
-							$run_get_obat = $this->db->query($qry_get_obat,array($obat_id));
-							if ( $run_get_obat->num_rows() > 0 ){
-								$res_get_obat = $run_get_obat->result_array();
-								$detail_obat = array();
-								$detail_obat['name'] = $res_get_obat[0]['name'];
-								$detail_obat['group'] = $res_get_obat[0]['golongan'];
-								$detail_obat['quantity'] = $value_detail_receipt['dosis'];
-								$detail_obat['limit'] = $res_get_obat[0]['qty'];
-								$detail_obat['unit_type'] = $res_get_obat[0]['satuan'];
-								$array_list_obat[] = $detail_obat;
-							}
+
+					$detail_array_history['id'] = $value['id'];
+					$detail_array_history['order_number'] = "KNCBM".date("Ymd",strtotime($value['created_at'])).$value['id'];
+					$array_detail = array();
+					$detail_array_history['order_date'] = date("d-M-Y", strtotime($value['created_at']));
+					$detail_array_history['doctor_name'] = $value['doctor_name'];
+					$detail_array_history['status_label'] = $status_order[$value['status']];
+					$detail_array_history['status_code'] = $value['status'];
+					$detail_array_history['qr'] = $qr;
+
+					$list_drugs = $this->master->list_medicine($value['id']);
+					
+					if ( count($list_drugs['medicine']) > 0 && $value['status'] > 1){
+						if ( $list_drugs['restricted'] == true ){
+							$list_drug_restricted = $list_drugs['list_restricted'];
+							$list_restricted_message['drug_list'] = $list_drug_restricted;
+							$list_restricted_message['modal_description'] = "Pengambilan Obat <b><u>wajib</u></b> dilakukan oleh pasien yang bersangkutan karena terdapat obat <b>Golongan G</b>";
+							$restricted_message = $list_restricted_message;
 						}
+
+						$list_shipping_detail = array();
+						$shipping_detail = $this->profile->shipping_method($value['id'],$list_drugs['restricted'],$value['status'],$value['patient_profile_id']);
+						$detail_profile['bpjs_number'] = $value['bpjs_number'];
+						$detail_profile['medic_number'] = $value['medical_number'];
+						$detail_profile['restricted_drugs'] = $list_drugs['restricted'];
+						$detail_profile['restricted_message'] = $restricted_message;
+						$detail_profile['ordered_drugs'] = $list_drugs['medicine'];
+						$detail_profile['received_date'] = $value['received_date'];
+						$detail_profile['shipping_detail'] = $shipping_detail;
+
+						$array_detail = $detail_profile;
 					}
+					
+					$detail_array_history['details'] = $array_detail;
+					$array_history[] = $detail_array_history;
 				}
-
-				
-				$detail_profile['ordered_drugs'] = $array_list_obat;
-
-				$detail_array_history = array();
-				$detail_array_history['id'] = $res_check_order[0]['id'];
-				$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
-				$detail_array_history['order_date'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
-				$detail_array_history['doctor_name'] = "Docter A";
-				$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
-				$detail_array_history['qr'] = "www.google.com";
-				$detail_array_history['details'] = $detail_profile;
-				$array_history[] = $detail_array_history;
-
 			}
 
 			$data['code'] = "200";
@@ -341,64 +327,60 @@ class Profile extends CI_Controller {
 				exit();
 			}
 
-			$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND id = ? ";
+			$qry_check_order = "SELECT op.id as id,op.status as status,op.created_at as created_at,
+			md.first_name as doctor_name,pp.bpjs_number as bpjs_number, pp.medical_number as medical_number, 
+			op.received_date as received_date,pp.address as address,pp.latitude,pp.longitude, pp.id as patient_profile_id
+				FROM order_patient as op
+				INNER JOIN master_doctor as md ON (md.id = op.doctor_id )
+				INNER JOIN patient_profile as pp ON ( pp.id = op.patient_id)
+				WHERE 1 AND op.id = ? ";
 			$run_check_order = $this->db->query($qry_check_order,array($order_id));
 			if ( $run_check_order->num_rows() > 0 ){
 				$res_check_order = $run_check_order->result_array();
-				$profile_id = $res_check_order[0]['patient_id'];
 
-				$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
-				$run_profile = $this->db->query($check_profile,array($profile_id));
-				$detail_profile = array();
-
-				if ( $run_profile->num_rows() > 0 ){
-					$res_profile = $run_profile->result_array();
-					$detail_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
-					$detail_profile['medic_number'] = $res_profile[0]['medical_number'];
-					$detail_profile['shipping_method'] = $res_check_order[0]['delivery_type'];
-					$detail_profile['received_date'] = date("d-M-Y",strtotime($res_check_order[0]['delivery_date']));
-					$detail_profile['address'] = $res_check_order[0]['delivery_address'];
-					$detail_profile['lat'] = $res_profile[0]['latitude'];
-					$detail_profile['long'] = $res_profile[0]['longitude'];
+				$restricted_drugs = false;
+				$restricted_message = "";
+				$shipping_detail = "";
+				$qr = "";
+				if ( $res_check_order[0]['status'] >= 5 ){
+					$qr = "/api/access/generateQR?order_id=".$res_check_order[0]['id'];
 				}
 
-				$qry_check_receipt = "SELECT * FROM receipt_header WHERE 1 AND kunjungan_id = ? ";
-				$run_check_receipt = $this->db->query($qry_check_receipt, array($res_check_order[0]['id']));
-				$array_list_obat = array();
-				if ( $run_check_receipt->num_rows() > 0 ){
-					$res_check_receipt = $run_check_receipt->result_array();
-					$receipt_id = $res_check_receipt[0]['id'];
 
-					$qry_detail_receipt = "SELECT * FROM receipt_detail where 1 AND receipt_header_id = ? ";
-					$run_detail_receipt = $this->db->query($qry_detail_receipt,array($receipt_id));
-					if ( $run_detail_receipt->num_rows() > 0 ){
-						$res_detail_recept = $run_detail_receipt->result_array();
-						foreach ($res_detail_recept as $key_detail_receipt => $value_detail_receipt) {
-							$obat_id = $value_detail_receipt['obat'];
-							$qry_get_obat = "SELECT * FROM master_medicine WHERE 1 AND id = ? ";
-							$run_get_obat = $this->db->query($qry_get_obat,array($obat_id));
-							if ( $run_get_obat->num_rows() > 0 ){
-								$res_get_obat = $run_get_obat->result_array();
-								$detail_obat = array();
-								$detail_obat['name'] = $res_get_obat[0]['name'];
-								$detail_obat['group'] = $res_get_obat[0]['golongan'];
-								$detail_obat['quantity'] = $value_detail_receipt['dosis'];
-								$detail_obat['limit'] = $res_get_obat[0]['qty'];
-								$detail_obat['unit_type'] = $res_get_obat[0]['satuan'];
-								$array_list_obat[] = $detail_obat;
-							}
-						}
-					}
-				}
-
-				$detail_array_history = array();
 				$detail_array_history['id'] = $res_check_order[0]['id'];
-				$detail_array_history['order_number'] = "AA".$res_check_order[0]['id'];
+				$detail_array_history['order_number'] = "KNCBM".date("Ymd",strtotime($res_check_order[0]['created_at'])).$res_check_order[0]['id'];
+				$array_detail = array();
 				$detail_array_history['order_date'] = date("d-M-Y", strtotime($res_check_order[0]['created_at']));
-				$detail_array_history['doctor_name'] = "Docter A";
-				$detail_array_history['status'] = $status_order[$res_check_order[0]['status']];
-				$detail_array_history['qr'] = "www.google.com";
-				$detail_array_history['details'] = $detail_profile;
+				$detail_array_history['doctor_name'] = $res_check_order[0]['doctor_name'];
+				$detail_array_history['status_label'] = $status_order[$res_check_order[0]['status']];
+				$detail_array_history['status_code'] = $res_check_order[0]['status'];
+				$detail_array_history['qr'] = $qr;
+
+				$list_drugs = $this->master->list_medicine($res_check_order[0]['id']);
+				
+				if ( count($list_drugs['medicine']) > 0 && $res_check_order[0]['status'] > 1){
+					if ( $list_drugs['restricted'] == true ){
+						$list_drug_restricted = $list_drugs['list_restricted'];
+						$list_restricted_message['drug_list'] = $list_drug_restricted;
+						$list_restricted_message['modal_description'] = "Pengambilan Obat <b><u>wajib</u></b> dilakukan oleh pasien yang bersangkutan karena terdapat obat <b>Golongan G</b>";
+						$restricted_message = $list_restricted_message;
+					}
+
+					$list_shipping_detail = array();
+					$shipping_detail = $this->profile->shipping_method($res_check_order[0]['id'],$list_drugs['restricted'],$res_check_order[0]['status'],$res_check_order[0]['patient_profile_id']);
+					$detail_profile['bpjs_number'] = $res_check_order[0]['bpjs_number'];
+					$detail_profile['medic_number'] = $res_check_order[0]['medical_number'];
+					$detail_profile['restricted_drugs'] = $list_drugs['restricted'];
+					$detail_profile['restricted_message'] = $restricted_message;
+					$detail_profile['ordered_drugs'] = $list_drugs['medicine'];
+					$detail_profile['received_date'] = $res_check_order[0]['received_date'];
+					$detail_profile['shipping_detail'] = $shipping_detail;
+
+					$array_detail = $detail_profile;
+				}
+				
+				$detail_array_history['details'] = $array_detail;
+				$array_history[] = $detail_array_history;
 			}
 
 			$data['status'] = "200";
@@ -536,6 +518,12 @@ class Profile extends CI_Controller {
 		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 			$obj = file_get_contents('php://input');
 			$edata = json_decode($obj);
+			$array_platform = array(
+				"android" => "https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree",
+				"ios" => ""
+			);
+
+
 			if ( isset($edata->current_version)) {
 				$qry_version = $this->db->query("SELECT * FROM tag_version order by id desc");
 				$run_version = $qry_version->result_array();	
@@ -544,7 +532,7 @@ class Profile extends CI_Controller {
 				$data['mandatory_update'] = true;
 				if ( $run_version[0]['version'] == $edata->current_version ){
 					$data['mandatory_update'] = false;
-					$data['url_apps'] = "https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree";
+					$data['url_apps'] = $array_platform[$edata->platform];
 				}
 				echo json_encode($data);
 				exit();
