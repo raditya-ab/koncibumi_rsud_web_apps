@@ -536,6 +536,12 @@ class Profile extends CI_Controller {
 		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 			$obj = file_get_contents('php://input');
 			$edata = json_decode($obj);
+			$array_platform = array(
+				"android" => "https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree",
+				"ios" => ""
+			);
+
+
 			if ( isset($edata->current_version)) {
 				$qry_version = $this->db->query("SELECT * FROM tag_version order by id desc");
 				$run_version = $qry_version->result_array();	
@@ -544,7 +550,7 @@ class Profile extends CI_Controller {
 				$data['mandatory_update'] = true;
 				if ( $run_version[0]['version'] == $edata->current_version ){
 					$data['mandatory_update'] = false;
-					$data['url_apps'] = "https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree";
+					$data['url_apps'] = $array_platform[$edata->platform];
 				}
 				echo json_encode($data);
 				exit();
