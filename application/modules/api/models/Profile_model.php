@@ -64,6 +64,16 @@ class Profile_model extends CI_Model {
       $shipping_method = array();
       $profile = $this->detail_profile($profile_id);
       $order_id = $this->get_detail_order($order_id);
+      $delivery_date = "";
+      $received_date = "";
+
+      if ( $order_id[0]['delivery_date'] != NULL ){
+        $delivery_date = date("d M Y ",strtotime($order_id[0]['delivery_date']));
+      }
+
+       if ( $order_id[0]['received_date'] != NULL ){
+        $received_date = date("d M Y ",strtotime($order_id[0]['received_date']));
+      }
 
       $array_label = array(
         true => array(
@@ -73,11 +83,11 @@ class Profile_model extends CI_Model {
           ),
           "4" => array(
             "shipping_label" => "Tanggal Pengambilan",
-            "shipping_date" => $order_id[0]['delivery_date']
+            "shipping_date" => $delivery_date
           ),
           "6" => array(
             "shipping_label" => "Tanggal Pengambilan",
-            "shipping_date" => $order_id[0]['received_date']
+            "shipping_date" => $received_date
           )
         ),
         false => array(
@@ -87,15 +97,15 @@ class Profile_model extends CI_Model {
           ),
           "3" => array(
             "shipping_label" => "Estimasi Tanggal Pengiriman",
-            "shipping_date" => $order_id[0]['delivery_date']
+            "shipping_date" => $delivery_date
           ),
           "5" => array(
             "shipping_label" => "Tanggal Pengiriman",
-            "shipping_date" => $order_id[0]['delivery_date']
+            "shipping_date" => $delivery_date
           ),
           "6" => array(
             "shipping_label" => "Tanggal Pengambilan",
-            "shipping_date" => $order_id[0]['received_date']
+            "shipping_date" => $received_date
           )
         )
       );
