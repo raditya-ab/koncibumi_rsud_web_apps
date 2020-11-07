@@ -264,6 +264,10 @@ class Profile extends CI_Controller {
 						$qr = "/api/access/generateQR?order_id=".$value['id'];
 					}
 
+					$received_date = "";
+					if (  $value['received_date'] != NULL ){
+				        $received_date = date("d M Y ",strtotime( $value['received_date']));
+			      	}
 
 					$detail_array_history['id'] = $value['id'];
 					$detail_array_history['order_number'] = "KNCBM".date("Ymd",strtotime($value['created_at'])).$value['id'];
@@ -291,7 +295,7 @@ class Profile extends CI_Controller {
 						$detail_profile['restricted_drugs'] = $list_drugs['restricted'];
 						$detail_profile['restricted_message'] = $restricted_message;
 						$detail_profile['ordered_drugs'] = $list_drugs['medicine'];
-						$detail_profile['received_date'] = $value['received_date'];
+						$detail_profile['received_date'] = $received_date;
 						$detail_profile['shipping_detail'] = $shipping_detail;
 
 						$array_detail = $detail_profile;
@@ -346,6 +350,10 @@ class Profile extends CI_Controller {
 					$qr = "/api/access/generateQR?order_id=".$res_check_order[0]['id'];
 				}
 
+				$received_date = "";
+				if ( $res_check_order[0]['received_date'] != NULL ){
+			        $received_date = date("d M Y ",strtotime($order_id[0]['received_date']));
+		      	}
 
 				$detail_array_history['id'] = $res_check_order[0]['id'];
 				$detail_array_history['order_number'] = "KNCBM".date("Ymd",strtotime($res_check_order[0]['created_at'])).$res_check_order[0]['id'];
@@ -373,7 +381,7 @@ class Profile extends CI_Controller {
 					$detail_profile['restricted_drugs'] = $list_drugs['restricted'];
 					$detail_profile['restricted_message'] = $restricted_message;
 					$detail_profile['ordered_drugs'] = $list_drugs['medicine'];
-					$detail_profile['received_date'] = $res_check_order[0]['received_date'];
+					$detail_profile['received_date'] = $received_date;
 					$detail_profile['shipping_detail'] = $shipping_detail;
 
 					$array_detail = $detail_profile;
