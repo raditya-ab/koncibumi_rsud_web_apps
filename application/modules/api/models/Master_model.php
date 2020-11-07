@@ -35,11 +35,14 @@ class Master_model extends CI_Model {
   	}
 
   	function list_medicine($visit_id){
-  		$check_receipt = "SELECT rh.id as receipt_id FROM kunjungan kj
-  			INNER JOIN receipt_header as rh ON rh.kunjungan_id = kj.id
-  				WHERE 1 AND kj.id = ? ORDER BY kj.id desc";
+      $restricted = false;
+  		$check_receipt = "SELECT rh.id as receipt_id FROM receipt_header as rh
+  			INNER JOIN order_patient as op ON rh.kunjungan_id = op.id
+  				WHERE 1 AND rh.id = ? ORDER BY rh.id desc";
   		$run_receipt = $this->db->query($check_receipt,array($visit_id));
   		$data_medicine = array();
+      $list_restricted = array();
+
   		if ( $run_receipt->num_rows() > 0 ){
   			$data_receipt = $run_receipt->result_array();
   			$receipt_id = $data_receipt[0]['receipt_id'];
@@ -48,17 +51,24 @@ class Master_model extends CI_Model {
   			if ( $run_medicine->num_rows() > 0 ){
   				foreach ($run_medicine->result_array() as $key_medicine => $value_medicine) {
   					$data_obat = $this->get_detail_medicine($value_medicine['obat']);
-  					$data_medicine[$key_medicine]['id'] = $value_medicine['obat'];
   					$data_medicine[$key_medicine]['name'] = $data_obat[0]['name'];
-  					$data_medicine[$key_medicine]['brand'] = $data_obat[0]['brand'];
-  					$data_medicine[$key_medicine]['dosis'] = $value_medicine['dosis'];
+  					$data_medicine[$key_medicine]['group'] = $data_obat[0]['golongan'];
+  					$data_medicine[$key_medicine]['quantity'] = $value_medicine['qty'];
+  					$data_medicine[$key_medicine]['unit_type'] = $value_medicine['satuan'];
+            if ( $data_obat[0]['restricted'] == 1 ){
+              $restricted = true;
+              $restricted_name['name'] = $data_obat[0]['name'];
+              $list_restricted[] = $restricted_name;
+            }
   				}
   			}
   		}
 
   		$data['error_code'] = "200";
   		$data['medicine'] = $data_medicine;
-  		return $data;
+      $data['restricted'] = $restricted;
+      $data['list_restricted'] = $list_restricted;
+   		return $data;
   	}
 
   	function get_detail_medicine( $medicine_id){
@@ -77,6 +87,12 @@ class Master_model extends CI_Model {
         return $otp_key;
     }
 
+    function get_doctor($doctor_id){
+      $check_doctor = "SELECT * FROM master_doctor WHERE 1 AND id = ? ";
+      $run_doctor = $this->db->query($check_doctor,array($doctor_id));
+      $res_doctor = $run_doctor->result_array();
+      return $res_doctor;
+    }
 
   	
 }
