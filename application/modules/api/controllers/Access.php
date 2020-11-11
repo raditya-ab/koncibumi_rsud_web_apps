@@ -145,6 +145,7 @@ class Access extends CI_Controller {
 				$data_profile['profile_pict'] = NULL;
 				$data_profile['bpjs_number'] = $bpjs_number;
 				$data_profile['medic_number'] = $medic_number;
+				$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_bpjs[0]['dob']));
 
 		        $token = array(
 		            "iss" => $_SERVER['SERVER_NAME'],
@@ -204,6 +205,7 @@ class Access extends CI_Controller {
 		$data_profile['profile_pict'] = $res_patient_profile[0]['profile_pict'];
 		$data_profile['bpjs_number'] = $res_patient_profile[0]['bpjs_number'];
 		$data_profile['medic_number'] = $res_patient_profile[0]['medical_number'];
+		$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_patient_profile[0]['dob']));
 
         $token = array(
             "iss" => $_SERVER['SERVER_NAME'],
