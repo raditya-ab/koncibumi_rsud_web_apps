@@ -77,11 +77,46 @@ class Profile extends CI_Controller {
 				}
 			}
 
+			$qry_profile = "SELECT * FROM patient_profile WHERE 1 AND id = ? ";
+			$run_profile = $this->db->query($qry_profile,array($patient_profile_id));
+
+			$list_profile = array();
+			$list_profile['patient_login_id'] = "";
+  			$list_profile['patient_profile_id'] = "";
+  			$list_profile['first_name'] = "";
+  			$list_profile['last_name'] =  "";
+  			$list_profile['mobile_number'] = "";
+  			$list_profile['address'] = "";
+  			$list_profile['profile_pict'] = "";
+  			$list_profile['bpjs_number'] = "";
+  			$list_profile['medic_number'] = "";
+  			$list_profile['date_of_birth'] = "";
+  			$list_profile['latitude'] = "";
+  			$list_profile['longitude'] = "";
+
+			if ( $run_profile->num_rows() > 0 ){
+				$res_profile = $run_profile->result_array();
+				$list_profile['patient_login_id'] = $res_profile[0]['patient_login_id'];
+				$list_profile['patient_profile_id'] = $res_profile[0]['id'];
+				$list_profile['first_name'] = $res_profile[0]['first_name'];
+				$list_profile['last_name'] = $res_profile[0]['last_name'];
+				$list_profile['mobile_number'] = $res_profile[0]['patient_login_id'];
+				$list_profile['address'] = $res_profile[0]['address'];
+				$list_profile['profile_pict'] = $res_profile[0]['profile_pict'];
+				$list_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
+				$list_profile['medic_number'] = $res_profile[0]['medical_number'];
+  				$list_profile['date_of_birth'] =$res_profile[0]['dob'];
+	  			$list_profile['latitude'] = $res_profile[0]['latitude'];
+	  			$list_profile['longitude'] = $res_profile[0]['longitude'];
+			}
+  			
+
 			$data['code'] = "200";
 	    	$data['message'] = "Success Profile";
 	    	$data['token'] = $access_token;
 	    	$data['order'] = $enabled_order;
-
+	    	$data['profile'] = $list_profile;
+	    
 	    	echo json_encode($data);
 	    	exit();
     	}
@@ -601,6 +636,63 @@ class Profile extends CI_Controller {
 		}
 	}
 
+	public function question_type(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$question_type = array(
+				"General",
+				"Medicine",
+				"Service"
+			);
+		}
+
+		$data['code'] = "200";
+		$data['question_type'] = $question_type;
+		echo json_encode($data);
+	}
+
+	public function notification(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$list_notif = array();
+			$access_token = $_SERVER['HTTP_TOKEN'];
+			$secret_key = $this->config->item('secret_key');
+			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+			$profile_id = $decoded->profile_data->patient_profile_id;
+
+			$sql_notification = "SELECT * FROM notification WHERE 1 AND profile_id = ?";
+			$run_notification = $this->db->query($sql_notification,array($profile_id));
+			$array_read = array(
+				1 => "not_read",
+				0 => "read"
+			);
+
+			if ( $run_notification->num_rows() > 0 ){
+				$list = $run_notification->result_array();
+				foreach ($list as $key => $value) {
+					$data_notif = array();
+					$data_notif['no'] = $key + 1;
+					$data_notif['title'] = $value['notification'];
+					$data_notif['has_read'] = $array_read[$value['read_status']];
+					$data_notif['notification_id'] = $value['id'];
+					$list_notif[] = $data_notif;
+				}
+			}
+
+			
+			$data['code'] = "200";
+			$data['list_notification'] = $list_notif;
+			echo json_encode($data);
+		}
+	}
+
+	public function read_notif(){
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$notification_id = $_GET['notification_id'];
+			$this->db->query("UPDATE notification set read_status = 0 where id = $notification_id");
+			$data['code'] = "200";
+			$data['status'] = "Success read";
+			echo json_encode($data);
+		}
+	}
 
 }
 

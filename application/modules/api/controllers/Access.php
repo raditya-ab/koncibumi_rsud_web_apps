@@ -273,6 +273,20 @@ class Access extends CI_Controller {
 		$sms = $this->zanzifa->sender($otp_key,$mobile_number);
         $temp_password =  $edata->password;
 		$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
+
+		$check_old_pass = "SELECT * FROM patient_login WHERE 1 AND id = ?";
+		$run_old_pass = $this->db->query($check_old_pass,array($patient_login_id));
+		if ( $run_old_pass->num_rows() > 0 ){
+			$res_old_pass = $run_old_pass->result_array();
+			$old_password = $res_old_pass[0]['password'];
+			if ( $old_password == $password ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "Password has been used. Please use new password ";
+		    	echo json_encode($data);
+		    	exit;
+			}
+		}
 		
 		$this->db->query("UPDATE patient_login set password = '$password',verification_code='$otp_key' where id = $patient_login_id");
 
