@@ -128,6 +128,9 @@ class Access extends CI_Controller {
 				$this->db->insert("patient_profile", $array_insert);
 				$patient_profile_id = $this->db->insert_id();
 				$current_date = date("Y-m-d H:i:s");
+
+		        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password' where id = '$login_id'");
+
 		        
 
 		        $otp_key = $this->master->generateOtp();
@@ -154,6 +157,7 @@ class Access extends CI_Controller {
 		        );
 		        $secret_key = $this->config->item('secret_key');
 		        $access_token = JWT::encode($token, $secret_key);
+
 
 		        $data['code'] = "200";
 		    	$data['message'] = "Success Registrasi";

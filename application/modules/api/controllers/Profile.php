@@ -462,7 +462,7 @@ class Profile extends CI_Controller {
 			$access_token = $_SERVER['HTTP_TOKEN'];
 			$secret_key = $this->config->item('secret_key');
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
-
+$list_profile = array();
 			$obj = file_get_contents('php://input');
 			$edata = json_decode($obj);
 			if ( isset($edata->address)){
@@ -471,18 +471,40 @@ class Profile extends CI_Controller {
 				$patient_login_id = $decoded->profile_data->patient_login_id;
 				
 				$array_update = array(
-					"address" => $edata->address,
-					"latitude" => $edata->lat,
-					"longitude" => $edata->long
+					"address" => $edata->address
  				);
 
  				$this->db->where("id",$patient_profile_id);
  				$this->db->update("patient_profile",$array_update);
  				$this->db->query("UPDATE patient_login SET address = '$address' WHERE id = '$patient_login_id'");
+				$qry_profile = "SELECT * FROM patient_profile WHERE 1 AND id = ? ";
+				$run_profile = $this->db->query($qry_profile,array($patient_profile_id));
+
+if ( count($run_profile->num_rows()) > 0  ){ 
+        $res_profile = $run_profile->result_array();
+        $list_profile['patient_login_id'] = $res_profile[0]['patient_login_id'];
+        $list_profile['patient_profile_id'] = $res_profile[0]['id'];
+        $list_profile['first_name'] = $res_profile[0]['first_name'];
+        $list_profile['last_name'] = $res_profile[0]['last_name'];
+        $list_profile['mobile_number'] = $res_profile[0]['patient_login_id'];
+        $list_profile['address'] = $res_profile[0]['address'];
+        $list_profile['profile_pict'] = $res_profile[0]['profile_pict'];
+        $list_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
+        $list_profile['medic_number'] = $res_profile[0]['medical_number'];
+        $list_profile['date_of_birth'] =$res_profile[0]['dob'];
+        $list_profile['latitude'] = $res_profile[0]['latitude'];
+        $list_profile['longitude'] = $res_profile[0]['longitude'];
+}
+
+
+		
+	
 			}
 		}
+
 		$data['code'] = "200";
 		$data['message'] = "Data has been updated";
+		$data['profile'] = $list_profile;
 		echo json_encode($data);
 	}
 
@@ -504,17 +526,19 @@ class Profile extends CI_Controller {
 			$run_tnc = $this->db->query($qry_tnc);
 			$res_tnc = $run_tnc->result_array();
 			$tnc = array();
+			$content = "";
 			if ( count($res_tnc) > 0 ){
 				foreach ($res_tnc as $key => $value) {
 					$detail_tnc = array();
 					$detail_tnc['id'] = $value['id'];
 					$detail_tnc['content'] = $value['content'];
 					$tnc[] = $detail_tnc;
+					$content = $value['content'];
 				}
 			}
 
 			$data['code'] = "200";
-			$data['content'] = $tnc;
+			$data['content'] = $content;
 			echo json_encode($data);
 			exit();
 		}
@@ -693,6 +717,7 @@ class Profile extends CI_Controller {
 			echo json_encode($data);
 		}
 	}
+
 
 }
 
