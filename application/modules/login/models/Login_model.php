@@ -37,6 +37,7 @@ class Login_model extends CI_Model {
 			$data['email'] = $res_member[0]['email'];
 			$data['name'] = $res_member[0]['username'];
 			$data['member_id'] = $res_member[0]['id'];
+			$data['username'] = $res_member[0]['username'];
 			$_SESSION['user_id'] = ($res_member[0]['id']);
 		}
 		return $data;

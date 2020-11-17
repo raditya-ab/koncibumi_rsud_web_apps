@@ -30,6 +30,7 @@ Class Admin extends Public_controller
     public function add(){
         $data['profile'] = $this->profile_data;
         $data['group'] = $this->admin->all_group_access();
+        $data['doctor'] = $this->admin->all_docter();
         $this->load->view("user/add_user",$data);
     }
 
@@ -55,7 +56,14 @@ Class Admin extends Public_controller
             "created_at" => date("Y-m-d H:i:s")
         );
         $master_group = $this->admin->save_group($data_group);
-        $this->admin->send_email($this->input->post("email"),$password);
+        $email = $this->admin->send_email($this->input->post("email"),$password);
+        $curent_date = date("Y-m-d H:i:s");
+        if ( $this->input->post("group") == "2" ){
+            $doctor = $this->input->post("doctor");
+            $this->db->query("UPDATE master_doctor set user_id = $register WHERE id = '$doctor'");
+        }
+        $this->db->query("UPDATE members set verified_at = '$curent_date' WHERE id = '$register'");
+    
         redirect("/admin/user_detail/".$register);
     }
 
@@ -78,6 +86,12 @@ Class Admin extends Public_controller
         $this->db->query("UPDATE members set password = '$enc_password' WHERE id = '$user_id'");
         $this->admin->send_email($email,$password);
         redirect("/admin/user_detail/".$user_id);
+    }
+
+    public function doctor(){
+        $data['profile'] = $this->profile_data;
+        $data['doctor'] = $this->admin->all_docter();
+        $this->load->view("user/doctor",$data);
     }
 }
 

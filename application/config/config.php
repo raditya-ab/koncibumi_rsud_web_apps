@@ -558,7 +558,7 @@ $config['route_access'] = array(
 	"superadmin" => "admin",
 	"farmasi" => "farmasi",
 	"kurir"	=> "courier",
-	"doctor" => "doctor"
+	"dokter" => "pages/dashboard/index/"
 );
 $config['email'] = array(
 	'protocol' => 'smtp',

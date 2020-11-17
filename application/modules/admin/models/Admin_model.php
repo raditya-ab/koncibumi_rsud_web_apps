@@ -63,4 +63,11 @@ class Admin_model extends CI_Model {
 		return true;
 	}
 
+	function all_docter(){
+		$qry_all = "SELECT * FROM master_doctor";
+		$run_all = $this->db->query($qry_all);
+		$res_all = $run_all->result_array();
+		return $res_all;
+	}
+
 }

@@ -5,7 +5,7 @@
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
-            <a href="#" class="d-block"><?php echo ucfirst($profile['name']);?></a>
+            <a href="#" class="d-block"></a>
             </div>
         </div>
 
@@ -30,6 +30,12 @@
                     <a href="<?php echo base_url();?>profile" class="nav-link">
                     <i class="nav-icon fas fa-file"></i>
                     <p>Profile</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo base_url();?>admin/doctor" class="nav-link">
+                    <i class="nav-icon fas fa-file"></i>
+                    <p>Dokter</p>
                     </a>
                 </li>
                 <li class="nav-item">

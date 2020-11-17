@@ -3,7 +3,7 @@
 class Profile_model extends CI_Model {
 
   	function get_profile_data($member_id){
-		$qry_all = "SELECT m.*,mg.name FROM members as m 
+		$qry_all = "SELECT m.*,mg.name,m.username FROM members as m 
 		INNER JOIN member_group as mm ON (mm.member_id = m.id)
 		INNER JOIN master_group as mg ON (mm.group_id = mg.id )
         WHERE 1 AND m.id = ? ";

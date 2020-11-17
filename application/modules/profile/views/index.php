@@ -10,7 +10,7 @@
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-<?php $this->load->view("sidebar");?>
+<?php $this->load->view("$menu/sidebar");?>
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

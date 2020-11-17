@@ -18,6 +18,7 @@
       "responsive": true,
       "autoWidth": false,
     });
+    
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,
@@ -28,38 +29,4 @@
       "responsive": true,
     });
   });
-
-  function resetPassword(id){
-    if ( confirm("Anda yakin ingin mereset password user ini ? ")){
-      $("#btn_edit_password").hide();
-      var request = $.ajax({
-          url : "<?php echo base_url();?>/admin/reset_password",
-          dataType : "json",
-          data : {
-            user_id : id
-          },
-          type : "post"
-      });
-
-      request.done(function(data){
-        $("#btn_edit_password").show();
-        alert("User has been reset");
-        window.location.reload();
-      })
-    }else{
-      return false;
-    }
-  }
-
-  $("#group").click(function(){
-    if ( $("#group").val() == "2"){
-      $("#div_docter").show();
-    }else{
-      $("#div_docter").hide();
-    }
-  });
-
-  $("#doctor").click(function(data){
-    $("#username").val($(this).find(':selected').data('attribute'));
-  })
 </script>

@@ -32,21 +32,32 @@
               <form role="form" action="<?php echo base_url();?>admin/register" method="post">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
                         <label for="exampleInputPassword1">Username</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Enter Name" autocomplete="off" required>  
                     </div>
                     <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
                         <label for="exampleInputPassword1">Group Akses</label>
-                        <select name="group" class="form-control">
+                        <select name="group" id="group" class="form-control">
                         <?php
                             foreach ( $group as $key => $value ){
                         ?>
                             <option value="<?php echo $value['id'];?>"><?php echo $value['name'];?></option>
                         <?php } ?>
+                        </select>
+                    </div>
+                    <div class="form-group" id="div_docter" style="display: none;">
+                      <label>Dokter</label>
+                      <select name="doctor" id="doctor" class="form-control">
+                        <?php
+                            foreach ( $doctor as $key => $value ){
+                              if ( $value['user_id'] == "" ){
+                        ?>
+                            <option value="<?php echo $value['id'];?>" data-attribute="<?php echo $value['first_name']?>"><?php echo $value['first_name'];?></option>
+                        <?php } } ?>
                         </select>
                     </div>
                 </div>
