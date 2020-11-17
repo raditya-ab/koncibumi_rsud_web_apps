@@ -394,10 +394,10 @@ $config['encryption_key'] = '';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'files';
+$config['sess_driver'] = 'database';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = NULL;
+$config['sess_save_path'] = 'ci_sessions';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
@@ -552,4 +552,23 @@ $config['status_order'] = array(
 $config['librarysms'] = array(
 	"userkey" => '02434fff22c0',
 	"passkey" => '4428ffe69cc15796064c4ee6'
+);
+
+$config['route_access'] = array(
+	"superadmin" => "admin",
+	"farmasi" => "farmasi",
+	"kurir"	=> "courier",
+	"doctor" => "doctor"
+);
+$config['email'] = array(
+	'protocol' => 'smtp',
+	'mailpath' => '/usr/sbin/sendmail',
+	'charset' => 'iso-8859-1',
+	'wordwrap' => TRUE,
+	'smtp_host' => 'ssl://smtp.gmail.com',
+	'smtp_user' => 'senderdummy89@gmail.com',
+	'smtp_pass' => 'Kejadian15:3',
+	'mailtype' => 'html',
+	'smtp_port' => 465,
+	'newline' => "\r\n"
 );
