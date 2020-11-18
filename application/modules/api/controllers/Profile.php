@@ -77,7 +77,10 @@ class Profile extends CI_Controller {
 				}
 			}
 
-			$qry_profile = "SELECT * FROM patient_profile WHERE 1 AND id = ? ";
+			$qry_profile = "SELECT pp.*,pl.gender as gender 
+				FROM patient_profile as pp  
+				INNER JOIN patient_login as pl ON (pl.id = pp.patient_login_id)
+			WHERE 1 AND pp.id = ? ";
 			$run_profile = $this->db->query($qry_profile,array($patient_profile_id));
 
 			$list_profile = array();
@@ -93,6 +96,7 @@ class Profile extends CI_Controller {
   			$list_profile['date_of_birth'] = "";
   			$list_profile['latitude'] = "";
   			$list_profile['longitude'] = "";
+  			$list_profile['gender'] = "";
 
 			if ( $run_profile->num_rows() > 0 ){
 				$res_profile = $run_profile->result_array();
@@ -108,6 +112,8 @@ class Profile extends CI_Controller {
   				$list_profile['date_of_birth'] =$res_profile[0]['dob'];
 	  			$list_profile['latitude'] = $res_profile[0]['latitude'];
 	  			$list_profile['longitude'] = $res_profile[0]['longitude'];
+	  			$list_profile['longitude'] = "";
+	  			$list_profile['gender'] = $res_profile[0]['gender'];
 			}
   			
 
@@ -477,24 +483,29 @@ $list_profile = array();
  				$this->db->where("id",$patient_profile_id);
  				$this->db->update("patient_profile",$array_update);
  				$this->db->query("UPDATE patient_login SET address = '$address' WHERE id = '$patient_login_id'");
-				$qry_profile = "SELECT * FROM patient_profile WHERE 1 AND id = ? ";
+ 				
+				$qry_profile = "SELECT pp.*,pl.gender as gender 
+					FROM patient_profile as pp  
+					INNER JOIN patient_login as pl ON (pl.id = pp.patient_login_id)
+				WHERE 1 AND pp.id = ? ";
 				$run_profile = $this->db->query($qry_profile,array($patient_profile_id));
 
-if ( count($run_profile->num_rows()) > 0  ){ 
-        $res_profile = $run_profile->result_array();
-        $list_profile['patient_login_id'] = $res_profile[0]['patient_login_id'];
-        $list_profile['patient_profile_id'] = $res_profile[0]['id'];
-        $list_profile['first_name'] = $res_profile[0]['first_name'];
-        $list_profile['last_name'] = $res_profile[0]['last_name'];
-        $list_profile['mobile_number'] = $res_profile[0]['patient_login_id'];
-        $list_profile['address'] = $res_profile[0]['address'];
-        $list_profile['profile_pict'] = $res_profile[0]['profile_pict'];
-        $list_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
-        $list_profile['medic_number'] = $res_profile[0]['medical_number'];
-        $list_profile['date_of_birth'] =$res_profile[0]['dob'];
-        $list_profile['latitude'] = $res_profile[0]['latitude'];
-        $list_profile['longitude'] = $res_profile[0]['longitude'];
-}
+				if ( count($run_profile->num_rows()) > 0  ){ 
+				        $res_profile = $run_profile->result_array();
+				        $list_profile['patient_login_id'] = $res_profile[0]['patient_login_id'];
+				        $list_profile['patient_profile_id'] = $res_profile[0]['id'];
+				        $list_profile['first_name'] = $res_profile[0]['first_name'];
+				        $list_profile['last_name'] = $res_profile[0]['last_name'];
+				        $list_profile['mobile_number'] = $res_profile[0]['patient_login_id'];
+				        $list_profile['address'] = $res_profile[0]['address'];
+				        $list_profile['profile_pict'] = $res_profile[0]['profile_pict'];
+				        $list_profile['bpjs_number'] = $res_profile[0]['bpjs_number'];
+				        $list_profile['medic_number'] = $res_profile[0]['medical_number'];
+				        $list_profile['date_of_birth'] =$res_profile[0]['dob'];
+				        $list_profile['latitude'] = $res_profile[0]['latitude'];
+				        $list_profile['longitude'] = $res_profile[0]['longitude'];
+				        $list_profile['gender'] = $res_profile[0]['gender'];
+				}
 
 
 		
