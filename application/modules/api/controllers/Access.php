@@ -276,6 +276,15 @@ class Access extends CI_Controller {
 		$otp_key = $this->master->generateOtp();
 		$sms = $this->zanzifa->sender($otp_key,$mobile_number);
         $temp_password =  $edata->password;
+        $confirm_password = $edata->confirm_password;
+        if ( $temp_password != $confirm_password ){
+        	header("HTTP/1.1 403");
+			$data['code'] = "403";
+	    	$data['message'] = "New and Confirm Password not match";
+	    	echo json_encode($data);
+	    	exit;
+        }
+
 		$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
 
 		$check_old_pass = "SELECT * FROM patient_login WHERE 1 AND id = ?";
