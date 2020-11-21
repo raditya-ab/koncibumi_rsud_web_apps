@@ -201,7 +201,8 @@ class Profile extends CI_Controller {
 			}
 			
 			$order_no = "KNCBM".$order_id;
-			$this->db->query("UPDATE order_patient set order_no = '$order_no' WHERE id ='$order_id'");
+			$generateQR = "/api/access/generateQR?order_id=".$order_id;
+			$this->db->query("UPDATE order_patient set order_no = '$order_no', qr='$generateQR' WHERE id ='$order_id'");
 			$data['code'] = "200";
 			$data['message'] = "Success Order";
 			echo json_encode($data);
@@ -341,8 +342,11 @@ class Profile extends CI_Controller {
 
 						$array_detail = $detail_profile;
 					}
-					
-					$detail_array_history['details'] = $array_detail;
+
+					$detail_array_history['details'] = NULL;
+					if ( count($array_detail) > 0 ){
+						$detail_array_history['details'] = $array_detail;
+					}
 					$array_history[] = $detail_array_history;
 				}
 			}
@@ -428,7 +432,10 @@ class Profile extends CI_Controller {
 					$array_detail = $detail_profile;
 				}
 				
-				$detail_array_history['details'] = $array_detail;
+				$detail_array_history['details'] = NULL;
+				if ( count($array_detail) > 0 ){
+					$detail_array_history['details'] = $array_detail;
+				}
 				$array_history[] = $detail_array_history;
 			}
 
