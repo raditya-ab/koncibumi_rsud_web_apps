@@ -70,4 +70,17 @@ class Admin_model extends CI_Model {
 		return $res_all;
 	}
 
+	function tnc(){
+		$qry_tnc = "SELECT * FROM tnx order by id DESC limit 0,1";
+		$run_tnc = $this->db->query($qry_tnc);
+		$res_tnc = $run_tnc->result_array();
+		return $res_tnc;
+	}
+
+	function about(){
+		$qry_about = "SELECT * FROM about order by id DESC limit 0,1";
+		$run_about = $this->db->query($qry_about);
+		$res_about = $run_about->result_array();
+		return $res_about;
+	}
 }
