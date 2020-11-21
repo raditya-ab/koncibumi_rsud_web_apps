@@ -230,7 +230,7 @@ Class Order extends Public_controller
         $data['status'] = "0";
 
         $array_insert = array(
-            "notification" => "<p>Pesanan telah diapprove oleh ".$master_docter[0]['name']."</p>",
+            "notification" => "<p>Pesanan telah diapprove oleh ".$master_docter[0]['first_name']."</p>",
             "read_status" => 1,
             "created_at" => date("Y-m-d H:i:s"),
             "profile_id" => $res_order[0]['patient_id']

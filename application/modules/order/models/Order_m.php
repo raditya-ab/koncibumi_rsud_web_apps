@@ -143,9 +143,10 @@ Class Order_m extends CI_Model
                 $list_receipt['receipt_no'] = $res_receipt_header[0]['receipt_no'];
                 $list_receipt['created_at'] = $res_receipt_header[0]['created_at'];
                 $list_receipt['receipt_detail'] = $list_receipt_detail;
+                $receipt[] = $list_receipt;
             }
-            $receipt[] = $list_receipt;
         }
+
         return $receipt;
     }
 

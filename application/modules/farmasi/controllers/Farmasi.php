@@ -126,8 +126,9 @@ Class Farmasi extends Public_controller
             $clause_delivert_date = ", delivery_date = '$delivery_date',";
         }
         
+        $clause_finish_date = "";
         if ( $status == "6"){
-            $clause_finish_date = ", updated_at = 'NOW()',";
+            $clause_finish_date = ", updated_at = NOW(), received_date = NOW(), ";
         }
 
         $this->db->query("UPDATE order_patient SET farmasi_id = '$farmasi_id', farmasi_approve_time = NOW() $clause_delivert_date $clause_finish_date status = '$status' WHERE id ='$order_id'");
