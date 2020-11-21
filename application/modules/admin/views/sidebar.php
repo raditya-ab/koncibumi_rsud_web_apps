@@ -13,7 +13,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="<?php echo base_url();?>" class="brand-link">
-      Welcome <span style="font-weight: bolder;color:white;"><?php echo ucfirst($profile['name']);?></span></span>
+      Welcome <span style="font-weight: bolder;color:white;"><?php echo ucfirst($profile['username']);?></span></span>
     </a>
 
     <!-- Sidebar -->

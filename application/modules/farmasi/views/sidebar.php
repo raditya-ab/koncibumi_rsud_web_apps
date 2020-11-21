@@ -7,7 +7,7 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+            <a href="#" class="d-block"><?php echo ucfirst($profile['username']);?></a>
         </div>
       </div>
 
@@ -16,13 +16,19 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           
           <li class="nav-item">
-            <a href="https://adminlte.io/docs/3.0" class="nav-link">
+            <a href="<?php echo base_url();?>" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>Daftar Resep</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="https://adminlte.io/docs/3.0" class="nav-link">
+            <a href="<?php echo base_url().'farmasi/waiting';?>" class="nav-link">
+              <i class="nav-icon fas fa-file"></i>
+              <p>Daftar Tunggu Resep</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url().'farmasi/history';?>" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>History Resep</p>
             </a>

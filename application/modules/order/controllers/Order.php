@@ -207,6 +207,13 @@ Class Order extends Public_controller
                 "kode_pesanan" => $res_order[0]['order_no'],
                 "receipt" => $get_create_receipt
             );
+            $restricted = $this->order_m->get_resep($save_receipt);
+
+            $delivery_type = "Dikirim";
+            if ( $restricted[0]['restricted'] == "1"){
+                $delivery_type = "Diambil";
+            }
+
         }
 
         $ch = curl_init(); 
@@ -218,8 +225,18 @@ Class Order extends Public_controller
         $response = curl_exec($ch);
         $curl_res = json_decode($response);
         $id_kunjungan = $curl_res->id_kunjungan;
-        $this->db->query("UPDATE order_patient set id_pesanan = '$id_kunjungan' WHERE id = '$order_id'");
+
+        $this->db->query("UPDATE order_patient set id_pesanan = '$id_kunjungan', delivery_type = '$delivery_type' WHERE id = '$order_id'");
         $data['status'] = "0";
+
+        $array_insert = array(
+            "notification" => "<p>Pesanan telah diapprove oleh ".$master_docter[0]['name']."</p>",
+            "read_status" => 1,
+            "created_at" => date("Y-m-d H:i:s"),
+            "profile_id" => $res_order[0]['patient_id']
+        );
+
+        $this->db->insert("notification",$array_insert);
         echo json_encode($data);
     }
 }

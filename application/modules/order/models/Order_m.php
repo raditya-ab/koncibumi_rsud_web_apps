@@ -227,4 +227,11 @@ Class Order_m extends CI_Model
 
         return $receipt;
     }
+
+    public function get_resep($receipt_id){
+        $qry_receipt = "SELECT * FROM receipt_header WHERE 1 AND id = ?  ";
+        $run_receipt = $this->db->query($qry_receipt,array($receipt_id));
+        $res_receipt = $run_receipt->result_array();
+        return $res_receipt;
+    }
 }

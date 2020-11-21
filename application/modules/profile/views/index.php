@@ -30,15 +30,15 @@
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" action="<?php echo base_url();?>profile/update" method="post">
-                <input type="hidden" name="user_id" id="user_id" value="<?php echo $profile[0]['id'];?>"/>
+                <input type="hidden" name="user_id" id="user_id" value="<?php echo $profile['member_id'];?>"/>
                 <div class="card-body">
                     <div class="form-group">
                         <label for="exampleInputPassword1">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" value="<?php echo $profile[0]['username'];?>" placeholder="Enter Name" autocomplete="off" required>  
+                        <input type="text" class="form-control" id="username" name="username" value="<?php echo $profile['username'];?>" placeholder="Enter Name" autocomplete="off" required>  
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email" value="<?php echo $profile[0]['email'];?>" placeholder="Enter email" autocomplete="off" required>
+                        <input type="email" class="form-control" id="email" name="email" value="<?php echo $profile['email'];?>" placeholder="Enter email" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>

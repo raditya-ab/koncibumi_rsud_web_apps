@@ -31,11 +31,10 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Daftar Resep yang siap dikirim/diambil</h3>
+                <h3 class="card-title">Daftar Resep yang meunggu diproses</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <p>Total Resep yang menunggu di proses <span style="font-weight: bolder;"><a href="<?php echo base_url().'farmasi/waiting';?>"><?php echo count($pending);?></span></a></p>
                 <table id="example2" class="table table-bordered table-hover">
                   <thead class="head_background">
                   <tr>
@@ -51,8 +50,8 @@
                   </thead>
                   <tbody>
                   <?php
-                    if ( count($receipt) > 0 ){
-                      foreach ($receipt as $key => $value) {
+                    if ( count($pending) > 0 ){
+                      foreach ($pending as $key => $value) {
                   ?>
                   <tr>
                     <td><?php echo $key + 1; ?></td>
@@ -61,7 +60,7 @@
                     <td><?php echo $value['first_name'].' '.$value['last_name'];?></td>
                     <td><?php echo $value['doctor_name']?></td>
                     <td><?php echo date("d M Y",strtotime($value['created_at']));?></td>
-                    <td>Siap Diambil</td>
+                    <td>Menunggu Farmasi</td>
                     <td>
                       <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" onClick="showDetailReceipt(<?php echo $value['id'];?>)">
                         Lihat Resep
@@ -130,16 +129,6 @@
                   <label>Tanggal Pengambilan</label>
                   <input type="text" class="form-control float-right" id="reservation" required>
                 </div>
-                <div class="form-group"  id="kurir" style="display: none;">
-                  <label>Kurir</label>
-                  <select class="form-control" name="kurir">
-                    <?php
-                      foreach ($kurir as $key => $value) {
-                    ?>
-                      <option value="<?php echo $value['id'];?>"><?php echo $value['name'];?></option>
-                    <?php } ?>
-                  </select>
-                </div>
                 <div class="form-group">
                   <label>Status Restricted</label>
                   <span id="label_resep"></span>
@@ -174,7 +163,7 @@
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onClick="submitProcess();">Diambil</button>
+          <button type="button" class="btn btn-primary" onClick="submitProcess();">Approve</button>
         </div>
       </div>
       <!-- /.modal-content -->

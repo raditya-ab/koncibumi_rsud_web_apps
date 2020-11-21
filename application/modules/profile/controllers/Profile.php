@@ -5,8 +5,9 @@ class Profile extends Public_controller {
 
 	function __construct() {
         $this->load->model("Profile_model","profile");
+        $this->load->model("login/login_model","login");
         if ( isset($_SESSION['user_id'])){
-            $this->profile_data = $this->profile->get_profile_data($_SESSION['user_id']);
+            $this->profile_data = $this->login->get_profile_data($_SESSION['user_id']);
         }else{
             redirect("login/logout");
         }
@@ -19,7 +20,7 @@ class Profile extends Public_controller {
             "farmasi" => "farmasi",
             "superadmin" => "admin"
         );
-        $data['menu'] = strtolower($array['list_menu'][strtolower($profile_data[0]['name'])]);
+        $data['menu'] = strtolower($array['list_menu'][strtolower($profile_data['menu_name'])]);
         $this->load->view("index",$data);
     }
 

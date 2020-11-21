@@ -35,7 +35,7 @@ class Login_model extends CI_Model {
 			}
 			$data['menu'] = $list_menu;
 			$data['email'] = $res_member[0]['email'];
-			$data['name'] = $res_member[0]['username'];
+			$data['menu_name'] = $res_member[0]['name'];
 			$data['member_id'] = $res_member[0]['id'];
 			$data['username'] = $res_member[0]['username'];
 			$_SESSION['user_id'] = ($res_member[0]['id']);

@@ -83,4 +83,12 @@ class Admin_model extends CI_Model {
 		$res_about = $run_about->result_array();
 		return $res_about;
 	}
+
+
+	function kurir(){
+		$qry_kurir = "SELECT * FROM master_kurir order by ID DESC ";
+		$run_kurir = $this->db->query($qry_kurir);
+		$res_kurir = $run_kurir->result_array();
+		return $res_kurir;
+	}
 }
