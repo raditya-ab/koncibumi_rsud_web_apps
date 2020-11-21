@@ -6,6 +6,8 @@ Class Order_m extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('app/master_model','master');
+
     }
 
     public function fetch_orders($status, $limit = NULL, $doctor_id = ""){
@@ -76,9 +78,12 @@ Class Order_m extends CI_Model
         return $order_list;
     }
 
-    public function fetch_orders_after_last_visit()
+    public function fetch_orders_after_last_visit($patient_id)
     {
-
+        $qry_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? LIMIT 0,10 ";
+        $run_order = $this->db->query($qry_order,array($patient_id));
+        $res_order = $run_order->result_array();
+        return $res_order;
     }
 
     public function getObat(){
@@ -119,9 +124,29 @@ Class Order_m extends CI_Model
         return $data;
     }
 
-    public function latest_receipt($id = ""){
-        $data = array();
-        return $data;
+    public function latest_receipt($order_id = ""){
+        $order_detail = $this->order_detail($order_id);
+        $all_order = $this->fetch_orders_after_last_visit($order_detail[0]['patient_id']);
+        $receipt = array();
+        foreach ($all_order as $key => $value) {
+            $order_id = $value['id'];
+            $order_no = $value['order_no'];
+            $list_receipt = array();
+            $qry_receipt_header = "SELECT * FROM receipt_header WHERE 1 AND kunjungan_id = ? ";
+            $run_receipt_header = $this->db->query($qry_receipt_header,array($order_id));
+            if ( $run_receipt_header->num_rows() > 0 ){
+                $res_receipt_header = $run_receipt_header->result_array();
+                $list_receipt_detail = $this->get_create_receipt($res_receipt_header[0]['id']);
+                $list_receipt['order_id'] = $order_id;
+                $list_receipt['order_no'] = $order_no;
+                $list_receipt['receipt_id'] = $res_receipt_header[0]['id'];
+                $list_receipt['receipt_no'] = $res_receipt_header[0]['receipt_no'];
+                $list_receipt['created_at'] = $res_receipt_header[0]['created_at'];
+                $list_receipt['receipt_detail'] = $list_receipt_detail;
+            }
+            $receipt[] = $list_receipt;
+        }
+        return $receipt;
     }
 
     public function total_receipt($order_id){
@@ -139,9 +164,8 @@ Class Order_m extends CI_Model
     }
 
     public function save_receipt($order_id,$doctor_id,$obat,$qty,$unit,$dosis,$frekuensi,$description_receupt){
-        $this->load->model('app/master_model','master');
 
-
+        $receipt_id = "";
         if ( count($obat) > 0 ){
             $array_insert_receipt = array(
                 "kunjungan_id" => $order_id,
@@ -155,15 +179,15 @@ Class Order_m extends CI_Model
 
             $restricted = 0;
             foreach ($obat as $key => $value) {
-                $data_obat = $this->master->get_detail_medicine($value);
+                $data_obat = $this->master->get_detail_medicine($value['value']);
                 if ( count($data_obat) > 0 ){
                     $array_insert_receipt_detail = array(
                         "receipt_header_id" => $receipt_id,
-                        "obat" => $value,
-                        "dosis" => $dosis[$key],
-                        "qty" => $qty[$key],
-                        "satuan" => $unit[$key],
-                        "frekuensi" => $frekuensi[$key]
+                        "obat" => $value['value'],
+                        "dosis" => $dosis[$key]['value'],
+                        "qty" => $qty[$key]['value'],
+                        "satuan" => $unit[$key]['value'],
+                        "frekuensi" => $frekuensi[$key]['value']
                     );
                     $this->db->insert("receipt_detail",$array_insert_receipt_detail);
                     if ( $data_obat[0]['restricted'] == "1"){
@@ -179,6 +203,28 @@ Class Order_m extends CI_Model
 
 
 
-        return true;
+        return $receipt_id;
+    }
+
+    public function get_create_receipt($receipt_id){
+        $receipt = array();
+        $qry_receipt = "SELECT * FROM receipt_detail WHERE 1 AND receipt_header_id = ? ";
+        $run_receipt = $this->db->query($qry_receipt,array($receipt_id));
+        if ( $run_receipt->num_rows() > 0 ){
+            $res_receipt = $run_receipt->result_array();
+            foreach ($res_receipt as $key => $value) {
+                $data_obat = $this->master->get_detail_medicine($value['id']);
+                $list_array = array();
+                $list_array['medicine_id'] = $value['id'];
+                $list_array['name'] = $data_obat[0]['name'];
+                $list_array['order_qty'] = $value['qty'];
+                $list_array['unit'] = $value['satuan'];
+                $list_array['dosis'] = $value['dosis'];
+                $list_array['frekuensi'] = $value['frekuensi'];
+                $receipt[] = $list_array;
+            }
+        }
+
+        return $receipt;
     }
 }

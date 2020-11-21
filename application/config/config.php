@@ -572,3 +572,7 @@ $config['email'] = array(
 	'smtp_port' => 465,
 	'newline' => "\r\n"
 );
+
+$config['third_party'] = array(
+	"hospital" => "welcome/temp_kunjungan"
+);

@@ -53,7 +53,8 @@ Class Order extends Public_controller
         $order_id = $_GET['order_id'];
         $array_gender = array(
             "L" => "Laki-laki",
-            "P" => "Perempuan"
+            "P" => "Perempuan",
+            ""  => ""
         );
         $this->data['obat'] = $this->order_m->getObat();
         $this->data['user_detail'] = $this->access->get_user($_SESSION['user_id']);
@@ -62,6 +63,7 @@ Class Order extends Public_controller
         $this->data['latest_visit'] = $this->order_m->latest_visit($order_id);
         $this->data['latest_receipt'] = $this->order_m->latest_receipt($order_id);
         $this->data['array_gender'] = $array_gender;
+        $this->data['status'] = $this->config->item("status_order");
 
         $this->template->set_partial('sidebar','partials/_sidebar.php', $this->data);
         $this->data['sidebar_header'] = $this->template->load_view('pages/partials/sidebar_header');
@@ -179,19 +181,45 @@ Class Order extends Public_controller
     }
 
     public function submit_receipt(){
+
+        $master_docter = $this->access->get_user($_SESSION['user_id']);
         $order_id = $this->input->post("order_id");
-        $data_doctor = $this->access->get_user($_SESSION['user_id']);
         $obat = $this->input->post("obat");
         $qty = $this->input->post("qty");
         $unit = $this->input->post("unit");
         $dosis = $this->input->post("dosis");
-        $frekuensi = $this->input->post("frekuensi");
-        $description_receupt = $this->input->post("description_receupt");
+        $frekuensi = $this->input->post("freq");
+        $desc = $this->input->post("desc");
+        $url_third_party = $this->config->item('third_party');
+        $get_create_receipt = "";
 
         if ( count($obat) > 0 ){
-            $save_receipt = $this->order_m->save_receipt($order_id,$data_doctor[0]['id'],$obat,$qty,$unit,$dosis,$frekuensi,$description_receupt);
+            $save_receipt = $this->order_m->save_receipt($order_id,$master_docter[0]['id'],$obat,$qty,$unit,$dosis,$frekuensi,$desc);
+            $get_create_receipt = $this->order_m->get_create_receipt($save_receipt);
         }
 
-        redirect(base_url().'order/proses/?order_id='.$order_id); 
+        $post = "";
+        $qry_order = "SELECT * FROM order_patient WHERE 1 AND id = ? ";
+        $run_order = $this->db->query($qry_order,array($order_id));
+        $res_order = $run_order->result_array();
+        if ( $run_order->num_rows() > 0 ){
+            $post = array(
+                "kode_pesanan" => $res_order[0]['order_no'],
+                "receipt" => $get_create_receipt
+            );
+        }
+
+        $ch = curl_init(); 
+        $ch = curl_init(base_url().$url_third_party['hospital']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST,true );
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+        curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-Type: application/json')); 
+        $response = curl_exec($ch);
+        $curl_res = json_decode($response);
+        $id_kunjungan = $curl_res->id_kunjungan;
+        $this->db->query("UPDATE order_patient set id_pesanan = '$id_kunjungan' WHERE id = '$order_id'");
+        $data['status'] = "0";
+        echo json_encode($data);
     }
 }

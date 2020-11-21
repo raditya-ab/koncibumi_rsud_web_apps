@@ -4,8 +4,9 @@
 		<div class="card card-custom">
 			<div class="card-header flex-wrap border-0 pt-6 pb-0">
 				<div class="card-title">
-					<h3 class="card-label">Pesanan #<?php echo $order_detail[0]['order_no'];?>
+					<h3 class="card-label">Pesanan #<?php echo $order_detail[0]['order_no'];?> - <?php echo  $status[$order_detail[0]['status']];?>
 						<span class="d-block text-muted pt-2 font-size-sm"></span></h3>
+
 				</div>
 			</div>
 			<div class="card-body">
@@ -102,8 +103,7 @@
 												<div class="card-title collapsed"
 													data-toggle="collapse"
 													data-target="#pesanan-1">
-													<i class="flaticon-file-2"></i> No.
-													Pesanan #20201001-01
+													<i class="flaticon-file-2"></i> <?php echo $value['order_no'];?>
 												</div>
 											</div>
 											<div id="pesanan-1" class="collapse"
@@ -114,13 +114,12 @@
 															<span
 																class="font-weight-bold">No.
 																Pesanan</span>:
-															#20201001-01
+															<?php echo $value['order_no'];?>
 														</li>
 														<li>
 															<span
 																class="font-weight-bold">Tanggal
-																Pesanan</span>: 9 Januari
-															2020
+																Pesanan</span>: <?php echo date("d M Y ",strtotime($value['created_at']));?>
 														</li>
 
 														<li>
@@ -137,25 +136,29 @@
 														<li><span
 																class="font-weight-bold">No.
 																Resep</span>:
-															200102134146D</li>
+															<?php echo $value['receipt_no'];?></li>
 														<li>
 															<span
 																class="font-weight-bold">Obat
 																yang diresepkan</span>:
 															<ul>
-																<li>Cefixime 100mg - 10
-																	tablet - 2x1</li>
-																<li>Megabal Caps /100s - 10
-																	tablet - 2x1</li>
-																<li>Methyl Prednisolon tab
-																	4mg - 10 tablet - 2x1
-																</li>
+																<?php
+																	if ( count($value['receipt_detail']) > 0 ){
+																		foreach ($value['receipt_detail'] as $key_detail => $value_detail) {
+																?>
+																<li><?php echo $value_detail['name']; ?> - <?php echo $value_detail['order_qty']; ?> <?php echo $value_detail['unit']; ?> - <?php echo $value_detail['dosis']; ?>x<?php echo $value_detail['frekuensi']; ?></li>
+																<?php 
+																	}
+																}
+																?>
 															</ul>
 														</li>
 													</ul>
+													<?php if ( $order_detail[0]['status'] == "1") { ?>
 													<a href="#resep-form-group"
 														class="btn btn-outline-warning btn-sm font-weight-bold mt-8 btn-fetch-resep" data-category="pesanan" data-id="1" data-kode="200102134146D">Gunakan
 														Resep Ini untuk meresepkan obat</a>
+													<?php } ?>
 												</div>
 											</div>
 										</div>
@@ -166,9 +169,8 @@
 								<button type="button" class="btn btn-block bg-dark text-white mt-5">Lihat Semua Riwayat Pesanan</button>
 								</div>
 							</div>
-
-							<form action="<?php echo base_url();?>order/submit_receipt" method="post" name="form1">
-								<input type="hidden" name="order_id" value="<?php echo $order_detail[0]['id']?>">
+							<form id="submit-receipt">
+								<input type="hidden" name="order_id" id="order_id" value="<?php echo $order_detail[0]['id']?>">
 								<div id="kt_repeater_1">
 									<div class="form-group row" id="kt_repeater_1">
 										<label class="col-md-2 col-form-label">Resep:</label>
@@ -176,7 +178,7 @@
 											<div data-repeater-item class="form-group row align-items-center">
 												<div class="col-md-3">
 													<label>Nama Obat:</label>
-													<select name="obat[]" class="form-control select2">
+													<select class="form-control select2 obat" name="obat">
 														<option value="">Pilih Obat</option>
 											            <?php 
 											            	if(count($obat) > 0 ){ 
@@ -189,12 +191,12 @@
 												</div>
 												<div class="col-6 col-md-2">
 													<label>Qty:</label>
-													<input type="number" class="form-control" name="qty[]"/>
+													<input type="number" class="form-control qty" name="qty" />
 													<div class="d-md-none mb-2"></div>
 												</div>
 												<div class="col-6 col-md-2">
 													<label>Satuan:</label>
-													<select name="unit[]" class="form-control">
+													<select class="form-control unit" name="unit">
 														<option value="">Pilih Satuan</option>
 														<option value="kapsul">kapsul</option>
 														<option value="tablet">tablet</option>
@@ -204,12 +206,12 @@
 												</div>
 												<div class="col-6 col-md-2">
 													<label>Dosis:</label>
-													<input type="number" class="form-control" name="dosis[]"/>
+													<input type="number" class="form-control dosis" name="dosis" />
 													<div class="d-md-none mb-2"></div>
 												</div>
 												<div class="col-6 col-md-2">
 													<label>Frekuensi:</label>
-													<input type="number" class="form-control" name="frekuensi[]"/>
+													<input type="number" class="form-control freq" name="freq" />
 													<div class="d-md-none mb-2"></div>
 												</div>
 												<div class="col-md-1">
@@ -232,14 +234,14 @@
 								<div class="form-group row">
 									<div class="col-md-2 col-md-label">Catatan Resep</div>
 									<div class="col-md-10">
-										<textarea class="form-control" name="description_receupt" id="" rows="5" placeholder="Keterangan tambahan mengenai resep"></textarea>
+										<textarea class="form-control" name="desc" id="desc" rows="5" placeholder="Keterangan tambahan mengenai resep"></textarea>
 									</div>
 								</div>
 								<div class="form-group row">
 									<div class="col-md-12 text-right">
 										<a href="<?php echo base_url();?>" class="btn btn-default mr-3">Kembali</a>
 										<?php if ( $order_detail[0]['status'] == "1") { ?>
-										<button type="submit" class="btn btn-primary">Proses & Simpan Resep</button>
+										<button type="button" class="btn btn-primary" onClick="saveReceipt();">Proses & Simpan Resep</button>
 										<?php } ?>
 									</div>
 								</div>

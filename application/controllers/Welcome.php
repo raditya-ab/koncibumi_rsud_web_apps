@@ -22,4 +22,16 @@ class Welcome extends MX_Controller {
 	{
 		$this->load->view('welcome_message');
 	}
+
+	public function temp_kunjungan(){
+		$obj = file_get_contents('php://input');
+		$edata = json_decode($obj);
+
+		$data['status'] = "0";
+		$data['id_kunjungan'] = rand(1,100);
+		$id_kunjungan = $data['id_kunjungan'];
+		$order_no = $edata->kode_pesanan;
+		$this->db->query("UPDATE order_patient set id_pesanan = '$id_kunjungan' WHERE order_no = '$order_no'");
+		echo json_encode($data);
+	}
 }

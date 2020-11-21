@@ -381,7 +381,7 @@ $(document).ready(function () {
 
         var chart;
 
-        $.getJSON(HOST_URL + 'assets/api/pesanan/fetch_list_pesanan.json', function (response) {
+        $.getJSON(HOST_URL + '', function (response) {
             var result = response.results;
             var data = [],
                 disetujui = 0,

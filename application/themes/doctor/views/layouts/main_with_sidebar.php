@@ -193,6 +193,29 @@
     <!--end::Page Scripts-->
     <script src="<?php echo base_url('assets/js/custom.js');?>"></script>
     <!--end::Page Scripts-->
+    <script type="text/javascript">
+        function saveReceipt(){
+            var request = $.ajax({
+                url : "<?php echo base_url()?>order/submit_receipt",
+                dataType : "json",
+                type : "post",
+                data : {
+                    obat : $(".obat").serializeArray(),
+                    qty : $(".qty").serializeArray(),
+                    unit : $(".unit").serializeArray(),
+                    dosis : $(".dosis").serializeArray(),
+                    freq : $(".freq").serializeArray(),
+                    order_id : $("#order_id").val(),
+                    desc : $("#desc").val()
+                }
+            });
+
+            request.done(function(data){
+                alert("Data telah disimpan");
+                window.location.reload();
+            });
+        }
+    </script>
 </body>
 
 <!--end::Body-->
