@@ -11,9 +11,19 @@ Class Order extends Public_controller
         $this->load->model('order/order_m','order_m');
         $this->load->model('access/access','access');
         $this->load->model('api/Profile_model','profile');
-        $_SESSION['user_id'] = '1';
-        $_SESSION['user_group_id'] = '1';
+        $this->load->model("login/login_model","login");
+        $this->load->model("admin/Admin_model","admin");
         $this->config->load('config');
+        
+        if ( isset($_SESSION['user_id'])){
+            $this->profile_data = $this->login->get_profile_data($_SESSION['user_id']);
+            $module = $this->profile_data['menu']['url'];
+            if ( strtolower($module) != "pages/dashboard/index/"){
+                redirect("login/logout");
+            }
+        }else{
+            redirect("login/logout");
+        }
     }
 
     public function index()
