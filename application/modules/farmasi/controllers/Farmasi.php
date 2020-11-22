@@ -31,7 +31,8 @@ Class Farmasi extends Public_controller
     }
 
     public function history(){
-
+        $data['profile'] = $this->profile_data;
+        $this->load->view("history",$data);
     }
 
     public function getdetail(){
@@ -150,6 +151,29 @@ Class Farmasi extends Public_controller
         $data['profile'] = $this->profile_data;
         $data['pending'] = $this->farmasi->get_all_pending();
         $this->load->view("waiting",$data);
+    }
+
+    public function cari(){
+        $parent_word = $this->input->post("parent_word");
+        $keyword = $this->input->post("keyword");
+
+        switch($parent_word){
+            case "order_no":    
+                $clause = " AND op.order_no like '%$keyword%'";
+            break;
+            case "receipt_no":
+                $clause = " AND rh.receipt_no like '%$keyword%'";
+            break;
+            case "doctor":
+                $clause = " AND md.first_name like '%$keyword%'";
+            break;
+        }
+
+        $get_order = $this->farmasi->get_history($clause,$keyword);
+        $data['order'] = $get_order;
+        $data['status_order'] = $this->config->item('status_order');
+        $data['profile'] = $this->profile_data;
+        $this->load->view("history",$data);
     }
 }	
 

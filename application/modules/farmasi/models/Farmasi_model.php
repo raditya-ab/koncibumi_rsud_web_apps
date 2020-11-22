@@ -53,4 +53,18 @@ class Farmasi_model extends CI_Model {
 		$res_all_receipt = $run_all_receipt->result_array();
 		return $res_all_receipt;
 	}
+
+	function get_history($clause,$keyword){
+		$qry_get_receipt = "SELECT rh.*, md.first_name as doctor_name, md.poli as poli,
+        pp.first_name as patient_first_name, pp.last_name as patient_last_name,op.status as status,
+        op.order_no,op.farmasi_id as farmasi_id,op.delivery_date
+        FROM receipt_header as rh
+        INNER JOIN order_patient as op ON (op.id = rh.kunjungan_id ) 
+        INNER JOIN master_doctor as md ON (md.id = op.doctor_id)
+        INNER JOIN patient_profile as pp ON (pp.id = op.patient_id)
+        WHERE 1 $clause ";
+     	$run_get_receipt = $this->db->query($qry_get_receipt);
+     	$res_get_receipt = $run_get_receipt->result_array();
+     	return $res_get_receipt;
+	}
 }

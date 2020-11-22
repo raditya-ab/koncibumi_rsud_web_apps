@@ -30,8 +30,28 @@
         <div class="row">
           <div class="col-12">
             <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Daftar Resep yang menunggu diproses</h3>
+              <div class="col-6">
+              <p>&nbsp;</p>
+              <form method="post" name="form1" action="<?php echo base_url().'farmasi/cari';?>">
+                <div class="form-group">
+                  <label>Cari Berdasar</label>
+                  <select class="form-control" name="parent_word">
+                    <option value="order_no">No. Order</option>
+                    <option value="receipt_no">No. Resep</option>
+                    <option value="doctor">Nama Dokter</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Kata Kunci</label>
+                  <input type="text" class="form-control" name="keyword" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <button class="btn btn-info" type="submit">Cari</button>
+                </div>
+                <div class="card-header">
+                  <h3 class="card-title">Cari Resep</h3>
+                </div>
+              </form>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -49,28 +69,29 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <?php
-                    if ( count($pending) > 0 ){
-                      foreach ($pending as $key => $value) {
-                  ?>
-                  <tr>
-                    <td><?php echo $key + 1; ?></td>
-                    <td><?php echo $value['order_no']?></td>
-                    <td><?php echo $value['receipt_no'];?></td>
-                    <td><?php echo $value['first_name'].' '.$value['last_name'];?></td>
-                    <td><?php echo $value['doctor_name']?></td>
-                    <td><?php echo date("d M Y",strtotime($value['created_at']));?></td>
-                    <td>Menunggu Farmasi</td>
-                    <td>
-                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" onClick="showDetailReceipt(<?php echo $value['id'];?>)">
+                    <?php
+                      if ( count($order) > 0 ){
+                        foreach ($order as $key => $value) {
+                    ?>
+                    <tr>
+                      <td><?php echo $key + 1; ?></td>
+                      <td><?php echo $value['order_no']; ?></td>
+                      <td><?php echo $value['receipt_no']; ?></td>
+                      <td><?php echo $value['patient_first_name'].' '.$value['patient_last_name']; ?></td>
+                      <td><?php echo $value['doctor_name']; ?></td>
+                      <td><?php echo date("d M Y ",strtotime($value['created_at'])); ?></td>
+                      <td><?php echo $status_order[$value['status']]; ?></td>
+                      <td>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" onClick="showDetailReceipt(<?php echo $value['id'];?>)">
                         Lihat Resep
                       </button>
-                </td>
-                  </tr>
-                  <?php 
-                      }
-                    }
-                  ?>
+                      </td>
+                    </tr>
+                    <?php 
+                        } 
+                      } 
+                    ?>
+                  </tbody>
                 </table>
               </div>
               <!-- /.card-body -->
@@ -129,6 +150,16 @@
                   <label>Tanggal Pengambilan</label>
                   <input type="text" class="form-control float-right" id="reservation" required>
                 </div>
+                <div class="form-group"  id="kurir" style="display: none;">
+                  <label>Kurir</label>
+                  <select class="form-control" name="kurir">
+                    <?php
+                      foreach ($kurir as $key => $value) {
+                    ?>
+                      <option value="<?php echo $value['id'];?>"><?php echo $value['name'];?></option>
+                    <?php } ?>
+                  </select>
+                </div>
                 <div class="form-group">
                   <label>Status Restricted</label>
                   <span id="label_resep"></span>
@@ -163,14 +194,12 @@
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onClick="submitProcess();">Approve</button>
         </div>
       </div>
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
   </div>
-  <!-- /.modal -->
 
   <!-- /.content-wrapper -->
   <?php $this->load->view("copyright");?>
