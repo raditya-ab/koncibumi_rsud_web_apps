@@ -20,7 +20,7 @@ class Farmasi_model extends CI_Model {
 
 
 	function get_all_kurir(){
-		$qry_all_kurir = "SELECT * FROM master_kurir ";
+		$qry_all_kurir = "SELECT m.* FROM members as m INNER JOIN member_group as mg ON ( mg.member_id = m.id) WHERE mg.group_id = 3 ";
 		$run_all_kurir = $this->db->query($qry_all_kurir);
 		$res_all_kurir = $run_all_kurir->result_array();
 		return $res_all_kurir;
@@ -66,5 +66,19 @@ class Farmasi_model extends CI_Model {
      	$run_get_receipt = $this->db->query($qry_get_receipt);
      	$res_get_receipt = $run_get_receipt->result_array();
      	return $res_get_receipt;
+	}
+
+	function get_delivery_date(){
+		$next_date = date("Y-m-d H:i:s");
+		$limit = 30;
+		for ( $i=0; $i<=30; $i++){
+			$next_date = date("Y/m/d",strtotime("+".$i.'days'));
+			$qry_validate = "SELECT * FROM order_patient WHERE delivery_date >= '$next_date 00:00:00' AND delivery_date <= '$next_date 23:59:59'";
+			$run_validate = $this->db->query($qry_validate);
+			if ( $run_validate->num_rows() <= 30 ){
+				return $next_date;
+			}
+		}
+		return true;
 	}
 }

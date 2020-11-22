@@ -30,17 +30,13 @@
       "autoWidth": false,
       "responsive": true,
     });
-
-    $('#reservation').datepicker({
-        minDate: new Date('<?php echo $next_date;?>')
-    });
-
+    $('#reservation').datepicker();
   });
 
   function showDetailReceipt(id){
     $("#col_kurir").hide();
     var request = $.ajax({
-      url : "<?php echo base_url();?>farmasi/getdetail",
+      url : "<?php echo base_url();?>courier/getdetail",
       dataType : "json",
       data : {
         id : id
@@ -53,57 +49,9 @@
       $("#order_no").val(data.order_no);
       $("#receipt_no").val(data.receipt_no);
       $("#patient_name").val(data.patient_name);
-      $("#doctor_name").val(data.doctor_name);
-      $("#poli").val(data.poli);
-      $("#desc").val(data.desc);
       $("#list_obat").html(data.list_obat);
-      $("#status").val(data.next_status);
-      if ( data.restricted == 1 ){
-        $("#label_resep").text("Obat harus diambil ke RS");
-        $("#label_resep").attr("style","font-weight:bolder;color:red;");
-      }else{
-        $("#label_resep").text("Obat bisa dikirim");
-        $("#label_resep").attr("style","font-weight:bolder;color:blue;");
-      }
-
-      if ( data.delivery_date != ""){
-        $("#reservation").val(data.delivery_date);
-      }
-
-      if ( data.current_status == 3 ){
-        $("#col_kurir").show();
-      }
-    })
+    });
   }
 
-  function submitProcess(){
-    if ( confirm("Anda yakin ingin memproses data ini ? ")){
-      if ( $("#reservation").val() == "" ){
-        alert("Silahkan isi tanggal pengiriman");
-        return false;
-      }
-      
-      var request = $.ajax({
-        url : "<?php echo base_url();?>farmasi/proses",
-        data : {
-          id : $("#order_id").val(),
-          status : $("#status").val(),
-          delivery_date:$("#reservation").val(),
-          kurir : $("#kurir").val()
-        },
-        dataType : "json",
-        type : "post"
-      });
-
-      request.done(function(data){
-        if ( data.status == 0 ){
-          alert("Pesanan telah diproses");
-        }
-
-        window.location.reload();
-      })
-    }else{
-      return false;
-    }
-  }
+  
 </script>

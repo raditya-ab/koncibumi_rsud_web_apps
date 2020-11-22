@@ -1,20 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-Class Farmasi extends Public_controller
+Class Courier extends Public_controller
 {
     public function __construct(){
-        parent::__construct();
-        $this->load->model('farmasi_model','farmasi');
-        $this->load->model("login/login_model","login");
+    	$this->load->model('courier_model','courier');
+    	$this->load->model("login/login_model","login");
         $this->load->model("order/Order_m","order");
-        $this->load->library('email');
-        $this->config->load('config');
 
-        if ( isset($_SESSION['user_id'])){
+    	if ( isset($_SESSION['user_id'])){
             $this->profile_data = $this->login->get_profile_data($_SESSION['user_id']);
             $module = $this->profile_data['menu']['url'];
-            if ( strtolower($module) != "farmasi"){
+            if ( strtolower($module) != "courier"){
                 redirect("login/logout");
             }
         }else{
@@ -23,16 +20,9 @@ Class Farmasi extends Public_controller
     }
 
     public function index(){
-    	$data['receipt'] = $this->farmasi->get_all_receipt();
     	$data['profile'] = $this->profile_data;
-        $data['kurir'] = $this->farmasi->get_all_kurir();
-        $data['pending'] = $this->farmasi->get_all_pending();
+    	$data['order'] = $this->courier->get_all_jobs($_SESSION['user_id']);
     	$this->load->view("index",$data);
-    }
-
-    public function history(){
-        $data['profile'] = $this->profile_data;
-        $this->load->view("history",$data);
     }
 
     public function getdetail(){
@@ -106,82 +96,24 @@ Class Farmasi extends Public_controller
         echo json_encode($data);
     }
 
-    public function proses(){
-        $resep_id = $this->input->post("id");
-        $status = $this->input->post("status");
-        $delivery_date = $this->input->post("delivery_date");
-        $detail_resep = $this->farmasi->get_detail_receipt($resep_id);
-        $delivery_id = $this->input->post("kurir");
-        $order_id = $detail_resep[0]['order_id'];
-
-        $array_message = array(
-            "3" => "Dijadwalkan Pengiriman",
-            "4" => "Dijadwalkan Pengambilan",
-            "5" => "Pesanan dalam pengiriman",
-            "6" => "Pesanan telah selesai"
-        );
-        $farmasi_id = $this->profile_data['member_id'];
-        $delivery_date = date("Y-m-d H:i:s",strtotime($delivery_date));
-
-        $clause_delivert_date = "";
-        if ( $status == "3" || $status == "4"){
-            $clause_delivert_date = ", delivery_date = '$delivery_date',";
-        }
-
-        $clause_kurir = "";
-        if ( $status == 5 ){
-            $clause_kurir = ", delivery_id = '$delivery_id', ";
-        }
-        
-        $clause_finish_date = "";
-        if ( $status == "6"){
-            $clause_finish_date = ", updated_at = NOW(), received_date = NOW(), ";
-        }
-
-        $this->db->query("UPDATE order_patient SET farmasi_id = '$farmasi_id', farmasi_approve_time = NOW() $clause_delivert_date $clause_finish_date $clause_kurir status = '$status' WHERE id ='$order_id'");
+    public function finish(){
+        $order_id = $this->input->post("order_id");
+        $message = $this->input->post("desc");
+        $data_order = $this->courier->get_detail_order($order_id);
+        $this->db->query("UPDATE order_patient SET updated_at = NOW(), reason = '$message', received_date = NOW(), status = 6 WHERE id = '$order_id'");
 
         $array_insert = array(
-            "notification" => $array_message[$status],
+            "notification" => "Telah dikirim dengan pesan ".$message,
             "read_status" => 1,
             "created_at" => date("Y-m-d H:i:s"),
-            "profile_id" => $detail_resep[0]['patient_id']
+            "profile_id" => $data_order[0]['patient_id']
         );
 
         $this->db->insert("notification",$array_insert);
-        $data['status'] = 0;
-        echo json_encode($data);
-        
+
+        redirect("courier");
     }
 
-    public function waiting(){
-        $data['profile'] = $this->profile_data;
-        $data['pending'] = $this->farmasi->get_all_pending();
-        $data['next_date'] = $this->farmasi->get_delivery_date();
-        $this->load->view("waiting",$data);
-    }
-
-    public function cari(){
-        $parent_word = $this->input->post("parent_word");
-        $keyword = $this->input->post("keyword");
-
-        switch($parent_word){
-            case "order_no":    
-                $clause = " AND op.order_no like '%$keyword%'";
-            break;
-            case "receipt_no":
-                $clause = " AND rh.receipt_no like '%$keyword%'";
-            break;
-            case "doctor":
-                $clause = " AND md.first_name like '%$keyword%'";
-            break;
-        }
-
-        $get_order = $this->farmasi->get_history($clause,$keyword);
-        $data['order'] = $get_order;
-        $data['status_order'] = $this->config->item('status_order');
-        $data['profile'] = $this->profile_data;
-        $this->load->view("history",$data);
-    }
-}	
+}
 
 ?>

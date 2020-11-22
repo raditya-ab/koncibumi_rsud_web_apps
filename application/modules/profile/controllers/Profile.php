@@ -18,7 +18,8 @@ class Profile extends Public_controller {
         $data['profile'] = $profile_data;
         $array['list_menu'] = array(
             "farmasi" => "farmasi",
-            "superadmin" => "admin"
+            "superadmin" => "admin",
+            "kurir" => "courier"
         );
         $data['menu'] = strtolower($array['list_menu'][strtolower($profile_data['menu_name'])]);
         $this->load->view("index",$data);

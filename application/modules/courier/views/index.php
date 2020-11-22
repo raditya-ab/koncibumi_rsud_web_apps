@@ -35,7 +35,6 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <p>Total Resep yang menunggu di proses <span style="font-weight: bolder;"><a href="<?php echo base_url().'farmasi/waiting';?>"><?php echo count($pending);?></span></a></p>
                 <table id="example2" class="table table-bordered table-hover">
                   <thead class="head_background">
                   <tr>
@@ -51,8 +50,8 @@
                   </thead>
                   <tbody>
                   <?php
-                    if ( count($receipt) > 0 ){
-                      foreach ($receipt as $key => $value) {
+                    if ( count($order) > 0 ){
+                      foreach ($order as $key => $value) {
                   ?>
                   <tr>
                     <td><?php echo $key + 1; ?></td>
@@ -61,12 +60,12 @@
                     <td><?php echo $value['first_name'].' '.$value['last_name'];?></td>
                     <td><?php echo $value['doctor_name']?></td>
                     <td><?php echo date("d M Y",strtotime($value['created_at']));?></td>
-                    <td>Siap Diambil</td>
+                    <td>Siap Diantar</td>
                     <td>
                       <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" onClick="showDetailReceipt(<?php echo $value['id'];?>)">
                         Lihat Resep
                       </button>
-                </td>
+                    </td>
                   </tr>
                   <?php 
                       }
@@ -88,7 +87,8 @@
     </section>
     <!-- /.content -->
   </div>
-  <div class="modal fade" id="modal-default">
+ <div class="modal fade" id="modal-default">
+  <form action="<?php echo base_url().'courier/finish';?>" method="post" name="form1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -98,60 +98,24 @@
           </button>
         </div>
         <div class="modal-body">
-          <div class="container-fluid">
-            <div class="row">
-              <!-- left column -->
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>No Order.</label>
-                  <input type="text" class="form-control" name="order_no" id="order_no">
-                  <input type="hidden" class="form-control" name="order_id" id="order_id">
-                  <input type="hidden" class="form-control" name="status" id="status">
-                </div>
-                <div class="form-group">
-                  <label>No Receipt.</label>
-                  <input type="text" class="form-control" name="receipt_no" id="receipt_no">
-                </div>
-                <div class="form-group">
-                  <label>Nama Pasien</label>
-                  <input type="text" class="form-control" name="patient_name" id="patient_name">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Dokter</label>
-                  <input type="text" class="form-control" name="doctor_name" id="doctor_name">
-                </div>
-                <div class="form-group">
-                  <label>Poli</label>
-                  <input type="text" class="form-control" name="poli" id="poli">
-                </div>
-                <div class="form-group">
-                  <label>Tanggal Pengambilan</label>
-                  <input type="text" class="form-control float-right" id="reservation" disabled required>
-                </div>
-                <div class="form-group" id="col_kurir" style="display: none;">
-                  <label>Kurir</label>
-                  <select class="form-control" name="kurir" id="kurir">
-                    <?php
-                      foreach ($kurir as $key => $value) {
-                    ?>
-                      <option value="<?php echo $value['id'];?>"><?php echo $value['username'];?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Status Restricted</label>
-                  <span id="label_resep"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
+          <input type="hidden" name="order_id" value="order_id">
           <div class="form-group">
-            <label>Keterangan</label><br/>
+            <label>No Order.</label>
+            <input type="text" class="form-control" name="order_no" id="order_no">
+            <input type="hidden" class="form-control" name="order_id" id="order_id">
+            <input type="hidden" class="form-control" name="status" id="status">
+          </div>
+          <div class="form-group">
+            <label>No Receipt.</label>
+            <input type="text" class="form-control" name="receipt_no" id="receipt_no">
+          </div>
+          <div class="form-group">
+            <label>Nama Pasien</label>
+            <input type="text" class="form-control" name="patient_name" id="patient_name">
+          </div>
+          <div class="form-group">
+            <label>Keterangan Pengantaran</label><br/>
             <textarea name="desc" id="desc" rows="8" cols="60">
-              
             </textarea>
           </div>
           <div class="form-group">
@@ -174,14 +138,16 @@
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onClick="submitProcess();">Diambil</button>
+          <button type="submit" class="btn btn-primary">Diambil</button>
         </div>
       </div>
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
+  </form>
   </div>
   <!-- /.modal -->
+
 
   <!-- /.content-wrapper -->
   <?php $this->load->view("copyright");?>

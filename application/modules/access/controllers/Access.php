@@ -12,6 +12,10 @@ Class Access extends Public_controller
     }
 
     public function logout(){
+        if ( isset($_SESSION['user_id'])){
+            $user_id = $_SESSION['user_id'];
+            $this->db->query("UPDATE members set login_status = NULL WHERE id = '$user_id'");
+        }
         session_destroy();
         redirect(base_url());
     }
