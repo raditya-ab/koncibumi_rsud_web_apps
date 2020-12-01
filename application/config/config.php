@@ -34,7 +34,7 @@ else if( (stristr($host, "localhost") !== FALSE) || (stristr($host, '192.168.') 
    $config['base_url'] = $protocol.$host."/koncibumi-web-apps/public";
 }
 else{
-    $allowed_hosts = ['36.78.27.51:8186','koncibumi.wedocreative.work','koncibumi.raditya.site'];
+    $allowed_hosts = ['36.78.27.51:8186','koncibumi.wedocreative.work','koncibumi.raditya.site','koncibumi.wedotheeffin.work'];
     $config['base_url'] = in_array($host, $allowed_hosts) ? $protocol.$host : "we-do-not-recognise-this-host.com";
 }
 
@@ -395,9 +395,9 @@ $config['encryption_key'] = '';
 |
 */
 $config['sess_driver'] = 'database';
-$config['sess_cookie_name'] = 'ci_session';
-$config['sess_expiration'] = 7200;
-$config['sess_save_path'] = 'ci_sessions';
+$config['sess_cookie_name'] = 'sessCookie';
+$config['sess_expiration'] = 4320;
+$config['sess_save_path'] = 'sessions_user';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;

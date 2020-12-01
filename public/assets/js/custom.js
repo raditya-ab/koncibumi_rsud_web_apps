@@ -270,7 +270,7 @@ $(document).ready(function () {
                     };
 
                     if (typeof status[data.code] === 'undefined') {
-                        data = 2;
+                        data.code = 2;
                     }
 
                     return '<span class="btn btn-sm btn-pill font-weight-bold font-size-sm' + status[data.code].class + '">' + data.label + '</span>';
