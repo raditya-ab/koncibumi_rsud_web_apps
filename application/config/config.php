@@ -35,7 +35,7 @@ else if( (stristr($host, "localhost") !== FALSE) || (stristr($host, '192.168.') 
 }
 else{
     $allowed_hosts = ['36.78.27.51:8186','koncibumi.wedocreative.work','koncibumi.raditya.site','koncibumi.wedotheeffin.work'];
-    $config['base_url'] = in_array($host, $allowed_hosts) ? $protocol.$host : "we-do-not-recognise-this-host.com";
+    $config['base_url'] = in_array($host, $allowed_hosts) ? $protocol.$host.'/public/koncibumi-web-apps : "we-do-not-recognise-this-host.com";
 }
 
 $config['modules_locations'] = array(
