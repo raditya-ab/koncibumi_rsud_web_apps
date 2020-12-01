@@ -10,11 +10,11 @@ Class Order_m extends CI_Model
 
     }
 
-    public function fetch_orders($status, $limit = NULL, $doctor_id = ""){
+    public function fetch_orders($status, $limit = NULL, $doctor_id = NULL){
         $select = array(
             'DISTINCT(o.id) as id',
             'o.order_no',
-            'o.created_at',
+            // 'o.created_at',
             'o.patient_id',
             'pp.medical_number as no_medrec',
             'pp.bpjs_number as no_bpjs',
@@ -27,19 +27,22 @@ Class Order_m extends CI_Model
         );
 
         $this->db->select($select, FALSE);
-        $this->db->from('order_patient o');
+        // $this->db->from('order_patient o');
         // $this->db->join('patient_login pl', 'pl.id = o.patient_id', 'left');
         $this->db->join('patient_profile pp', 'pp.id = o.patient_id', 'inner');
         $this->db->join('master_doctor md', 'md.id = o.doctor_id','inner');
         if($status != NULL){
             $this->db->where('o.status', $status);
         }
-        if($limit != NULL){
+        // if($doctor_id != NULL){
+        //     $this->db->where('o.doctor_id', $doctor_id);
+        // }
+        if($limit != NULL && $limit > 0){
             $this->db->limit($limit);
         }
 
         $this->db->where('o.doctor_id', $doctor_id);
-        $order_list = $this->db->get('order_patient')->result_array();
+        $order_list = $this->db->get('order_patient o')->result_array();
 
         foreach($order_list as $i => $item){
             $select = array(

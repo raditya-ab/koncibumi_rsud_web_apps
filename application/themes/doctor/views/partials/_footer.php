@@ -8,7 +8,7 @@
 							<!--begin::Copyright-->
 							<div class="text-dark order-2 order-md-1">
 								<span class="text-muted font-weight-bold mr-2">2020©</span>
-								<a href="http://keenthemes.com/metronic" target="_blank" class="text-dark-75 text-hover-primary">Keenthemes</a>
+								<a href="http://rsud.sumedangkab.go.id/" target="_blank" class="text-dark-75 text-hover-primary">RSUD Sumedang</a>
 							</div>
 
 							<!--end::Copyright-->

@@ -9,6 +9,7 @@
             //     define('ENVIRONMENT', 'production');
             //     break;
             case 'koncibumi.raditya.site':
+            case 'koncibumi.wedotheeffin.work':
             case '36.78.27.51' :
                 define('ENVIRONMENT', 'staging');
                 break;

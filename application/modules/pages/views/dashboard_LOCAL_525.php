@@ -3,14 +3,11 @@
 								<div class="col-xl-4">
 									<!--[html-partial:begin:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 									<!--begin::Mixed Widget 4-->
-									<?php
-										if ( count($user_detail) > 0 ){
-									?>
 									<div class="card card-custom card-stretch gutter-b">
 										<div class="card-body d-flex p-0">
 											<div class="flex-grow-1 bg-info p-12 pb-20 card-rounded flex-grow-1 bgi-no-repeat"
 												style="background-position: right bottom; background-size: 55% auto; background-image: url(<?php echo base_url('assets/media/svg/humans/custom-6.svg');?>)">
-												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, <?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name'];?>
+												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, dr. <?php echo $user_detail[0]['first_name'];?>
 												</h3>
 												<p class="text-inverse-info pb-5 font-size-h6">Anda mempunyai</p>
 												<p class="text-inverse-info pb-5 display-1 font-weight-bolder"><?php echo count($new_orders);?></p>
@@ -23,7 +20,6 @@
 											</div>
 										</div>
 									</div>
-									<?php } ?>
 									<!--end::Mixed Widget 4-->
 									<!--[html-partial:end:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 								</div>
@@ -38,7 +34,7 @@
 													Obat Terbaru</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/list/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -96,12 +92,7 @@
 																<td>
 																	<a href="https://icd.who.int/browse10/2019/en#/H66.3" target="_blank"
 																		class="text-primary font-weight-bold font-size-sm">
-
-																		<?php 
-																			if ( isset($order['icd_code']) && isset($order['icd_description'])){
-																				echo $order['icd_code'];?> - <?php echo $order['icd_description'];
-																			}
-																		?>
+																		<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
 																	</a>
 																</td>
 																<td>
@@ -111,7 +102,7 @@
 																			<?php 
 																				$expired = strtotime($order['created_at'])+ (8*3600);
 																				$left = time() - $expired;
-																				echo date("d/M/Y", strtotime("+7days",strtotime($order['created_at'])));
+																				echo date("d/M/Y", $expired);
 																			?>
 																		</span>
 																</td>
@@ -142,7 +133,7 @@
 													Obat</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/list/');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -168,7 +159,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<?php foreach($list_orders as $i => $order){ ?>
+														<?php foreach($new_orders as $i => $order){ ?>
 														<tr>
 															<td class="pl-3">1</td>
 															<td>
@@ -210,11 +201,7 @@
 																<?php } ?>
 															</td>
 															<td>
-																<?php 
-																	if ( isset($order['icd_code']) && isset($order['icd_description'])){
-																		echo $order['icd_code'];?> - <?php echo $order['icd_description'];
-																	}
-																?>
+																<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
 															</td>
 															<td>
 																<a href="#">
@@ -244,161 +231,3 @@
 									<!--[html-partial:end:{"id":"demo1/dist/inc/view/partials/content/widgets/base-tables/widget-5","page":"index"}]/-->
 								</div>
 							</div>
-
-							<div class="modal fade" id="modal_setuju" tabindex="-1" role="dialog" aria-labelledby="modal_setuju"
-						aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Pesanan #039483</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<i aria-hidden="true" class="ki ki-close"></i>
-									</button>
-								</div>
-								<div class="modal-body">
-									<div class="row">
-										<div class="col-4 col-md-3 ">Nama Pasien</div>
-										<div class="col-6 col-md-9">: Yahya Fulan</div>
-									</div>
-									<div class="row">
-										<div class="col-4 col-md-3 ">No. BPJS / No. Rekam Medis</div>
-										<div class="col-6 col-md-9">: 00010101012 / 001157-07</div>
-									</div>
-									<div class="row">
-										<div class="col-4 col-md-3 ">Tanggal Pengajuan</div>
-										<div class="col-6 col-md-9">: 06 Oktober 2020</div>
-									</div>
-									<!-- <div class="row">
-                    <div class="col-4 col-md-3 ">Jadwal Pengambilan</div>
-                    <div class="col-6 col-md-9">: 10 Oktober 2020 pukul 10.00</div>
-                </div> -->
-									<div class="row">
-										<div class="col-4 col-md-3 ">Status</div>
-										<div class="col-6 col-md-9">: <label
-												class="label label-inline label-primary">Disetujui</label></div>
-									</div>
-									<div class="table-responsive mt-5">
-										<table class="table table-striped table-hover" style="width: 100%">
-											<thead class="thead-inverse">
-												<tr>
-													<th>No</th>
-													<th>Nama Obat</th>
-													<th colspan="2">Qty</th>
-													<th>Aturan Minum</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>1</td>
-													<td>Amoxycillin 500mg</td>
-													<td>3</td>
-													<td>strip</td>
-													<td>2 x 1 - sebelum makan</td>
-												</tr>
-												<tr>
-													<td>1</td>
-													<td>Simvastatin 5mg</td>
-													<td>1</td>
-													<td>strip</td>
-													<td>2 x 1 - sebelum makan</td>
-												</tr>
-												<tr>
-													<td>1</td>
-													<td>Glimepiride 2,5mg</td>
-													<td>3</td>
-													<td>strip</td>
-													<td>2 x 1 - sebelum makan</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-light-primary font-weight-bold"
-										data-dismiss="modal">Tutup</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="modal fade" id="modal_tolak" tabindex="-1" role="dialog" aria-labelledby="modal_tolak"
-						aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Pesanan #039483</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<i aria-hidden="true" class="ki ki-close"></i>
-									</button>
-								</div>
-								<div class="modal-body">
-									<div class="row">
-										<div class="col-4 col-md-3 ">Nama Pasien</div>
-										<div class="col-6 col-md-9">: Yahya Fulan</div>
-									</div>
-									<div class="row">
-										<div class="col-4 col-md-3 ">No. BPJS / No. Rekam Medis</div>
-										<div class="col-6 col-md-9">: 00010101012 / 001157-07</div>
-									</div>
-									<div class="row">
-										<div class="col-4 col-md-3 ">Tanggal Pengajuan</div>
-										<div class="col-6 col-md-9">: 06 Oktober 2020</div>
-									</div>
-									<!-- <div class="row">
-                    <div class="col-4 col-md-3 ">Jadwal Pengambilan</div>
-                    <div class="col-6 col-md-9">: 10 Oktober 2020 pukul 10.00</div>
-                </div> -->
-									<div class="row">
-										<div class="col-4 col-md-3 ">Status</div>
-										<div class="col-6 col-md-9">: <label
-												class="label label-inline label-danger">Ditolak</label></div>
-									</div>
-									<div class="row">
-										<div class="col-4 col-md-3 ">Alasan Penolakan</div>
-										<div class="col-6 col-md-9">: <b>"Kontrol ke RS terlebih dahulu"</b></div>
-									</div>
-									<div class="table-responsive mt-5">
-										<table class="table table-striped table-hover" style="width: 100%">
-											<thead class="thead-inverse">
-												<tr>
-													<th>No</th>
-													<th>Nama Obat</th>
-													<th colspan="2">Qty</th>
-													<th>Aturan Minum</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>1</td>
-													<td>Amoxycillin 500mg</td>
-													<td>3</td>
-													<td>strip</td>
-													<td>2 x 1 - sebelum makan</td>
-												</tr>
-												<tr>
-													<td>1</td>
-													<td>Simvastatin 5mg</td>
-													<td>1</td>
-													<td>strip</td>
-													<td>2 x 1 - sebelum makan</td>
-												</tr>
-												<tr>
-													<td>1</td>
-													<td>Glimepiride 2,5mg</td>
-													<td>3</td>
-													<td>strip</td>
-													<td>2 x 1 - sebelum makan</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-light-primary font-weight-bold"
-										data-dismiss="modal">Tutup</button>
-								</div>
-							</div>
-						</div>
-					</div>

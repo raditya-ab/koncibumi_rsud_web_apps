@@ -3,14 +3,11 @@
 								<div class="col-xl-4">
 									<!--[html-partial:begin:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 									<!--begin::Mixed Widget 4-->
-									<?php
-										if ( count($user_detail) > 0 ){
-									?>
 									<div class="card card-custom card-stretch gutter-b">
 										<div class="card-body d-flex p-0">
 											<div class="flex-grow-1 bg-info p-12 pb-20 card-rounded flex-grow-1 bgi-no-repeat"
 												style="background-position: right bottom; background-size: 55% auto; background-image: url(<?php echo base_url('assets/media/svg/humans/custom-6.svg');?>)">
-												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, <?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name'];?>
+												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, dr. Fulan
 												</h3>
 												<p class="text-inverse-info pb-5 font-size-h6">Anda mempunyai</p>
 												<p class="text-inverse-info pb-5 display-1 font-weight-bolder"><?php echo count($new_orders);?></p>
@@ -23,7 +20,6 @@
 											</div>
 										</div>
 									</div>
-									<?php } ?>
 									<!--end::Mixed Widget 4-->
 									<!--[html-partial:end:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 								</div>
@@ -38,7 +34,7 @@
 													Obat Terbaru</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/list/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -96,12 +92,7 @@
 																<td>
 																	<a href="https://icd.who.int/browse10/2019/en#/H66.3" target="_blank"
 																		class="text-primary font-weight-bold font-size-sm">
-
-																		<?php 
-																			if ( isset($order['icd_code']) && isset($order['icd_description'])){
-																				echo $order['icd_code'];?> - <?php echo $order['icd_description'];
-																			}
-																		?>
+																		<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
 																	</a>
 																</td>
 																<td>
@@ -111,7 +102,7 @@
 																			<?php 
 																				$expired = strtotime($order['created_at'])+ (8*3600);
 																				$left = time() - $expired;
-																				echo date("d/M/Y", strtotime("+7days",strtotime($order['created_at'])));
+																				echo date("H:i:s", $left);
 																			?>
 																		</span>
 																</td>
@@ -142,7 +133,7 @@
 													Obat</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/list/');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -168,7 +159,6 @@
 														</tr>
 													</thead>
 													<tbody>
-														<?php foreach($list_orders as $i => $order){ ?>
 														<tr>
 															<td class="pl-3">1</td>
 															<td>
@@ -183,7 +173,7 @@
 																<a href="#" style="margin-left: -80px;">
 																	<span
 																		class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
-																		<?php echo $order['nama_pasien'];?>
+																		Yahya Fulan
 																	</span>
 																	<span
 																		class="text-muted font-weight-bold text-muted d-block font-size-sm"
@@ -195,26 +185,21 @@
 															</td>
 															<td>
 																<span
-																	class="text-muted font-weight-bold font-size-sm"><?php echo date('j F Y',strtotime($order['created_at']));?></span>
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
 																<span
-																	class="text-muted font-weight-bold font-size-sm"><?php echo date('H:i',strtotime($order['created_at']));?></span>
+																	class="text-muted font-weight-bold font-size-sm">12:00</span>
 															</td>
 															<td>
-																<?php
-																	if ( $order['doctor_approve_time'] != ""){
-																?>
 																<span
-																	class="text-muted font-weight-bold font-size-sm"><?php echo date('j F Y',strtotime($order['doctor_approve_time']));?></span>
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
 																<span
-																	class="text-muted font-weight-bold font-size-sm"><?php echo date('H:i',strtotime($order['doctor_approve_time']));?></span>
-																<?php } ?>
+																	class="text-muted font-weight-bold font-size-sm">15:00</span>
 															</td>
 															<td>
-																<?php 
-																	if ( isset($order['icd_code']) && isset($order['icd_description'])){
-																		echo $order['icd_code'];?> - <?php echo $order['icd_description'];
-																	}
-																?>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">H66.3 - OMSK (OTITIS MEDIA SUPURATIF KRONIS)</span>
 															</td>
 															<td>
 																<a href="#">
@@ -228,10 +213,166 @@
 															<td>
 																<span
 																	class="label label-inline label-light-primary font-weight-bold"
-																	style="font-size: 12px;"><?php echo $config_status[$order['status']]?></span>
+																	style="font-size: 12px;">Disetujui</span>
 															</td>
 														</tr>
-														<?php } ?>
+														<tr>
+															<td class="pl-3">
+																2
+															</td>
+															<td class="pr-0">
+																<div class="symbol symbol-50 symbol-light mt-1">
+																	<span class="symbol-label">
+																		<img src="assets/media/svg/avatars/018-girl-9.svg"
+																			class="h-75 align-self-end" alt="" />
+																	</span>
+																</div>
+															</td>
+															<td class="pl-0">
+																<a href="#"
+																	class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg"
+																	style="margin-left: -80px;">
+																	Yahyani Fulanah
+																</a>
+																<span
+																	class="text-muted font-weight-bold text-muted d-block font-size-sm"
+																	style="margin-left: -80px;">Perempuan</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">12:00</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">15:00</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">H66.3 - OMSK (OTITIS MEDIA SUPURATIF KRONIS)</span>
+															</td>
+															<td>
+																<a href="#">
+																	<button type="button"
+																		class="btn label label-inline label-default font-weight-bold"
+																		data-toggle="modal" data-target="#modal_tolak"
+																		style="font-size: 12px;">Lihat List
+																		Obat</button>
+																</a>
+															</td>
+															<td>
+																<span
+																	class="label label-inline label-light-danger font-weight-bold"
+																	style="font-size: 12px;">Ditolak</span>
+															</td>
+														</tr>
+														<tr>
+															<td class="pl-3">
+																3
+															</td>
+															<td class="pr-0">
+																<div class="symbol symbol-50 symbol-lightv mt-1">
+																	<span class="symbol-label">
+																		<img src="assets/media/svg/avatars/016-boy-7.svg"
+																			class="h-75 align-self-end" alt="" />
+																	</span>
+																</div>
+															</td>
+															<td class="pl-0">
+																<a href="#"
+																	class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg"
+																	style="margin-left: -80px;">Putranto</a>
+																<span
+																	class="text-muted font-weight-bold text-muted d-block font-size-sm"
+																	style="margin-left: -80px;">Laki-laki</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">12:00</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">15:00</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">H66.3 - OMSK (OTITIS MEDIA SUPURATIF KRONIS)</span>
+															</td>
+															<td>
+																<a href="#">
+																	<span
+																		class="label label-inline label-default font-weight-bold"
+																		style="font-size: 12px;">Lihat List Obat</span>
+																</a>
+															</td>
+															<td>
+																<span
+																	class="label label-inline label-light-danger font-weight-bold"
+																	style="font-size: 12px;">Ditolak</span>
+															</td>
+														</tr>
+														<tr>
+															<td class="pl-3">
+																4
+															</td>
+															<td class="pr-0">
+																<div class="symbol symbol-50 symbol-light mt-1">
+																	<span class="symbol-label">
+																		<img src="assets/media/svg/avatars/014-girl-7.svg"
+																			class="h-75 align-self-end" alt="" />
+																	</span>
+																</div>
+															</td>
+															<td class="pl-0">
+																<a href="#"
+																	class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg"
+																	style="margin-left: -80px;">Putriwati</a>
+																<span
+																	class="text-muted font-weight-bold text-muted d-block font-size-sm"
+																	style="margin-left: -80px;">Perempuan</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">12:00</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">27
+																	Agustus 2020</span>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">15:00</span>
+															</td>
+															<td>
+																<span
+																	class="text-muted font-weight-bold font-size-sm">H66.3 - OMSK (OTITIS MEDIA SUPURATIF KRONIS)</span>
+															</td>
+															<td>
+																<a href="#">
+																	<span
+																		class="label label-inline label-default font-weight-bold"
+																		style="font-size: 12px;">Lihat List Obat</span>
+																</a>
+															</td>
+															<td>
+																<span
+																	class="label label-inline label-light-primary font-weight-bold"
+																	style="font-size: 12px;">Disetujui</span>
+															</td>
+														</tr>
 													</tbody>
 												</table>
 											</div>

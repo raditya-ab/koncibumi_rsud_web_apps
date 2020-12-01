@@ -3,14 +3,11 @@
 								<div class="col-xl-4">
 									<!--[html-partial:begin:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 									<!--begin::Mixed Widget 4-->
-									<?php
-										if ( count($user_detail) > 0 ){
-									?>
 									<div class="card card-custom card-stretch gutter-b">
 										<div class="card-body d-flex p-0">
 											<div class="flex-grow-1 bg-info p-12 pb-20 card-rounded flex-grow-1 bgi-no-repeat"
 												style="background-position: right bottom; background-size: 55% auto; background-image: url(<?php echo base_url('assets/media/svg/humans/custom-6.svg');?>)">
-												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, <?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name'];?>
+												<h3 class="text-inverse-info pb-5 font-weight-bolder">Halo, dr. <?php echo $user_detail[0]['first_name'];?>
 												</h3>
 												<p class="text-inverse-info pb-5 font-size-h6">Anda mempunyai</p>
 												<p class="text-inverse-info pb-5 display-1 font-weight-bolder"><?php echo count($new_orders);?></p>
@@ -23,7 +20,6 @@
 											</div>
 										</div>
 									</div>
-									<?php } ?>
 									<!--end::Mixed Widget 4-->
 									<!--[html-partial:end:{"id":"demo1/dist/inc/view/partials/content/widgets/mixed/widget-6","page":"index"}]/-->
 								</div>
@@ -38,7 +34,7 @@
 													Obat Terbaru</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/list/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order/new');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -94,26 +90,36 @@
 																		class="text-muted font-weight-bold font-size-sm"><?php echo date('H:i',strtotime($order['created_at']));?></span>
 																</td>
 																<td>
+																	<?php if(array_key_exists('icd_code', $order)): ?>
 																	<a href="https://icd.who.int/browse10/2019/en#/H66.3" target="_blank"
 																		class="text-primary font-weight-bold font-size-sm">
-
-																		<?php 
-																			if ( isset($order['icd_code']) && isset($order['icd_description'])){
-																				echo $order['icd_code'];?> - <?php echo $order['icd_description'];
-																			}
-																		?>
+																		<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
 																	</a>
+																	<?php else: echo '-';?>
+																	<?php endif;?>
 																</td>
 																<td>
-																	<span
-																		class="label label-inline label-light-primary font-weight-bold"
-																		style="font-size: 12px;">
+																	<?php 
+																		$now = new DateTime();
+																		$expired_timestamp = date('Y-m-d H:i:s', strtotime($order['created_at']) + (8*3600));
+																		$expired = new DateTime($expired_timestamp);
+																		$left = $now->diff($expired);
+																	?>
+																	<?php if($now < $expired):?>
+																		<span class="label label-inline label-light-primary font-weight-bold" style="font-size: 12px;">
 																			<?php 
-																				$expired = strtotime($order['created_at'])+ (8*3600);
-																				$left = time() - $expired;
-																				echo date("d/M/Y", strtotime("+7days",strtotime($order['created_at'])));
+																				echo $left->format("%a hari %h jam %i menit tersisa");
 																			?>
 																		</span>
+																	<?php else: ?>
+																		<span class="label label-inline label-light-danger font-weight-bold" style="font-size: 12px;">
+																			<?php 
+																				echo $left->format("Lewat %a hari %h jam %i menit");
+																			?>
+																		</span>
+																		
+																	<?php endif;?>
+																	<br><span class="font-weight-bold text-sm text-muted">sejak <?php echo date('j F Y H:i',strtotime($order['created_at']));?></span>
 																</td>
 															</tr>
 														<?php endforeach;?>
@@ -142,7 +148,7 @@
 													Obat</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/list/');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
@@ -168,7 +174,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<?php foreach($list_orders as $i => $order){ ?>
+														<?php foreach($new_orders as $i => $order){ ?>
 														<tr>
 															<td class="pl-3">1</td>
 															<td>
@@ -210,11 +216,13 @@
 																<?php } ?>
 															</td>
 															<td>
-																<?php 
-																	if ( isset($order['icd_code']) && isset($order['icd_description'])){
-																		echo $order['icd_code'];?> - <?php echo $order['icd_description'];
-																	}
-																?>
+																<?php if(array_key_exists('icd_code', $order)): ?>
+																	<a href="https://icd.who.int/browse10/2019/en#/H66.3" target="_blank"
+																		class="text-primary font-weight-bold font-size-sm">
+																		<?php echo $order['icd_code'];?> - <?php echo $order['icd_description'];?>
+																	</a>
+																<?php else: echo '-';?>
+																<?php endif;?>
 															</td>
 															<td>
 																<a href="#">

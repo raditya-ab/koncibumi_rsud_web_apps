@@ -88,7 +88,8 @@ $(document).ready(function () {
                     pagination: {
                         perpage: 50,
                     },
-                    status: 1
+                    status: 1,
+                    // doctor_id: cookie['doctor_id']
                 },
                 dataSrc: "results"
             },
@@ -206,6 +207,7 @@ $(document).ready(function () {
                     pagination: {
                         perpage: 50,
                     },
+                    //doctor_id: cookie['doctor_id']
                 },
                 dataSrc: "results"
             },
@@ -504,11 +506,16 @@ $(document).ready(function () {
             rightArrow: '<i class="la la-angle-right"></i>'
         }
     }
-        $('#datepicker-inline').datepicker({
-            rtl: KTUtil.isRTL(),
-            todayHighlight: true,
-            templates: arrows,
-            daysOfWeekDisabled: [0,2,4,6]
-        });
+    const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+    $('#datepicker-inline').datepicker({
+        rtl: KTUtil.isRTL(),
+        todayHighlight: true,
+        templates: arrows,
+        startDate: tomorrow,
+        daysOfWeekDisabled: [0,2,4,6]
+    });
     }
 })
