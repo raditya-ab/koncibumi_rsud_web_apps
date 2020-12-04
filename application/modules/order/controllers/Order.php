@@ -31,7 +31,7 @@ Class Order extends Public_controller
         $this->template->build('order_list');
     }
 
-    public function list($type = "")
+    public function lists($type = "")
     {
 
         $array_type = array(

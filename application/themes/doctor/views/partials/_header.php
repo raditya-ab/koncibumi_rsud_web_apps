@@ -32,7 +32,7 @@
 											<div class="menu-submenu menu-submenu-classic menu-submenu-left">
 												<ul class="menu-subnav">
 													<li class="menu-item" aria-haspopup="true">
-														<a href="<?php echo site_url('order/list/new');?>" class="menu-link">
+														<a href="<?php echo site_url('order/lists/new');?>" class="menu-link">
 															<span class="svg-icon menu-icon">
 
 																<!--begin::Svg Icon | path:assets/media/svg/icons/Home/Library.svg-->
