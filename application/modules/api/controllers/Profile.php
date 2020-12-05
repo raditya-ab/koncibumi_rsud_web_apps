@@ -493,6 +493,7 @@ class Profile extends CI_Controller {
 				$patient_login_id = $decoded->profile_data->patient_login_id;
 				$latitude = $edata->lat;
 				$longitude = $edata->long;
+				$phone_number = $edata->phone_number;
 
 				if ( trim($edata->address) == "" ){
 					header("HTTP/1.1 403");
@@ -505,12 +506,13 @@ class Profile extends CI_Controller {
 				$array_update = array(
 					"address" => $edata->address,
 					"latitude" => $edata->lat,
-					"longitude" => $edata->long
+					"longitude" => $edata->long,
+					"mobile_number" => $phone_number
  				);
 
  				$this->db->where("id",$patient_profile_id);
  				$this->db->update("patient_profile",$array_update);
- 				$this->db->query("UPDATE patient_login SET address = '$address' WHERE id = '$patient_login_id'");
+ 				$this->db->query("UPDATE patient_login SET address = '$address',mobile_number='$phone_number' WHERE id = '$patient_login_id'");
  				
  				
 				$qry_profile = "SELECT pp.*,pl.gender as gender 

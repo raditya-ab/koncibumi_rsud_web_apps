@@ -369,6 +369,26 @@ class Access extends CI_Controller {
 
 	}
 
+	public function random(){
+	
+		$bpjs = "";
+		for ( $i=0; $i<=9; $i++){
+			$bpjs .= rand(0,9);
+		}
+
+		$medic_number = "";
+		for ( $i=0; $i<=9; $i++){
+			$medic_number .= rand(0,9);
+		}
+
+		$this->db->query("INSERT INTO patient_login (no_bpjs,no_medrec,dob) VALUES ('$bpjs','$medic_number','1980-07-13')");
+
+		$data['bpjs'] = $bpjs;
+		$data['medic_number'] = $medic_number;
+		$data['dob'] = "1980-07-13";
+		echo json_encode($data);
+	}
+
 	
 
 }

@@ -78,7 +78,7 @@ class Profile_model extends CI_Model {
       $array_label = array(
         true => array(
           "2" => array(
-            "shipping_label" => "Tanggal Pengiriman",
+            "shipping_label" => "Tanggal Pengambilan",
             "shipping_date" => "Menunggu Konfirmasi Farmasi"
           ),
           "4" => array(
