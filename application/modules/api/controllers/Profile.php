@@ -237,6 +237,15 @@ class Profile extends CI_Controller {
 				echo json_encode($data);
 				exit();
 			}
+
+			if ( trim($edata->address) == "" ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "Address can not empty";
+		    	echo json_encode($data);
+		    	exit;
+			}
+
 			$address = $edata->address;
 			$latitude = $edata->latitude;
 			$longitude = $edata->longitude;
@@ -475,21 +484,34 @@ class Profile extends CI_Controller {
 			$access_token = $_SERVER['HTTP_TOKEN'];
 			$secret_key = $this->config->item('secret_key');
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
-$list_profile = array();
+			$list_profile = array();
 			$obj = file_get_contents('php://input');
 			$edata = json_decode($obj);
 			if ( isset($edata->address)){
 				$address = $edata->address;
 				$patient_profile_id = $decoded->profile_data->patient_profile_id;
 				$patient_login_id = $decoded->profile_data->patient_login_id;
-				
+				$latitude = $edata->lat;
+				$longitude = $edata->long;
+
+				if ( trim($edata->address) == "" ){
+					header("HTTP/1.1 403");
+					$data['code'] = "403";
+			    	$data['message'] = "Address can not empty";
+			    	echo json_encode($data);
+			    	exit;
+				}
+
 				$array_update = array(
-					"address" => $edata->address
+					"address" => $edata->address,
+					"latitude" => $edata->lat,
+					"longitude" => $edata->long
  				);
 
  				$this->db->where("id",$patient_profile_id);
  				$this->db->update("patient_profile",$array_update);
  				$this->db->query("UPDATE patient_login SET address = '$address' WHERE id = '$patient_login_id'");
+ 				
  				
 				$qry_profile = "SELECT pp.*,pl.gender as gender 
 					FROM patient_profile as pp  
@@ -497,7 +519,7 @@ $list_profile = array();
 				WHERE 1 AND pp.id = ? ";
 				$run_profile = $this->db->query($qry_profile,array($patient_profile_id));
 
-				if ( count($run_profile->num_rows()) > 0  ){ 
+				if ( $run_profile->num_rows() > 0  ){ 
 				        $res_profile = $run_profile->result_array();
 				        $list_profile['patient_login_id'] = $res_profile[0]['patient_login_id'];
 				        $list_profile['patient_profile_id'] = $res_profile[0]['id'];

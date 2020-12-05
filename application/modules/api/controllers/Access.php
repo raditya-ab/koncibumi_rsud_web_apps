@@ -257,57 +257,59 @@ class Access extends CI_Controller {
 	}
 
 	public function change_password(){
-		$obj = file_get_contents('php://input');
-		$edata = json_decode($obj);
 
-		if ( !(isset($_SERVER['HTTP_TOKEN']))) {
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
 
-			header("HTTP/1.1 401");
-			$data['code'] = "401";
-			$data['message'] = "Invalid Header";
-			echo json_encode($data);
-			exit;
-		}
+			if ( !(isset($_SERVER['HTTP_TOKEN']))) {
 
-		$secret_key = $this->config->item('secret_key');
-		$decoded = JWT::decode($_SERVER['HTTP_TOKEN'], $secret_key, array('HS256')) ;
-		$patient_login_id = $decoded->profile_data->patient_login_id;
-		$mobile_number = $decoded->profile_data->mobile_number;
-		$otp_key = $this->master->generateOtp();
-		$sms = $this->zanzifa->sender($otp_key,$mobile_number);
-        $temp_password =  $edata->password;
-        $confirm_password = $edata->confirm_password;
-        if ( $temp_password != $confirm_password ){
-        	header("HTTP/1.1 403");
-			$data['code'] = "403";
-	    	$data['message'] = "New and Confirm Password not match";
-	    	echo json_encode($data);
-	    	exit;
-        }
+				header("HTTP/1.1 401");
+				$data['code'] = "401";
+				$data['message'] = "Invalid Header";
+				echo json_encode($data);
+				exit;
+			}
 
-		$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
-
-		$check_old_pass = "SELECT * FROM patient_login WHERE 1 AND id = ?";
-		$run_old_pass = $this->db->query($check_old_pass,array($patient_login_id));
-		if ( $run_old_pass->num_rows() > 0 ){
-			$res_old_pass = $run_old_pass->result_array();
-			$old_password = $res_old_pass[0]['password'];
-			if ( $old_password == $password ){
-				header("HTTP/1.1 403");
+			$secret_key = $this->config->item('secret_key');
+			$decoded = JWT::decode($_SERVER['HTTP_TOKEN'], $secret_key, array('HS256')) ;
+			$patient_login_id = $decoded->profile_data->patient_login_id;
+			$mobile_number = $decoded->profile_data->mobile_number;
+			$otp_key = $this->master->generateOtp();
+			$sms = $this->zanzifa->sender($otp_key,$mobile_number);
+	        $temp_password =  $edata->password;
+	        $confirm_password = $edata->confirm_password;
+	        if ( $temp_password != $confirm_password ){
+	        	header("HTTP/1.1 403");
 				$data['code'] = "403";
-		    	$data['message'] = "Password has been used. Please use new password ";
+		    	$data['message'] = "New and Confirm Password not match";
 		    	echo json_encode($data);
 		    	exit;
-			}
-		}
-		
-		$this->db->query("UPDATE patient_login set password = '$password',verification_code='$otp_key' where id = $patient_login_id");
+	        }
 
-		$data['code'] = "200";
-		$data['message'] = "Success to change password";
-		$data['token'] = $_SERVER['HTTP_TOKEN'];
-		echo json_encode($data);
-		
+			$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
+
+			$check_old_pass = "SELECT * FROM patient_login WHERE 1 AND id = ?";
+			$run_old_pass = $this->db->query($check_old_pass,array($patient_login_id));
+			if ( $run_old_pass->num_rows() > 0 ){
+				$res_old_pass = $run_old_pass->result_array();
+				$old_password = $res_old_pass[0]['password'];
+				if ( $old_password == $password ){
+					header("HTTP/1.1 403");
+					$data['code'] = "403";
+			    	$data['message'] = "Password has been used. Please use new password ";
+			    	echo json_encode($data);
+			    	exit;
+				}
+			}
+			
+			$this->db->query("UPDATE patient_login set password = '$password',verification_code='$otp_key' where id = $patient_login_id");
+
+			$data['code'] = "200";
+			$data['message'] = "Success to change password";
+			$data['token'] = $_SERVER['HTTP_TOKEN'];
+			echo json_encode($data);
+		}
 
 	}
 
