@@ -27,6 +27,7 @@ Class Farmasi extends Public_controller
     	$data['profile'] = $this->profile_data;
         $data['kurir'] = $this->farmasi->get_all_kurir();
         $data['pending'] = $this->farmasi->get_all_pending();
+        $data['next_date'] = date("Y-m-d H:i:s");
     	$this->load->view("index",$data);
     }
 

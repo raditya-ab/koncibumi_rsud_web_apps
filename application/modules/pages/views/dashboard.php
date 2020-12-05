@@ -142,7 +142,7 @@
 													Obat</span>
 											</h3>
 											<div class="card-toolbar">
-												<a href="<?php echo site_url('order/list/');?>" class="btn btn-success font-weight-bolder font-size-sm">
+												<a href="<?php echo site_url('order/lists/');?>" class="btn btn-success font-weight-bolder font-size-sm">
 													Lihat Semua
 													<i class="fa fa-arrow-right ml-3" aria-hidden="true"></i>
 												</a>
