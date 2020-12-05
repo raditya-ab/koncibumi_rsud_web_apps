@@ -758,6 +758,57 @@ class Profile extends CI_Controller {
 		}
 	}
 
+	public function is_can_order(){
+		$data['code'] = "200";
+		$data['message'] = "User can order";
+
+		$access_token = $_SERVER['HTTP_TOKEN'];
+		$secret_key = $this->config->item('secret_key');
+		$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
+		$patient_profile_id = $decoded->profile_data->patient_profile_id;
+
+		$qry_profile = "SELECT latitude,longitude,address FROM patient_profile WHERE 1 AND id = ?";
+		$run_profile = $this->db->query($qry_profile,array($patient_profile_id));
+		if ( $run_profile->num_rows() > 0 ){
+			$res_profile = $run_profile->result_array();
+			if ( $res_profile[0]['latitude'] == "" && $res_profile[0]['longitude'] == "" ){
+				$data['code'] = "1";
+				$data['message'] = "Alamat not complete";
+				echo json_encode($data);
+    			exit;
+			}
+		}
+
+		$qry_get_active = "SELECT * FROM order_patient WHERE 1 AND status NOT IN (6,3) AND patient_id = ? ";
+		$run_get_active = $this->db->query($qry_get_active,array($patient_profile_id));
+		if ( $run_get_active->num_rows() > 0 ){
+			$data['code'] = "2";
+			$data['message'] = "Any order still active";
+			echo json_encode($data);
+			exit;
+		}
+
+		$qry_check_order = "SELECT * FROM order_patient WHERE 1 AND patient_id = ? order by id DESC LIMIT 0,1";
+		$run_check_order = $this->db->query($qry_check_order, array($patient_profile_id));
+		if ( $run_check_order->num_rows() > 0 ){
+			$data_order = $run_check_order->result_array();
+			if ( $data_order[0]['keluhan'] == 1 ){
+				$now = strtotime(date("Y-m-d H:i:s"));
+				$order_time = strtotime($data_order[0]['created_at']);
+				$diff = ($now - $order_time) / (60 * 60 * 24);
+				if ( $diff <= 7 ){
+					$data['code'] = "3";
+					$data['message'] = "Any order still active and have complaint";
+					echo json_encode($data);
+	    			exit;
+				}
+			}
+		}
+
+		echo json_encode($data);
+    	exit;
+	}
+
 
 }
 
