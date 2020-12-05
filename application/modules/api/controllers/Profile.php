@@ -249,6 +249,7 @@ class Profile extends CI_Controller {
 			$address = $edata->address;
 			$latitude = $edata->latitude;
 			$longitude = $edata->longitude;
+			$notes = $edata->notes;
 
 			$secret_key = $this->config->item('secret_key');
 			$status_order = $this->config->item('status_order');
@@ -257,6 +258,14 @@ class Profile extends CI_Controller {
 			$patient_login_id = $decoded->profile_data->patient_login_id;
 			$this->db->query("UPDATE patient_profile set address = '$address',latitude = '$latitude', longitude = '$longitude' where id = '$patient_profile_id'");
 			$this->db->query("UPDATE patient_login set address = '$address' where id = '$patient_login_id'");
+
+			$qry_get_latest = "SELECT * FROM order_patient WHERE patient_id = ?  ORDER by id DESC  LIMIT 0,1";
+			$run_get_latest = $this->db->query($qry_get_latest,array($patient_profile_id));
+			if ( $run_get_latest->num_rows() > 0 ){
+				$res_get_latest = $run_get_latest->result_array();
+				$order_id = $res_get_latest[0]['id'];
+				$this->db->query("UPDATE order_patient SET notes = '$notes' WHERE id = '$order_id'");
+			}
 
 			$data['code'] = "200";
 			$data['message'] = "Address has been updated";
