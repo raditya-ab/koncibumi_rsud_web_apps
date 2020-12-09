@@ -91,4 +91,18 @@ class Admin_model extends CI_Model {
 		$res_kurir = $run_kurir->result_array();
 		return $res_kurir;
 	}
+
+	function all_expired_order(){
+		$limit_date = date("Y-m-d H:i:s",strtotime("-7 days"));
+		$qry_expired = "SELECT op.*, pp.first_name, pp.last_name,
+			(SELECT poli FROM kunjungan WHERE patient_id = op.patient_id LIMIT 1) as poli,
+			md.first_name as doctor_name
+			FROM order_patient as op 
+			INNER JOIN patient_profile as pp ON (pp.id = op.patient_id )
+			LEFT JOIN master_doctor as md ON (md.id = op.doctor_id )
+			WHERE op.status = '1' AND op.created_at <= '$limit_date' ORDER by op.id";
+		$run_expired = $this->db->query($qry_expired);
+		$res_kurir = $run_expired->result_array();
+		return $res_kurir;
+	}
 }

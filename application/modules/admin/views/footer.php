@@ -61,5 +61,34 @@
 
   $("#doctor").click(function(data){
     $("#username").val($(this).find(':selected').data('attribute'));
-  })
+  });
+
+  function updateDoctor(id){
+    if ( confirm("Apakah anda akan mengganti dokter pasien ini ? ")){
+      $("#btn_" + id).hide();
+      $("#loading_" + id).show();
+
+      var request = $.ajax({
+          url : "<?php echo base_url();?>/admin/update_doctor",
+          dataType : "json",
+          data : {
+            id : id,
+            doctor_id : $("#doctor_" + id).val()
+          },
+          type : "post"
+      });
+
+      request.done(function(data){
+        $("#btn_" + id).hide();
+        $("#loading_" + id).show();
+        if ( data.status == 0 ){
+          alert("Dokter telah diupdate");
+        }
+
+        window.location.reload();
+      })
+    }else{
+      return false;
+    }
+  }
 </script>

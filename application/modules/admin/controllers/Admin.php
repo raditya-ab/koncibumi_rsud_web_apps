@@ -93,6 +93,22 @@ Class Admin extends Public_controller
         $data['doctor'] = $this->admin->all_docter();
         $this->load->view("user/doctor",$data);
     }
+
+    public function expired(){
+        $data['profile'] = $this->profile_data;
+        $data['expired'] = $this->admin->all_expired_order();
+        $data['status'] = $this->config->item("status_order");
+        $data['doctor'] = $this->admin->all_docter();
+        $this->load->view("expired/expired",$data);
+    }
+
+    public function update_doctor(){
+        $order_id = $this->input->post("id");
+        $doctor_id = $this->input->post("doctor_id");
+        $this->db->query("UPDATE order_patient set doctor_id = '$doctor_id' WHERE id = '$order_id'");
+        $data['status'] = "0";
+        echo json_encode($data);
+    }
 }
 
 ?>

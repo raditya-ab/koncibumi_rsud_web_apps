@@ -110,7 +110,8 @@ Class Crontask extends CI_Model
                 "patient_login_id" => $patient_login_id,
                 "doctor_id" => 1,
                 "created_at" => date("Y-m-d H:i:s"),
-                "patient_id" => $patient_id
+                "patient_id" => $patient_id,
+                'poli' => NULL
             );
             $this->db->insert("kunjungan",$array_insert);
         }
