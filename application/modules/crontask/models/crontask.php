@@ -11,10 +11,13 @@ Class Crontask extends CI_Model
 
     public function save_doctor($data){
     	foreach ($data as $key => $value) {
-
             $qry_check = "SELECT * FROM master_doctor WHERE 1 AND id_dokter = ? ";
             $run_check = $this->db->query($qry_check, array($value->id_dokter));
             if ( $run_check->num_rows() > 0 ){
+                continue;
+            }
+
+            if ( $value->nama_dokter == "" || $value->nama_dokter == "-"){
                 continue;
             }
 
@@ -129,11 +132,7 @@ Class Crontask extends CI_Model
             );
 
             if ( $run_check_medicine->num_rows() > 0 ){
-                $res_check_medicine = $run_check_medicine->result_array();
-                $id = $res_check_medicine[0]['id'];
-
-                $this->db->where('id', $id);
-                $this->db->update("master_medicine",$array_insert);
+                
                 continue;
             }
 

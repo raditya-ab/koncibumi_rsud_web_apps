@@ -14,6 +14,7 @@ Class Order extends Public_controller
         $this->load->model("login/login_model","login");
         $this->load->model("admin/Admin_model","admin");
         $this->config->load('config');
+        $this->load->library("endpoint");
         
         if ( isset($_SESSION['user_id'])){
             $this->profile_data = $this->login->get_profile_data($_SESSION['user_id']);
@@ -190,23 +191,33 @@ Class Order extends Public_controller
         $dosis = $this->input->post("dosis");
         $frekuensi = $this->input->post("freq");
         $desc = $this->input->post("desc");
-        $url_third_party = $this->config->item('third_party');
+        $url_third_party = $this->config->item('api_post_rs');
         $get_create_receipt = "";
 
         if ( count($obat) > 0 ){
             $save_receipt = $this->order_m->save_receipt($order_id,$master_docter[0]['id'],$obat,$qty,$unit,$dosis,$frekuensi,$desc);
             $get_create_receipt = $this->order_m->get_create_receipt($save_receipt);
         }
-
+        echo "aasdasdas";
         $post = "";
-        $qry_order = "SELECT * FROM order_patient WHERE 1 AND id = ? ";
+        $qry_order = "SELECT op.*, rh.receipt_no as receipt_no,rh.description as keterangan,
+            pf.medical_number as medical_number
+            FROM order_patient as op 
+            INNER JOIN receipt_header as rh ON ( rh.kunjungan_id = op.id )
+            INNER JOIN patient_profile as pf ON ( pf.id = op.patient_id)
+            WHERE 1 AND op.id = ? ";
         $run_order = $this->db->query($qry_order,array($order_id));
-        $res_order = $run_order->result_array();
+        echo $run_order->num_rows();
         if ( $run_order->num_rows() > 0 ){
+            $res_order = $run_order->result_array();
             $post = array(
+                "no_medrek" => $res_order[0]['medical_number'],
                 "kode_pesanan" => $res_order[0]['order_no'],
+                "kode_resep" => $res_order[0]['receipt_no'],
+                "keterangan" => $res_order[0]['keterangan'],
                 "receipt" => $get_create_receipt
             );
+            echo json_encode($post);
             $restricted = $this->order_m->get_resep($save_receipt);
 
             $delivery_type = "Dikirim";
@@ -216,16 +227,26 @@ Class Order extends Public_controller
 
         }
 
+        $call_login = $this->set_login();
+        if ( $call_login == false ){
+            $data['status'] = "0";
+            echo json_encode($data);
+            exit();
+        }
+
+        /*
+        $result = json_decode($call_login);
+        $url = $url_third_party['url'].$url_third_party['master_path'].$url_third_party['endpoint_path'];
         $ch = curl_init(); 
-        $ch = curl_init(base_url().$url_third_party['hospital']);
+        $ch = curl_init(base_url().$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST,true );
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
-        curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-Type: application/json')); 
+        curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-Type: application/json','x-token : ' . $result->token)); 
         $response = curl_exec($ch);
         $curl_res = json_decode($response);
         $id_kunjungan = $curl_res->id_kunjungan;
-
+    
         $this->db->query("UPDATE order_patient set id_pesanan = '$id_kunjungan', delivery_type = '$delivery_type' WHERE id = '$order_id'");
         $data['status'] = "0";
 
@@ -237,6 +258,27 @@ Class Order extends Public_controller
         );
 
         $this->db->insert("notification",$array_insert);
+        */
         echo json_encode($data);
+    }
+
+    public function set_login(){
+        $config_sync = $this->config->item("api_rs");
+        $url = $config_sync['url'].'/'.$config_sync['master_path'].'/'.$config_sync['endpoint_path']['login'];
+        $call_login = $this->endpoint->call_login($config_sync, $url);
+        $response = json_decode($call_login);
+        $array_insert = array(
+            "endpoint" => $url,
+            "responses" => $call_login,
+            "created_at" => date("Y-m-d H:i:s")
+        );
+        $this->db->insert("log_respons",$array_insert);
+
+        if ( isset($response->token)){
+            $data['status'] = true;
+            $data['token'] = $response->token;
+            return $data;
+        }
+        return false;
     }
 }

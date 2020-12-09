@@ -576,3 +576,23 @@ $config['email'] = array(
 $config['third_party'] = array(
 	"hospital" => "welcome/temp_kunjungan"
 );
+
+$config['api_rs'] = array(
+	'url' => 'http://36.78.27.51:8183',
+	'api_key' => 'koncibumi',
+	'secret_key' => '4Raq7fQqDd',
+	'master_path' => 'wsKonci',
+	'endpoint_path' => array(
+		'login' => 'api/auth/login',
+		'docter' => 'api/main/dokter',
+		'drugs' => 'api/main/obat'
+	)
+);
+
+$config['api_post_rs'] = array(
+	'url' => 'http://36.78.27.51:8183',
+	'api_key' => 'koncibumi',
+	'secret_key' => '4Raq7fQqDd',
+	'master_path' => '/wsKonci',
+	'endpoint_path' => '/api/main/order'
+);
