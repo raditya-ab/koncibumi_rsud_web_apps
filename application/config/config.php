@@ -544,9 +544,9 @@ $config['status_order'] = array(
 	"2" => "Menunggu Konfirmasi Farmasi",
 	"3" => "Dijadwalkan Pengiriman",
 	"4" => "Dijadwalkan Pengambilan", 
-	"5" => "Ditolak",
+	"5" => "Sedang Dikirim",
 	"6" => "Selesai",
-	"7" => ""
+	"7" => "Ditolak"
 );
 
 $config['librarysms'] = array(

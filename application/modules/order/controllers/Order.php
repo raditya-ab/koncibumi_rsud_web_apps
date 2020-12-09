@@ -125,7 +125,7 @@ Class Order extends Public_controller
         $doctor_approval_time = date("Y-m-d H:i:s");
         $reason = $edata->dismiss_reason;
         $order_id = $edata->id_pesanan;
-        $this->db->query("UPDATE order_patient set status = '5',doctor_approve_time = '$doctor_approval_time',reason ='$reason' where id = '$order_id'");
+        $this->db->query("UPDATE order_patient set status = '7',doctor_approve_time = '$doctor_approval_time',reason ='$reason' where id = '$order_id'");
         $data['status'] = "ok";
         echo json_encode($data);
     }
@@ -194,11 +194,12 @@ Class Order extends Public_controller
         $url_third_party = $this->config->item('api_post_rs');
         $get_create_receipt = "";
 
+
         if ( count($obat) > 0 ){
             $save_receipt = $this->order_m->save_receipt($order_id,$master_docter[0]['id'],$obat,$qty,$unit,$dosis,$frekuensi,$desc);
             $get_create_receipt = $this->order_m->get_create_receipt($save_receipt);
         }
-        echo "aasdasdas";
+
         $post = "";
         $qry_order = "SELECT op.*, rh.receipt_no as receipt_no,rh.description as keterangan,
             pf.medical_number as medical_number
@@ -207,7 +208,7 @@ Class Order extends Public_controller
             INNER JOIN patient_profile as pf ON ( pf.id = op.patient_id)
             WHERE 1 AND op.id = ? ";
         $run_order = $this->db->query($qry_order,array($order_id));
-        echo $run_order->num_rows();
+
         if ( $run_order->num_rows() > 0 ){
             $res_order = $run_order->result_array();
             $post = array(
@@ -217,7 +218,7 @@ Class Order extends Public_controller
                 "keterangan" => $res_order[0]['keterangan'],
                 "receipt" => $get_create_receipt
             );
-            echo json_encode($post);
+
             $restricted = $this->order_m->get_resep($save_receipt);
 
             $delivery_type = "Dikirim";
@@ -226,16 +227,15 @@ Class Order extends Public_controller
             }
 
         }
-
-        $call_login = $this->set_login();
+        
+        /*$call_login = $this->set_login();
         if ( $call_login == false ){
             $data['status'] = "0";
             echo json_encode($data);
             exit();
-        }
-
-        /*
-        $result = json_decode($call_login);
+        }*/
+        
+        /*$result = json_decode($call_login);
         $url = $url_third_party['url'].$url_third_party['master_path'].$url_third_party['endpoint_path'];
         $ch = curl_init(); 
         $ch = curl_init(base_url().$url);
@@ -259,6 +259,7 @@ Class Order extends Public_controller
 
         $this->db->insert("notification",$array_insert);
         */
+        $data['status'] = "0";
         echo json_encode($data);
     }
 
@@ -266,6 +267,7 @@ Class Order extends Public_controller
         $config_sync = $this->config->item("api_rs");
         $url = $config_sync['url'].'/'.$config_sync['master_path'].'/'.$config_sync['endpoint_path']['login'];
         $call_login = $this->endpoint->call_login($config_sync, $url);
+
         $response = json_decode($call_login);
         $array_insert = array(
             "endpoint" => $url,

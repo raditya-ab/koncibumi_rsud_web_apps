@@ -104,27 +104,27 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>No Order.</label>
-                  <input type="text" class="form-control" name="order_no" id="order_no">
+                  <input type="text" class="form-control" name="order_no" id="order_no" disabled>
                   <input type="hidden" class="form-control" name="order_id" id="order_id">
                   <input type="hidden" class="form-control" name="status" id="status">
                 </div>
                 <div class="form-group">
                   <label>No Receipt.</label>
-                  <input type="text" class="form-control" name="receipt_no" id="receipt_no">
+                  <input type="text" class="form-control" name="receipt_no" id="receipt_no" disabled>
                 </div>
                 <div class="form-group">
                   <label>Nama Pasien</label>
-                  <input type="text" class="form-control" name="patient_name" id="patient_name">
+                  <input type="text" class="form-control" name="patient_name" id="patient_name" disabled>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Dokter</label>
-                  <input type="text" class="form-control" name="doctor_name" id="doctor_name">
+                  <input type="text" class="form-control" name="doctor_name" id="doctor_name" disabled>
                 </div>
                 <div class="form-group">
                   <label>Poli</label>
-                  <input type="text" class="form-control" name="poli" id="poli">
+                  <input type="text" class="form-control" name="poli" id="poli" disabled>
                 </div>
                 <div class="form-group">
                   <label>Tanggal Pengambilan</label>
