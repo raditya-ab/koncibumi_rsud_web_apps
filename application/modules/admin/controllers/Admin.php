@@ -26,7 +26,7 @@ Class Admin extends Public_controller
         $data['get_user'] = $this->admin->get_all_user();
         $this->load->view("user/admin",$data);
     }
-
+    
     public function add(){
         $data['profile'] = $this->profile_data;
         $data['group'] = $this->admin->all_group_access();

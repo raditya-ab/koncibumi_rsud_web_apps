@@ -9,7 +9,7 @@ class Zanzifa{
 		$passkey = '4428ffe69cc15796064c4ee6';
 		$telepon = $mobile_number;
 		$message = 'Hi, Please use this OTP '.$otp;
-		$url = 'https://console.zenziva.net/reguler/api/sendsms/';
+		$url = 'https://console.zenziva.net/reguler/api/sendOTP/';
 		$curlHandle = curl_init();
 		curl_setopt($curlHandle, CURLOPT_URL, $url);
 		curl_setopt($curlHandle, CURLOPT_HEADER, 0);
@@ -19,15 +19,19 @@ class Zanzifa{
 		curl_setopt($curlHandle, CURLOPT_TIMEOUT,30);
 		curl_setopt($curlHandle, CURLOPT_POST, 1);
 		curl_setopt($curlHandle, CURLOPT_POSTFIELDS, array(
-		    'userkey' => $userkey,
-		    'passkey' => $passkey,
-		    'to' => $telepon,
-		    'message' => $message
+			'userkey' => $userkey,
+			'passkey' => $passkey,
+			'to' => $telepon,
+			'kode_otp' => $otp
 		));
-		$results = json_decode(curl_exec($curlHandle), true);
-		error_log(json_encode($results));
-		
+		$result = curl_exec($curlHandle);
 		curl_close($curlHandle);
+
+		return json_decode($result);
+		// $results = json_decode(curl_exec($curlHandle), true);
+		// error_log(json_encode($results));
+		
+		// curl_close($curlHandle);
 	}
 }
 
