@@ -69,7 +69,18 @@ class Farmasi_model extends CI_Model {
 	}
 
 	function get_delivery_date(){
-		$next_date = date("Y-m-d H:i:s",strtotime('+1days'));
+		$config_day = array("mon","wed","fri");
+		for ( $i=1; $i<30; $i++){
+			$next_date = date("Y-m-d",strtotime('+'.$i.' days'));
+			$day = strtolower(date('D', strtotime($next_date)));
+			if ( in_array($day, $config_day)){
+				$qry_validate = "SELECT * FROM order_patient WHERE delivery_date >= '$next_date 00:00:00' AND delivery_date <= '$next_date 23:59:59'";
+				$run_validate = $this->db->query($qry_validate);
+				if ( $run_validate->num_rows() <= 30 ){
+					return $next_date;
+				}
+			}
+		}
 		return $next_date;
 	}
 }

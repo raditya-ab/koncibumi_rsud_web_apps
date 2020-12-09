@@ -32,8 +32,9 @@ Class Dashboard extends Public_controller
             "2" => "Menunggu Konfirmasi Farmasi",
             "3" => "Dijadwalkan Pengambilan/Pengiriman",
             "4" => "Sedang Dikirim/Siap diambil",
-            "5" => "Ditolak",
-            "6" => "Selesai"
+            "5" => "Sedang Dikirim",
+            "6" => "Selesai",
+            "7" => "Ditolak"
         );
   
         $this->data['user_detail'] = $this->access->get_user($_SESSION['user_id']);
