@@ -27,12 +27,7 @@
               <p>Daftar Tunggu Resep</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="<?php echo base_url().'farmasi/history';?>" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
-              <p>History Resep</p>
-            </a>
-          </li>
+          
           <li class="nav-item">
             <a href="<?php echo base_url().'profile';?>" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
