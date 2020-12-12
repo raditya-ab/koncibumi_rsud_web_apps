@@ -238,7 +238,8 @@ Class Order extends Public_controller
             exit();
         }
         
-        $sms = $this->zanzifa->sender("",$res_order[0]['mobile_number'],$message.' '.$master_docter[0]['first_name']);
+        $message = 'No Pesanan '.$res_order[0]['order_no'].'. '.$message.' '.$master_docter[0]['first_name'];
+        $sms = $this->zanzifa->sender("",$res_order[0]['mobile_number'],$message);
         /*$url = $url_third_party['url'].$url_third_party['master_path'].$url_third_party['endpoint_path'];
         $ch = curl_init(); 
         $ch = curl_init(base_url().$url);

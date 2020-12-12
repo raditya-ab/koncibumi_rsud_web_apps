@@ -25,7 +25,7 @@
 				<?php
 					if ( count($user_detail) > 0 ){
 				?>
-				<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name']?></a>
+				<a href="<?php echo base_url();?>" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $user_detail[0]['first_name'].' '.$user_detail[0]['last_name']?></a>
 				<div class="text-muted mt-1"><?php echo $user_detail[0]['jabatan']?></div>
 				<div class="navi mt-2">
 					<a href="#" class="navi-item">

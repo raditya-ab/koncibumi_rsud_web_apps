@@ -83,4 +83,12 @@ class Farmasi_model extends CI_Model {
 		}
 		return $next_date;
 	}
+
+	function get_order($order_id){
+		$qry_order = "SELECT op.*,pp.mobile_number as mobile_number FROM order_patient as op
+			INNER JOIN patient_profile pp ON (op.patient_id = pp.id)";
+		$run_order = $this->db->query($qry_order,array($order_id));
+		$res_order = $run_order->result_array();
+		return $res_order;
+	}
 }

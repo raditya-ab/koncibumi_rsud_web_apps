@@ -10,6 +10,7 @@ Class Farmasi extends Public_controller
         $this->load->model("order/Order_m","order");
         $this->load->library('email');
         $this->config->load('config');
+        $this->load->library('zanzifa');
 
         if ( isset($_SESSION['user_id'])){
             $this->profile_data = $this->login->get_profile_data($_SESSION['user_id']);
@@ -113,7 +114,9 @@ Class Farmasi extends Public_controller
         $delivery_date = $this->input->post("delivery_date");
         $detail_resep = $this->farmasi->get_detail_receipt($resep_id);
         $delivery_id = $this->input->post("kurir");
+        $template_message = $this->config->item("template_sms");
         $order_id = $detail_resep[0]['order_id'];
+        $detail_order = $this->farmasi->get_order($order_id);
 
         $array_message = array(
             "3" => "Dijadwalkan Pengiriman",
@@ -127,11 +130,25 @@ Class Farmasi extends Public_controller
         $clause_delivert_date = "";
         if ( $status == "3" || $status == "4"){
             $clause_delivert_date = ", delivery_date = '$delivery_date',";
+
+            $message = "No Pesanan ".$detail_order[0]['order_no'].'. '.$template_message['farmasi_diambil'].' '.date("d-M-Y",strtotime($delivery_date));
+            if ( $status == "4"){
+                $message = "No Pesanan . ".$detail_order[0]['order_no'].'. '.$template_message['farmasi_dikirim'].' '.date("d-M-Y",strtotime($delivery_date));
+            }
         }
 
         $clause_kurir = "";
         if ( $status == 5 ){
             $clause_kurir = ", delivery_id = '$delivery_id', ";
+            $kurir_name = "";
+            $qry_kurir = "SELECT * FROM members WHERE 1 AND id = ? ";
+            $run_kurir = $this->db->query($qry_kurir,array($delivery_id));
+            $res_kurir = $run_kurir->result_array();
+            if ( $run_kurir->num_rows() > 0 ){
+                $kurir_name = $res_kurir[0]['username'];
+            }
+
+            $message = "No Pesanan ".$detail_order[0]['order_no'].'. '.$template_message['kurir_dikirim'].' '.$kurir_name;
         }
         
         $clause_finish_date = "";
@@ -148,6 +165,7 @@ Class Farmasi extends Public_controller
             "profile_id" => $detail_resep[0]['patient_id']
         );
 
+        $sms = $this->zanzifa->sender("",$detail_order[0]['mobile_number'],$message);
         $this->db->insert("notification",$array_insert);
         $data['status'] = 0;
         echo json_encode($data);
