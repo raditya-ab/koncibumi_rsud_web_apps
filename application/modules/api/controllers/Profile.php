@@ -112,7 +112,7 @@ class Profile extends CI_Controller {
   				$list_profile['date_of_birth'] =$res_profile[0]['dob'];
 	  			$list_profile['latitude'] = $res_profile[0]['latitude'];
 	  			$list_profile['longitude'] = $res_profile[0]['longitude'];
-	  		
+
 	  			$list_profile['gender'] = $res_profile[0]['gender'];
 			}
   			
