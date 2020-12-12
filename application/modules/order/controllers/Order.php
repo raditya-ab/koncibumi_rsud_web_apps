@@ -15,6 +15,7 @@ Class Order extends Public_controller
         $this->load->model("admin/Admin_model","admin");
         $this->config->load('config');
         $this->load->library("endpoint");
+        $this->load->library('zanzifa');
         
         if ( isset($_SESSION['user_id'])){
             $this->profile_data = $this->login->get_profile_data($_SESSION['user_id']);
@@ -192,7 +193,9 @@ Class Order extends Public_controller
         $frekuensi = $this->input->post("freq");
         $desc = $this->input->post("desc");
         $url_third_party = $this->config->item('api_post_rs');
+        $template_sms = $this->config->item('template_sms');
         $get_create_receipt = "";
+        $message = $template_sms['doctor'];
 
 
         if ( count($obat) > 0 ){
@@ -202,7 +205,7 @@ Class Order extends Public_controller
 
         $post = "";
         $qry_order = "SELECT op.*, rh.receipt_no as receipt_no,rh.description as keterangan,
-            pf.medical_number as medical_number
+            pf.medical_number as medical_number,pf.mobile_number as mobile_number
             FROM order_patient as op 
             INNER JOIN receipt_header as rh ON ( rh.kunjungan_id = op.id )
             INNER JOIN patient_profile as pf ON ( pf.id = op.patient_id)
@@ -228,23 +231,30 @@ Class Order extends Public_controller
 
         }
         
-        /*$call_login = $this->set_login();
+        $call_login = $this->set_login();
         if ( $call_login == false ){
             $data['status'] = "0";
             echo json_encode($data);
             exit();
-        }*/
+        }
         
-        /*$result = json_decode($call_login);
-        $url = $url_third_party['url'].$url_third_party['master_path'].$url_third_party['endpoint_path'];
+        $sms = $this->zanzifa->sender("",$res_order[0]['mobile_number'],$message.' '.$master_docter[0]['first_name']);
+        /*$url = $url_third_party['url'].$url_third_party['master_path'].$url_third_party['endpoint_path'];
         $ch = curl_init(); 
         $ch = curl_init(base_url().$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST,true );
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
-        curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-Type: application/json','x-token : ' . $result->token)); 
+        curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-Type: application/json','x-token : ' . $call_login['token'])); 
         $response = curl_exec($ch);
         $curl_res = json_decode($response);
+        $array_insert = array(
+            "endpoint" => $url,
+            "responses" => $response,
+            "created_at" => date("Y-m-d H:i:s")
+        );
+        $this->db->insert("log_respons",$array_insert);
+
         $id_kunjungan = $curl_res->id_kunjungan;
     
         $this->db->query("UPDATE order_patient set id_pesanan = '$id_kunjungan', delivery_type = '$delivery_type' WHERE id = '$order_id'");

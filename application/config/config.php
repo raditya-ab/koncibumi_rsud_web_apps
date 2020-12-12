@@ -596,3 +596,13 @@ $config['api_post_rs'] = array(
 	'master_path' => '/wsKonci',
 	'endpoint_path' => '/api/main/order'
 );
+
+$config['template_sms'] = array(
+	"doctor" => "Pesanan anda telah diproses oleh ",
+	"farmasi_diambil" => "Pesanan anda telah diproses farmasi. Silahkan diambil di tanggal ",
+	"farmasi_dikirim" => "Pesanan anda telah diproses farmasi. Silahkan pesanan diterima di tanggal ",
+	"kurir_dikirim" => "Pesanan anda telah dikirim oleh ",
+	"pesanan_diambil" => "Pesanan anda telah diambil di tanggal ",
+	"pesanan_dikirim" => "Pesanan anda telah diterima di tanggal ",
+	"expired" => "Order ini masih menuggu approval anda. Mohon diproses"
+);
