@@ -205,7 +205,7 @@ Class Order extends Public_controller
 
         $post = "";
         $qry_order = "SELECT op.*, rh.receipt_no as receipt_no,rh.description as keterangan,
-            pf.medical_number as medical_number,pf.mobile_number as mobile_number
+            pf.medical_number as medical_number,pf.mobile_number as mobile_number,pf.notif_app as notif_app,pf.notif_sms as notif_sms
             FROM order_patient as op 
             INNER JOIN receipt_header as rh ON ( rh.kunjungan_id = op.id )
             INNER JOIN patient_profile as pf ON ( pf.id = op.patient_id)
@@ -238,8 +238,10 @@ Class Order extends Public_controller
             exit();
         }
         
-        $message = 'No Pesanan '.$res_order[0]['order_no'].'. '.$message.' '.$master_docter[0]['first_name'];
-        $sms = $this->zanzifa->sender("",$res_order[0]['mobile_number'],$message);
+        if ( $res_order[0]['notif_sms'] == 1 ){
+            $message = 'No Pesanan '.$res_order[0]['order_no'].'. '.$message.' '.$master_docter[0]['first_name'];
+            $sms = $this->zanzifa->sender("",$res_order[0]['mobile_number'],$message);
+        }
         /*$url = $url_third_party['url'].$url_third_party['master_path'].$url_third_party['endpoint_path'];
         $ch = curl_init(); 
         $ch = curl_init(base_url().$url);

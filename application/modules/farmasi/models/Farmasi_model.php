@@ -85,7 +85,7 @@ class Farmasi_model extends CI_Model {
 	}
 
 	function get_order($order_id){
-		$qry_order = "SELECT op.*,pp.mobile_number as mobile_number FROM order_patient as op
+		$qry_order = "SELECT op.*,pp.mobile_number as mobile_number,pp.notif_sms as notif_sms, pp.notif_app as notif_app FROM order_patient as op
 			INNER JOIN patient_profile pp ON (op.patient_id = pp.id)";
 		$run_order = $this->db->query($qry_order,array($order_id));
 		$res_order = $run_order->result_array();
