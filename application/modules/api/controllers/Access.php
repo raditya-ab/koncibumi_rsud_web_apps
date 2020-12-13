@@ -34,226 +34,234 @@ class Access extends CI_Controller {
 	}
 
 	public function register($step){
-		$obj = file_get_contents('php://input');
-		$edata = json_decode($obj);
 
-		if ( $step == "verification"){
-			if ( isset($edata->bpjs_number)){
-				$bpjs_number = $edata->bpjs_number;
-				$medic_number = $edata->medic_number;
-				$date_of_birth = date("Y-m-d", strtotime($edata->date_of_birth));
-				
-				$check_bpjs = "SELECT * FROM patient_login WHERE 1 AND ( no_bpjs = ? OR no_medrec = ? ) AND dob = ? ";
-				$run_bpjs = $this->db->query($check_bpjs, array($bpjs_number,$medic_number,$date_of_birth));
-				if ( $run_bpjs->num_rows() <= 0 ){
-					header("HTTP/1.1 422 ");
-			    	$data['code'] = "422 ";
-			    	$data['message'] = "No BPJS atau No Medical tidak ada";
-			    	echo json_encode($data);
-			    	exit();
-				}
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
 
-				$array_data = $run_bpjs->result_array();
-				$first_name = $array_data[0]['first_name'];
-				$last_name = $array_data[0]['last_name'];
-				$patient_login_id = $array_data[0]['id'];
-				$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
-				$run_profile = $this->db->query($check_profile,array($patient_login_id));
-				if ( $run_profile->num_rows() > 0 ){
-					header("HTTP/1.1 422 ");
-					$data['code'] = "422 ";
-					$data['message'] = "Data sudah ada";
+			if ( $step == "verification"){
+				if ( isset($edata->bpjs_number)){
+					$bpjs_number = $edata->bpjs_number;
+					$medic_number = $edata->medic_number;
+					$date_of_birth = date("Y-m-d", strtotime($edata->date_of_birth));
+					
+					$check_bpjs = "SELECT * FROM patient_login WHERE 1 AND ( no_bpjs = ? OR no_medrec = ? ) AND dob = ? ";
+					$run_bpjs = $this->db->query($check_bpjs, array($bpjs_number,$medic_number,$date_of_birth));
+					if ( $run_bpjs->num_rows() <= 0 ){
+						header("HTTP/1.1 422 ");
+				    	$data['code'] = "422 ";
+				    	$data['message'] = "No BPJS atau No Medical tidak ada";
+				    	echo json_encode($data);
+				    	exit();
+					}
+
+					$array_data = $run_bpjs->result_array();
+					$first_name = $array_data[0]['first_name'];
+					$last_name = $array_data[0]['last_name'];
+					$patient_login_id = $array_data[0]['id'];
+					$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
+					$run_profile = $this->db->query($check_profile,array($patient_login_id));
+					if ( $run_profile->num_rows() > 0 ){
+						header("HTTP/1.1 422 ");
+						$data['code'] = "422 ";
+						$data['message'] = "Data sudah ada";
+						echo json_encode($data);
+						exit;
+					}
+
+					$data['code'] = "200";
+					$data['message'] = "User can Register";
 					echo json_encode($data);
-					exit;
-				}
+				}else{
 
-				$data['code'] = "200";
-				$data['message'] = "User can Register";
-				echo json_encode($data);
-			}else{
-
-				header("HTTP/1.1 401");
-		    	$data['code'] = "401";
-		    	$data['message'] = "INVALID REQUEST";
-		    	echo json_encode($data);
-			}
-		}else{
-			$data_profile = array();
-			$access_token = "";
-			$profile_id = "";
-
-			if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
-
-				if ( !(isset($edata->bpjs_number))) {
 					header("HTTP/1.1 401");
 			    	$data['code'] = "401";
 			    	$data['message'] = "INVALID REQUEST";
 			    	echo json_encode($data);
-			    	exit();
 				}
+			}else{
+				$data_profile = array();
+				$access_token = "";
+				$profile_id = "";
 
-				$bpjs_number =  $edata->bpjs_number;
-				$medic_number =  $edata->medic_number;
-				$mobile_number = $edata->mobile_number;
-				$temp_password =  $edata->password;
-				$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
-				$date_of_birth = date("Y-m-d", strtotime($edata->date_of_birth));
+				if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 
-				$check_bpjs = "SELECT * FROM patient_login WHERE 1 AND ( no_bpjs = ? OR no_medrec = ? ) AND dob = ? ";
-				$run_bpjs = $this->db->query($check_bpjs, array($bpjs_number,$medic_number,$date_of_birth));
-				if ( $run_bpjs->num_rows() <= 0 ){
-					header("HTTP/1.1 422 ");
-					$data['code'] = "422 ";
-					$data['message'] = "User data somehow can't retrieve";
-					echo json_encode($data);
-					exit;
+					if ( !(isset($edata->bpjs_number))) {
+						header("HTTP/1.1 401");
+				    	$data['code'] = "401";
+				    	$data['message'] = "INVALID REQUEST";
+				    	echo json_encode($data);
+				    	exit();
+					}
+
+					$bpjs_number =  $edata->bpjs_number;
+					$medic_number =  $edata->medic_number;
+					$mobile_number = $edata->mobile_number;
+					$temp_password =  $edata->password;
+					$password = crypt($temp_password,'$6$rounds=5000$saltsalt$');
+					$date_of_birth = date("Y-m-d", strtotime($edata->date_of_birth));
+
+					$check_bpjs = "SELECT * FROM patient_login WHERE 1 AND ( no_bpjs = ? OR no_medrec = ? ) AND dob = ? ";
+					$run_bpjs = $this->db->query($check_bpjs, array($bpjs_number,$medic_number,$date_of_birth));
+					if ( $run_bpjs->num_rows() <= 0 ){
+						header("HTTP/1.1 422 ");
+						$data['code'] = "422 ";
+						$data['message'] = "User data somehow can't retrieve";
+						echo json_encode($data);
+						exit;
+					}
+					$res_bpjs = $run_bpjs->result_array();
+					$login_id = $res_bpjs[0]['id'];
+					$first_name = $res_bpjs[0]['first_name'];
+					$last_name = $res_bpjs[0]['last_name'];
+					$address = $res_bpjs[0]['address'];
+
+					$array_insert = array(
+						"patient_login_id" => $res_bpjs[0]['id'],
+						"first_name" => $first_name,
+						"last_name" => $last_name,
+						"dob" => $date_of_birth,
+						"created_at" => date("Y-m-d H:i:s"),
+						"mobile_number" => $mobile_number,
+						"bpjs_number" => $bpjs_number,
+						"medical_number" => $medic_number,
+						"address" => $address
+					);
+					$this->db->insert("patient_profile", $array_insert);
+					$patient_profile_id = $this->db->insert_id();
+					$current_date = date("Y-m-d H:i:s");
+
+			        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password' where id = '$login_id'");
+
+			        
+
+			        $otp_key = $this->master->generateOtp();
+			    	$sms = $this->zanzifa->sender($otp_key,$mobile_number);
+			    	
+			        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password',verification_code='$otp_key' where id = '$login_id'");
+
+			        $data_profile = array();
+					$data_profile['patient_login_id'] = $res_bpjs[0]['id'];
+					$data_profile['patient_profile_id'] = $patient_profile_id;
+					$data_profile['first_name'] = $first_name;
+					$data_profile['last_name'] = $last_name;
+					$data_profile['mobile_number'] = $mobile_number;
+					$data_profile['address'] = $address;
+					$data_profile['profile_pict'] = NULL;
+					$data_profile['bpjs_number'] = $bpjs_number;
+					$data_profile['medic_number'] = $medic_number;
+					$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_bpjs[0]['dob']));
+
+			        $token = array(
+			            "iss" => $_SERVER['SERVER_NAME'],
+			            "iat" => strtotime($res_bpjs[0]['date_created']),
+			            "profile_data" => $data_profile
+			        );
+			        $secret_key = $this->config->item('secret_key');
+			        $access_token = JWT::encode($token, $secret_key);
+
+
+			        $data['code'] = "200";
+			    	$data['message'] = "Success Registrasi";
+			    	$data['access_token'] = $access_token;
+			    	echo json_encode($data);
 				}
-				$res_bpjs = $run_bpjs->result_array();
-				$login_id = $res_bpjs[0]['id'];
-				$first_name = $res_bpjs[0]['first_name'];
-				$last_name = $res_bpjs[0]['last_name'];
-				$address = $res_bpjs[0]['address'];
+			}		
 
-				$array_insert = array(
-					"patient_login_id" => $res_bpjs[0]['id'],
-					"first_name" => $first_name,
-					"last_name" => $last_name,
-					"dob" => $date_of_birth,
-					"created_at" => date("Y-m-d H:i:s"),
-					"mobile_number" => $mobile_number,
-					"bpjs_number" => $bpjs_number,
-					"medical_number" => $medic_number,
-					"address" => $address
-				);
-				$this->db->insert("patient_profile", $array_insert);
-				$patient_profile_id = $this->db->insert_id();
-				$current_date = date("Y-m-d H:i:s");
-
-		        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password' where id = '$login_id'");
-
-		        
-
-		        $otp_key = $this->master->generateOtp();
-		    	$sms = $this->zanzifa->sender($otp_key,$mobile_number);
-		    	
-		        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password',verification_code='$otp_key' where id = '$login_id'");
-
-		        $data_profile = array();
-				$data_profile['patient_login_id'] = $res_bpjs[0]['id'];
-				$data_profile['patient_profile_id'] = $patient_profile_id;
-				$data_profile['first_name'] = $first_name;
-				$data_profile['last_name'] = $last_name;
-				$data_profile['mobile_number'] = $mobile_number;
-				$data_profile['address'] = $address;
-				$data_profile['profile_pict'] = NULL;
-				$data_profile['bpjs_number'] = $bpjs_number;
-				$data_profile['medic_number'] = $medic_number;
-				$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_bpjs[0]['dob']));
-
-		        $token = array(
-		            "iss" => $_SERVER['SERVER_NAME'],
-		            "iat" => strtotime($res_bpjs[0]['date_created']),
-		            "profile_data" => $data_profile
-		        );
-		        $secret_key = $this->config->item('secret_key');
-		        $access_token = JWT::encode($token, $secret_key);
-
-
-		        $data['code'] = "200";
-		    	$data['message'] = "Success Registrasi";
-		    	$data['access_token'] = $access_token;
-		    	echo json_encode($data);
-			}
-		}		
-
+		}
+		
 	}
 
 	public function login(){
-		$obj = file_get_contents('php://input');
-		$edata = json_decode($obj);
-		$bpjs_number = $edata->bpjs_number;
-		$enc_password = crypt($edata->password,'$6$rounds=5000$saltsalt$');
-		$check_bpjs = "SELECT * FROM patient_login WHERE 1 AND ( no_bpjs = ? OR no_medrec = ? ) AND password = ?";
-		$run_bpjs = $this->db->query($check_bpjs,array($bpjs_number, $bpjs_number,$enc_password));
-		if ( $run_bpjs->num_rows() <= 0 ){
-			header("HTTP/1.1 403");
-			$data['code'] = "403";
-	    	$data['message'] = "User not authorized";
-	    	echo json_encode($data);
-	    	exit;
-		}
 
-		$data_user = $run_bpjs->result_array();
-		$patient_login_id = $data_user[0]['id'];
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			$bpjs_number = $edata->bpjs_number;
+			$enc_password = crypt($edata->password,'$6$rounds=5000$saltsalt$');
+			$check_bpjs = "SELECT * FROM patient_login WHERE 1 AND ( no_bpjs = ? OR no_medrec = ? ) AND password = ?";
+			$run_bpjs = $this->db->query($check_bpjs,array($bpjs_number, $bpjs_number,$enc_password));
+			if ( $run_bpjs->num_rows() <= 0 ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "User not authorized";
+		    	echo json_encode($data);
+		    	exit;
+			}
 
-		$qry_patient_profile = "SELECT * FROM patient_profile WHERE patient_login_id = ? ";
-		$run_patient_profile = $this->db->query($qry_patient_profile, array($patient_login_id));
-		if ( $run_patient_profile->num_rows() <= 0 ){
-			header("HTTP/1.1 403");
-			$data['code'] = "403";
-	    	$data['message'] = "User not authorized ";
-	    	echo json_encode($data);
-	    	exit;
-		}
+			$data_user = $run_bpjs->result_array();
+			$patient_login_id = $data_user[0]['id'];
 
-		$res_patient_profile = $run_patient_profile->result_array();
-		$secret_key = $this->config->item('secret_key');
-		
-		$data_profile = array();
-		$data_profile['patient_login_id'] = $patient_login_id;
-		$data_profile['patient_profile_id'] = $res_patient_profile[0]['id'];
-		$data_profile['first_name'] = $res_patient_profile[0]['first_name'];
-		$data_profile['last_name'] = $res_patient_profile[0]['last_name'];
-		$data_profile['mobile_number'] = $res_patient_profile[0]['mobile_number'];
-		$data_profile['address'] = $res_patient_profile[0]['address'];
-		$data_profile['profile_pict'] = $res_patient_profile[0]['profile_pict'];
-		$data_profile['bpjs_number'] = $res_patient_profile[0]['bpjs_number'];
-		$data_profile['medic_number'] = $res_patient_profile[0]['medical_number'];
-		$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_patient_profile[0]['dob']));
+			$qry_patient_profile = "SELECT * FROM patient_profile WHERE patient_login_id = ? ";
+			$run_patient_profile = $this->db->query($qry_patient_profile, array($patient_login_id));
+			if ( $run_patient_profile->num_rows() <= 0 ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "User not authorized ";
+		    	echo json_encode($data);
+		    	exit;
+			}
 
-        $token = array(
-            "iss" => $_SERVER['SERVER_NAME'],
-            "iat" => strtotime($data_user[0]['date_created']),
-            "profile_data" => $data_profile
-        );
-        $access_token = JWT::encode($token, $secret_key);
-
-		$result_array = $run_bpjs->result_array();
-		$this->db->query("UPDATE patient_login set last_activity = now(), last_login = now(), remember_token = '$access_token' WHERE id = '$patient_login_id'");
-
-		$data['code'] = "200";
-		$data['message'] = "User authorized";
-		$data['access_token'] = $access_token;
+			$res_patient_profile = $run_patient_profile->result_array();
+			$secret_key = $this->config->item('secret_key');
 			
-		echo json_encode($data);
+			$data_profile = array();
+			$data_profile['patient_login_id'] = $patient_login_id;
+			$data_profile['patient_profile_id'] = $res_patient_profile[0]['id'];
+			$data_profile['first_name'] = $res_patient_profile[0]['first_name'];
+			$data_profile['last_name'] = $res_patient_profile[0]['last_name'];
+			$data_profile['mobile_number'] = $res_patient_profile[0]['mobile_number'];
+			$data_profile['address'] = $res_patient_profile[0]['address'];
+			$data_profile['profile_pict'] = $res_patient_profile[0]['profile_pict'];
+			$data_profile['bpjs_number'] = $res_patient_profile[0]['bpjs_number'];
+			$data_profile['medic_number'] = $res_patient_profile[0]['medical_number'];
+			$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_patient_profile[0]['dob']));
+
+	        $token = array(
+	            "iss" => $_SERVER['SERVER_NAME'],
+	            "iat" => strtotime($data_user[0]['date_created']),
+	            "profile_data" => $data_profile
+	        );
+	        $access_token = JWT::encode($token, $secret_key);
+
+			$result_array = $run_bpjs->result_array();
+			$this->db->query("UPDATE patient_login set last_activity = now(), last_login = now(), remember_token = '$access_token' WHERE id = '$patient_login_id'");
+
+			$data['code'] = "200";
+			$data['message'] = "User authorized";
+			$data['access_token'] = $access_token;
+				
+			echo json_encode($data);
+		}
 
 	}
 
 	public function forgot_password(){
-		$obj = file_get_contents('php://input');
-		$edata = json_decode($obj);
-		$bpjs_number = $edata->bpjs_number;
-		$mobile_number = $edata->mobile_number;
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			$obj = file_get_contents('php://input');
+			$edata = json_decode($obj);
+			$bpjs_number = $edata->bpjs_number;
+			$mobile_number = $edata->mobile_number;
 
-		$check_bpjs = "SELECT pl.remember_token as remember_token FROM patient_login as pl 
-			INNER JOIN patient_profile as pp ON (pl.id = pp.patient_login_id) 
-			WHERE 1 AND ( pl.no_bpjs = ? OR pl.no_medrec = ? ) AND pp.mobile_number = ?";
-		$run_bpjs = $this->db->query($check_bpjs,array($bpjs_number, $bpjs_number,$mobile_number));
-		if ( $run_bpjs->num_rows() <= 0 ){
-			header("HTTP/1.1 403");
-			$data['code'] = "403";
-	    	$data['message'] = "User not authorized ";
+			$check_bpjs = "SELECT pl.remember_token as remember_token FROM patient_login as pl 
+				INNER JOIN patient_profile as pp ON (pl.id = pp.patient_login_id) 
+				WHERE 1 AND ( pl.no_bpjs = ? OR pl.no_medrec = ? ) AND pp.mobile_number = ?";
+			$run_bpjs = $this->db->query($check_bpjs,array($bpjs_number, $bpjs_number,$mobile_number));
+			if ( $run_bpjs->num_rows() <= 0 ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "User not authorized ";
+		    	echo json_encode($data);
+		    	exit;
+			}
+			$res_bpjs = $run_bpjs->result_array();
+
+			$data['code'] = "200";
+	    	$data['message'] = "User can Change Password ";
+	    	$data['token'] = $res_bpjs['0']['remember_token'];
 	    	echo json_encode($data);
 	    	exit;
-		}
-		$res_bpjs = $run_bpjs->result_array();
-
-		$data['code'] = "200";
-    	$data['message'] = "User can Change Password ";
-    	$data['token'] = $res_bpjs['0']['remember_token'];
-    	echo json_encode($data);
-    	exit;
-
+    	}
 	}
 
 	public function change_password(){
@@ -315,15 +323,17 @@ class Access extends CI_Controller {
 
 
 	public function generateQR(){
-		header("Content-Type: image/png");
-		$order_id = $_GET['order_id'];
-		
-		$params['data'] = base_url().'courier/finish/?order_id='.$order_id;
-		$params['savename'] = './assets/order/order_'.$order_id.'_qr.png';
-		$generate = $this->ciqrcode->generate($params);
-		$qr_path = base_url().str_replace("./assets", "assets", $params['savename']);
-		$this->db->query("UPDATE order_patient set qr = '$qr_path' where id = '$order_id'");
-		return $qr_path;
+		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
+			header("Content-Type: image/png");
+			$order_id = $_GET['order_id'];
+			
+			$params['data'] = base_url().'courier/finish/?order_id='.$order_id;
+			$params['savename'] = './assets/order/order_'.$order_id.'_qr.png';
+			$generate = $this->ciqrcode->generate($params);
+			$qr_path = base_url().str_replace("./assets", "assets", $params['savename']);
+			$this->db->query("UPDATE order_patient set qr = '$qr_path' where id = '$order_id'");
+			return $qr_path;
+		}
 	}
 
 
