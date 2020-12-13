@@ -75,7 +75,7 @@ class Profile_model extends CI_Model {
         $received_date = date("d M Y ",strtotime($order_id[0]['received_date']));
       }
 
-      if ( $status == 7 ){
+      if ( $status_order == 7 ){
         return "";
       }
 
