@@ -88,6 +88,10 @@ class Profile_model extends CI_Model {
           "6" => array(
             "shipping_label" => "Tanggal Pengambilan",
             "shipping_date" => $received_date
+          ),
+          "7" => array(
+            "shipping_label" => "Tanggal Pengambilan",
+            "shipping_date" => $received_date
           )
         ),
         false => array(
@@ -104,6 +108,10 @@ class Profile_model extends CI_Model {
             "shipping_date" => $delivery_date
           ),
           "6" => array(
+            "shipping_label" => "Tanggal Pengambilan",
+            "shipping_date" => $received_date
+          ),
+          "7" => array(
             "shipping_label" => "Tanggal Pengambilan",
             "shipping_date" => $received_date
           )
