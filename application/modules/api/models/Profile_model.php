@@ -75,6 +75,10 @@ class Profile_model extends CI_Model {
         $received_date = date("d M Y ",strtotime($order_id[0]['received_date']));
       }
 
+      if ( $status == 7 ){
+        return "";
+      }
+
       $array_label = array(
         true => array(
           "2" => array(
@@ -86,10 +90,6 @@ class Profile_model extends CI_Model {
             "shipping_date" => $delivery_date
           ),
           "6" => array(
-            "shipping_label" => "Tanggal Pengambilan",
-            "shipping_date" => $received_date
-          ),
-          "7" => array(
             "shipping_label" => "Tanggal Pengambilan",
             "shipping_date" => $received_date
           )
@@ -108,10 +108,6 @@ class Profile_model extends CI_Model {
             "shipping_date" => $delivery_date
           ),
           "6" => array(
-            "shipping_label" => "Tanggal Pengambilan",
-            "shipping_date" => $received_date
-          ),
-          "7" => array(
             "shipping_label" => "Tanggal Pengambilan",
             "shipping_date" => $received_date
           )
