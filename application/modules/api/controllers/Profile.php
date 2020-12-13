@@ -414,7 +414,7 @@ class Profile extends CI_Controller {
 
 				$received_date = "";
 				if ( $res_check_order[0]['received_date'] != NULL ){
-			        $received_date = date("d M Y ",strtotime($order_id[0]['received_date']));
+			        $received_date = date("d M Y ",strtotime($res_check_order[0]['received_date']));
 		      	}
 
 				$detail_array_history['id'] = $res_check_order[0]['id'];
