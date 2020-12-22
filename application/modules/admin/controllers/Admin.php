@@ -109,6 +109,79 @@ Class Admin extends Public_controller
         $data['status'] = "0";
         echo json_encode($data);
     }
+
+    public function patient(){
+        $arrayGender = array(
+            "L" => "Pria",
+            "W" => "Wanita"
+        );
+
+        $arrayStatus = array(
+            "" => "Active",
+            "1" => "Non Active"
+        );
+
+        $data['profile'] = $this->profile_data;
+        $data['patient'] = $this->admin->all_patient();
+        $data['arrayGender'] = $arrayGender;
+        $data['arrayStatus'] = $arrayStatus;
+        $this->load->view("patient/index",$data);
+    }
+
+    public function add_patient(){
+        $data['profile'] = $this->profile_data;
+        $this->load->view("patient/add_user",$data);
+    }
+
+    public function register_pasien(){
+        $status = "";
+        if ( $this->input->post("active") && $this->input->post("active") != "" ){
+            $status = "1";
+        }
+        $array_insert = array(
+            "no_bpjs" => $this->input->post("bpjs"),
+            "no_medrec" => $this->input->post("medrek"),
+            "status" => $status
+        );
+
+        $mode = "create";
+        if ( $this->input->post("user_id")){
+            $mode = "update";
+        }
+        
+        if ( $mode == "create"){
+            $this->db->insert("patient_login", $array_insert);
+            $patient_login_id = $this->db->insert_id();
+        }else{
+            $this->db->where('id', $this->input->post("user_id"));
+            $this->db->update("patient_login", $array_insert);
+            $patient_login_id = $this->input->post("user_id");
+        }
+
+        return redirect("admin/show_pasien/".$patient_login_id);
+    }
+
+    public function show_pasien($pasien_id){
+        $data['profile'] = $this->profile_data;
+        $data['patient'] = $this->admin->detail_patient($pasien_id);
+        $data['user_id'] = $pasien_id;
+
+        $data['select_kawin'] = "";
+        $data['select_tidak_kawin'] = "";
+        if ( $data['patient'][0]['marrital_status'] == "Tidak Kawin"){
+            $data['select_tidak_kawin'] = "selected";
+        }
+        $data['select_blood_a'] = "";
+        $data['select_blood_b'] = "";
+        $data['select_blood_ab'] = "";
+        $data['select_blood_o'] = "";
+
+        if ( $data['patient'][0]['blood_type'] != "" ){
+            $data['select_blood_'.strtolower(trim($data['patient'][0]['blood_type']))] = "selected";
+        }
+
+        $this->load->view("patient/show_user",$data);
+    }
 }
 
 ?>

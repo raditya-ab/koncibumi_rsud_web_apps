@@ -105,4 +105,19 @@ class Admin_model extends CI_Model {
 		$res_kurir = $run_expired->result_array();
 		return $res_kurir;
 	}
+
+	function all_patient(){
+		$query = "SELECT * FROM patient_login";
+		$run = $this->db->query($query);
+		return $run->result_array();
+	}
+
+	function detail_patient($pasien_id){
+		$query = "SELECT * FROM patient_login WHERE 1 AND id = ? ";
+		$run = $this->db->query($query,array($pasien_id));
+		$result = $run->result_array();
+		return $result;
+	}
+
+
 }
