@@ -113,7 +113,8 @@ Class Admin extends Public_controller
     public function patient(){
         $arrayGender = array(
             "L" => "Pria",
-            "W" => "Wanita"
+            "W" => "Wanita",
+            "" => ""
         );
 
         $arrayStatus = array(
@@ -148,7 +149,7 @@ Class Admin extends Public_controller
         if ( $this->input->post("user_id")){
             $mode = "update";
         }
-        
+
         if ( $mode == "create"){
             $this->db->insert("patient_login", $array_insert);
             $patient_login_id = $this->db->insert_id();
