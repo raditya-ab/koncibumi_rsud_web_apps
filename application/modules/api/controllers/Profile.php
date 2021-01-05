@@ -293,9 +293,9 @@ class Profile extends CI_Controller {
 				exit();
 			}
 
-			$whereClause = " AND op.status != '6'";
+			$whereClause = " AND op.status NOT IN ('6','7')";
 			if ( $status == "false" ){
-				$whereClause = " AND op.status = '6'";
+				$whereClause = " AND op.status IN ('6','7')";
 			}
 
 
