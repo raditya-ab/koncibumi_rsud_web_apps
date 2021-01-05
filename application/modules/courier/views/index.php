@@ -62,7 +62,7 @@
                     <td><?php echo date("d M Y",strtotime($value['created_at']));?></td>
                     <td>Siap Diantar</td>
                     <td>
-                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" onClick="showDetailReceipt(<?php echo $value['id'];?>)">
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" onClick="showDetailReceipt(<?php echo $value['order_id'];?>)">
                         Lihat Resep
                       </button>
                     </td>
