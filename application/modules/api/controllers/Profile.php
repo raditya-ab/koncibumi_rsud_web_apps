@@ -309,7 +309,7 @@ class Profile extends CI_Controller {
 			md.first_name as doctor_name,pp.bpjs_number as bpjs_number, pp.medical_number as medical_number, 
 			op.received_date as received_date,pp.address as address,pp.latitude,pp.longitude, pp.id as patient_profile_id
 				FROM order_patient as op
-				INNER JOIN master_doctor as md ON (md.id = op.doctor_id )
+				LEFT JOIN master_doctor as md ON (md.id = op.doctor_id )
 				INNER JOIN patient_profile as pp ON ( pp.id = op.patient_id)
 				WHERE 1 AND op.patient_id = ? $whereClause";
 			$run_check_order = $this->db->query($qry_check_order,array($patient_profile_id));
