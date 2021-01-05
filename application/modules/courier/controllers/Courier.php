@@ -44,7 +44,7 @@ Class Courier extends Public_controller
 
         $qry_get_receipt = "SELECT rh.*, md.first_name as doctor_name, md.poli as poli,
         pp.first_name as patient_first_name, pp.last_name as patient_last_name,op.status as status,
-        op.order_no,op.farmasi_id as farmasi_id,op.delivery_date
+        op.order_no,op.farmasi_id as farmasi_id,op.delivery_date,op.id as order_id
         FROM receipt_header as rh
         INNER JOIN order_patient as op ON (op.id = rh.kunjungan_id ) 
         INNER JOIN master_doctor as md ON (md.id = op.doctor_id)
@@ -78,7 +78,8 @@ Class Courier extends Public_controller
             $data['restricted'] = $res_get_receipt[0]['restricted'];
             $data['resep_id'] = $res_get_receipt[0]['id'];
             $data['delivery_date'] = $res_get_receipt[0]['delivery_date'];
-            
+            $data['order_id'] = $res_get_receipt[0]['order_id'];
+
             $data['next_status'] = 3;
             if ( $res_get_receipt[0]['restricted'] == 1 ){
                 $data['next_status'] = 4;

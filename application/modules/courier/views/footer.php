@@ -45,7 +45,7 @@
     });
 
     request.done(function(data){
-      $("#order_id").val(data.resep_id);
+      $("#order_id").val(data.order_id);
       $("#order_no").val(data.order_no);
       $("#receipt_no").val(data.receipt_no);
       $("#patient_name").val(data.patient_name);
