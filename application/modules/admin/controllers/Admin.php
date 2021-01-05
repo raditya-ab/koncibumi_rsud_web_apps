@@ -151,11 +151,6 @@ Class Admin extends Public_controller
             $mode = "update";
         }
 
-        $get_kunjungan = $this->crontask->get_kunjungan($this->input->post("bpjs"),$this->input->post("medrek"));
-        if ( count($get_kunjungan) <= 0 ){
-            return redirect("admin/failed_add_patient");
-        }
-
         if ( $mode == "create"){
             $this->db->insert("patient_login", $array_insert);
             $patient_login_id = $this->db->insert_id();
@@ -193,6 +188,10 @@ Class Admin extends Public_controller
     public function failed_add_patient(){
         $data['profile'] = $this->profile_data;
         $this->load->view("patient/failed_add_user",$data);
+    }
+
+    public function check_pasien(){
+        
     }
 }
 

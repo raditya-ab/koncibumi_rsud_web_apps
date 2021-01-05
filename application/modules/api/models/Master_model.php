@@ -38,7 +38,7 @@ class Master_model extends CI_Model {
       $restricted = false;
   		$check_receipt = "SELECT rh.id as receipt_id FROM receipt_header as rh
   			INNER JOIN order_patient as op ON rh.kunjungan_id = op.id
-  				WHERE 1 AND rh.id = ? ORDER BY rh.id desc";
+  				WHERE 1 AND rh.kunjungan_id = ? ORDER BY rh.id desc";
   		$run_receipt = $this->db->query($check_receipt,array($visit_id));
   		$data_medicine = array();
       $list_restricted = array();
