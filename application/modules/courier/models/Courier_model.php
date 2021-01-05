@@ -4,7 +4,7 @@ class Courier_model extends CI_Model {
 
   	function get_all_jobs($kurir_id){
   		$qry_all_receipt = "SELECT rh.*,op.order_no,pp.first_name as first_name, 
-			pp.last_name as last_name,md.first_name as doctor_name, op.id as order_id
+			pp.last_name as last_name,md.first_name as doctor_name, rh.id as receipt_id
 			FROM receipt_header as rh 
 			INNER JOIN order_patient as op ON (rh.kunjungan_id = op.id)
 			INNER JOIN patient_profile as pp ON (op.patient_id = pp.id)
