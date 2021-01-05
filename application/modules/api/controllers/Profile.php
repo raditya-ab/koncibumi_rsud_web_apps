@@ -324,6 +324,10 @@ class Profile extends CI_Controller {
 						$qr = "/api/access/generateQR?order_id=".$value['id'];
 					}
 
+					if ( $value['status'] == 7 ){
+						$qr = "";
+					}
+
 					$received_date = "";
 					if (  $value['received_date'] != NULL ){
 				        $received_date = date("d M Y ",strtotime( $value['received_date']));
