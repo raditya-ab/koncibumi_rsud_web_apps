@@ -151,7 +151,7 @@ Class Admin extends Public_controller
             $mode = "update";
         }
 
-        $get_kunjungan = $this->crontask->get_kunjungan();
+        $get_kunjungan = $this->crontask->get_kunjungan($this->input->post("bpjs"),$this->input->post("medrek"));
         if ( count($get_kunjungan) <= 0 ){
             return redirect("admin/failed_add_patient");
         }
