@@ -794,7 +794,7 @@ class Profile extends CI_Controller {
 			}
 		}
 
-		$qry_get_active = "SELECT * FROM order_patient WHERE 1 AND status NOT IN (6,3) AND patient_id = ? ";
+		$qry_get_active = "SELECT * FROM order_patient WHERE 1 AND status NOT IN (6,3,7) AND patient_id = ? ";
 		$run_get_active = $this->db->query($qry_get_active,array($patient_profile_id));
 		if ( $run_get_active->num_rows() > 0 ){
 			$data['code'] = "2";
