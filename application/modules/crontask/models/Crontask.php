@@ -142,6 +142,13 @@ Class Crontask extends CI_Model
         }
     }
 
+    public function get_kunjungan($bpjs,$medrek){
+        $data = array();
+
+        
+        return $data;
+    }
+
 }
 
 ?>

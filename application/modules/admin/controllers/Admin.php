@@ -7,6 +7,7 @@ Class Admin extends Public_controller
         parent::__construct();
         $this->load->model("login/login_model","login");
         $this->load->model("Admin_model","admin");
+        $this->load->model("crontask/crontask","crontask");
         $this->load->library('email');
         $this->config->load('config');
 
@@ -150,6 +151,11 @@ Class Admin extends Public_controller
             $mode = "update";
         }
 
+        $get_kunjungan = $this->crontask->get_kunjungan();
+        if ( count($get_kunjungan) <= 0 ){
+            return redirect("admin/failed_add_patient");
+        }
+
         if ( $mode == "create"){
             $this->db->insert("patient_login", $array_insert);
             $patient_login_id = $this->db->insert_id();
@@ -182,6 +188,11 @@ Class Admin extends Public_controller
         }
 
         $this->load->view("patient/show_user",$data);
+    }
+
+    public function failed_add_patient(){
+        $data['profile'] = $this->profile_data;
+        $this->load->view("patient/failed_add_user",$data);
     }
 }
 

@@ -217,7 +217,7 @@ Class Order_m extends CI_Model
         if ( $run_receipt->num_rows() > 0 ){
             $res_receipt = $run_receipt->result_array();
             foreach ($res_receipt as $key => $value) {
-                $data_obat = $this->master->get_detail_medicine($value['id']);
+                $data_obat = $this->master->get_detail_medicine($value['obat']);
                 $list_array = array();
                 $list_array['medicine_id'] = $value['id'];
                 $list_array['name'] = $data_obat[0]['name'];
