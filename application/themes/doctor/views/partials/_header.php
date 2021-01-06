@@ -18,7 +18,7 @@
 									<!--begin::Nav-->
 									<ul class="menu-nav">
 										<li class="menu-item menu-item-active" aria-haspopup="true">
-											<a href="<?php echo site_url('pages/dashboard');?>" class="menu-link">
+											<a href="<?php echo site_url();?>" class="menu-link">
 												<span class="menu-text">Dashboard</span>
 											</a>
 										</li>

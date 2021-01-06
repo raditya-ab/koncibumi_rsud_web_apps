@@ -5,9 +5,15 @@
 <!-- AdminLTE App -->
 <script src="<?php echo base_url();?>dashboard/dist/js/adminlte.min.js"></script>
 <script type="text/javascript">
+    $("#form_login").on('submit', function(e){
+        e.preventDefault();
+        submitLogin();
+    });
+    
     function submitLogin(){
         $("#label_invalid_login").hide();
         $("#label_loading").show();
+
         var request = $.ajax({
             url : "<?php echo base_url();?>/login/submit",
             dataType : "json",
