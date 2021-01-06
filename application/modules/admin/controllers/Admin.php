@@ -10,6 +10,7 @@ Class Admin extends Public_controller
         $this->load->model("crontask/crontask","crontask");
         $this->load->library('email');
         $this->config->load('config');
+        $this->load->library("endpoint");
 
         if ( isset($_SESSION['user_id'])){
             $this->profile_data = $this->login->get_profile_data($_SESSION['user_id']);
@@ -151,11 +152,6 @@ Class Admin extends Public_controller
             $mode = "update";
         }
 
-        $get_kunjungan = $this->crontask->get_kunjungan($this->input->post("bpjs"),$this->input->post("medrek"));
-        if ( count($get_kunjungan) <= 0 ){
-            return redirect("admin/failed_add_patient");
-        }
-
         if ( $mode == "create"){
             $this->db->insert("patient_login", $array_insert);
             $patient_login_id = $this->db->insert_id();
@@ -193,6 +189,115 @@ Class Admin extends Public_controller
     public function failed_add_patient(){
         $data['profile'] = $this->profile_data;
         $this->load->view("patient/failed_add_user",$data);
+    }
+
+    public function check_pasien(){
+        $bpjs = $this->input->post("bpjs");
+        $medrek = $this->input->post("medrek");
+        $data = array();
+        $data['total_kunjungan'] = 0;
+        $call_login = $this->set_login();
+        $html = "";
+
+        $qry_login_id = "SELECT * FROM patient_login WHERE 1 AND no_medrec = ? ";
+        $run_login_id = $this->db->query($qry_login_id,array($medrek));
+        if ( $run_login_id->num_rows() > 0 ){
+            $data['total_kunjungan'] = 0;
+            $data['message'] = "Data pasien sudah ada sebelumnya";
+            echo json_encode($data);
+            exit();
+        }
+
+        if ( $call_login == false ){
+           $data['total_kunjungan'] = 0;
+           $data['message'] = "Gagal Login ke Database SIM Rumah Sakit";
+           echo json_encode($data);
+        }else{
+            $config_sync = $this->config->item("api_rs");
+            $url = $config_sync['url'].'/'.$config_sync['master_path'].'/'.$config_sync['endpoint_path']['visit'].'/'.$medrek;
+            $headers['x-token'] = "Bearer ".$call_login['token'];
+            $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
+            $call_visit = $this->endpoint->call_endpoint($config_sync,$url,$headers);
+            $array_insert = array(
+                "endpoint" => $url,
+                "responses" => $call_visit,
+                "created_at" => date("Y-m-d H:i:s")
+            );
+            $this->db->insert("log_respons",$array_insert);
+
+            $response_visit = json_decode($call_visit);
+            if ( isset($response_visit->status) && $response_visit->status == false ) {
+                $data['total_kunjungan'] = 0;
+                $data['message'] = "Data pasien tidak tersedia di SIM Rumah Sakit";
+            }else{
+                $response_visit_array = json_decode($response_visit);
+                $data['total_kunjungan'] = count($response_visit_array);
+                $data['message'] = "Sukses Sync Data Kunjungan ke SIM Rumag Sakit";
+                foreach ($response_visit as $key => $value) {
+                    $html .= "<tr>";
+                    $html .= "<td>".($key + 1) ."</td>";
+                    $html .= "<td>".$value->id_kunjungan."</td>";
+                    $html .= "<td>". date("d-M-Y", strtotime($value->tgl_kunjungan))."</td>";
+                    $html .= "<td>".$value->id_dokter."</td>";
+                    $html .= "<td>".$value->id_poli."</td>";
+                    $html .= "<td>".$value->icd_code."</td>";
+                    $html .= "<td>".$value->icd_description."</td>";
+                    $html .= "<td>".$value->tindak_lanjut."</td>";
+                    $html .= "</tr>";
+
+                    $qry_check_doctor = "SELECT * FROM master_doctor WHERE 1 AND first_name like ? AND poli like ? ";
+                    $run_check_doctor = $this->db->query($qry_check, array('%'.$value->id_dokter.'%','%'.$value->id_poli.'%'));
+                    $doctor_id = NULL;
+                    if ( $run_check_doctor->num_rows() > 0 ){
+                        $res_check_doctor = $run_check_doctor->num_rows();
+                        $doctor_id = $res_check_doctor[0]['id'];
+                    }
+
+                    $array_insert = array(
+                        "medical_number" => $value->no_medical_record,
+                        "icd_code" => $value->icd_code,
+                        "icd_description" => $value->icd_description,
+                        "tanggal_kunjungan" => date("Y-m-d", strtotime($value->tgl_kunjungan)),
+                        "action_type" => $value->tindak_lanjut,
+                        "id_kunjungan" => $value->id_kunjungan,
+                        "patient_login_id" => NULL,
+                        "doctor_id" => $doctor_id,
+                        "created_at" => date("Y-m-d H:i:s"),
+                        "patient_id" => NULL,
+                        'poli' => $value->id_poli
+                    );
+                    $this->db->insert("kunjungan",$array_insert);
+
+                }
+                $data['html'] = $html;
+            }
+            
+            echo json_encode($data);
+        }
+
+    
+
+    }
+
+    public function set_login(){
+        $config_sync = $this->config->item("api_rs");
+        $url = $config_sync['url'].'/'.$config_sync['master_path'].'/'.$config_sync['endpoint_path']['login'];
+        $call_login = $this->endpoint->call_login($config_sync, $url);
+        $response = json_decode($call_login);
+        $array_insert = array(
+            "endpoint" => $url,
+            "responses" => $call_login,
+            "created_at" => date("Y-m-d H:i:s")
+        );
+        $this->db->insert("log_respons",$array_insert);
+
+        if ( isset($response->token)){
+            $data['status'] = true;
+            $data['token'] = $response->token;
+            return $data;
+        }
+        return false;
     }
 }
 

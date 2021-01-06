@@ -585,7 +585,8 @@ $config['api_rs'] = array(
 	'endpoint_path' => array(
 		'login' => 'api/auth/login',
 		'docter' => 'api/main/dokter',
-		'drugs' => 'api/main/obat'
+		'drugs' => 'api/main/obat',
+		'visit' => 'api/main/kunjungan'
 	)
 );
 
