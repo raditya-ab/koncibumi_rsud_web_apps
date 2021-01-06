@@ -51,7 +51,9 @@
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button class="btn btn-info" type="button" onClick="getKunjungan()" id="btn_cek">Cek Data</button>
+                    <span id="loading_bar" style="display: none;">Loading...</span>
+                    <button type="submit" class="btn btn-primary" style="display: none;" id="btn_submit">Submit</button>
                     <a class="btn btn-warning" href="<?php echo base_url().'admin/patient';?>">Back</a>
                 </div>
               </form>
@@ -59,6 +61,39 @@
             <!-- /.card -->
           </div>
           <!--/.col (left) -->
+
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Data Kunjungan</h3>
+              </div>
+              <div class="card-body">
+                <h4>Nama : <span id="label_name"></span></h4>
+                <h4>No. BPJS : <span id="label_bpjs"></span></h4>
+                <h4>No. Medik : <span id="label_medrec"></span></h4>
+                <br/>
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead class="head_background">
+                    <tr>
+                        <th>No.</th>
+                        <th>ID Kunjungan</th>
+                        <th>Tanggal Kunjungan</th>
+                        <th>Dokter</th>
+                        <th>Poli</th>
+                        <th>ICD Code</th>
+                        <th>IC Description</th>
+                        <th>Tindak Lanjut</th>
+                    </tr>
+                  </thead>
+                  <tbody id="body_kunjungan">
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /.card -->
+          </div>
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -82,6 +117,40 @@
   $(function () {
     $("#dob").datepicker();
   });
+
+  function getKunjungan(){
+    $("#btn_cek").hide();
+    $("#btn_submit").hide();
+    $("#loading_bar").show();
+    $("#body_kunjungan").html("");
+
+    if ( $("#bpjs").val() == "" || $("#medrek").val() == ""){
+      alert("Silahkan isi data BPJS atau Nomor Medical");
+      return false;
+    }else{
+      var request = $.ajax({
+        url : "<?php echo base_url();?>/admin/check_pasien",
+        data : {
+          bpjs : $("#bpjs").val(),
+          medrek : $("#medrek").val()
+        },
+        type : "post",
+        dataType : "json"
+      });
+
+      request.done(function(data){
+        $("#loading_bar").hide();
+        $("#btn_cek").show();
+        if ( data.total_kunjungan <= 0 ){
+          alert(data.message);
+          return false;
+        }else{
+          $("#body_kunjungan").html(data.html);
+          $("#btn_submit").show();
+        }
+      })
+    }
+  }
 </script>
 </body>
 </html>
