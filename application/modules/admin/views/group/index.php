@@ -28,6 +28,7 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <form role="form" action="<?php echo base_url();?>admin/group/add" method="post">
+                <input type="hidden" name="akses_id" id="akses_id">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Nama Grup Akses</label>
@@ -53,7 +54,7 @@
                         <td><?php echo $key + 1 ;?></td>
                         <td><?php echo $value['name'];?></td>
                         <td>
-                          <button type="button" class="btn btn-info" onClick="editGroup('<?php echo $value['id'];?>');">Edit</button>
+                          <button type="button" class="btn btn-info" onClick="editGroup('<?php echo $value['id'];?>','<?php echo $value['name'];?>');">Edit</button>
                           <button type="button" class="btn btn-danger" onClick="removeGroup('<?php echo $value['id'];?>');">Remove</button>
                         </td>
                       </tr>
@@ -80,5 +81,33 @@
 <!-- ./wrapper -->
 
 <?php $this->load->view("footer");?>
+<script type="text/javascript">
+  function editGroup(id,name){
+    $("#name").val(name);
+    $("#akses_id").val(id);
+  }
+
+  function removeGroup(id){
+    if ( confirm("Apakah anda yakin ingin menghapus data ini ? ")){
+      var request = $.ajax({
+        url : "<?php echo base_url();?>/admin/group/delete",
+        dataType : "json",
+        data : {
+          id : id
+        },
+        type : "post"
+      });
+
+      request.done(function(data){
+        if ( data.status == 0 ){
+          alert("Data telah dihapus");
+        }
+        window.location.reload();
+      })
+    }else{
+      return false;
+    }
+  }
+</script>
 </body>
 </html>

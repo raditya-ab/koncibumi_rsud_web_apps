@@ -29,9 +29,22 @@ Class Group extends Public_controller
             "name" => $this->input->post("name"),
             "created_at" => date("Y-m-d H:i:s")            
         );
-        $this->db->insert("master_group",$data);
+
+        if ( $this->input->post("akses_id") && ($this->input->post("akses_id") != "" ) ) {
+            $this->db->where('id', $this->input->post("akses_id"));
+            $this->db->update('master_group',$data);
+        }else{
+            $this->db->insert("master_group",$data);
+        }
 
         redirect("admin/group");
+    }
+
+    public function delete(){
+        $akses_id = $this->input->post("id");
+        $this->db->query("DELETE FROM master_group WHERE 1 AND id = $akses_id ");
+        $data['status'] = 0;
+        echo json_encode($data);
     }
 
 }
