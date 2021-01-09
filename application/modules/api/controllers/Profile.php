@@ -794,7 +794,7 @@ class Profile extends CI_Controller {
 			$res_profile = $run_profile->result_array();
 			if ( $res_profile[0]['latitude'] == "" && $res_profile[0]['longitude'] == "" ){
 				$data['code'] = "1";
-				$data['message'] = "Alamat not complete";
+				$data['message'] = "Aktifkan GPS lokasi anda. Aktifkan GPS/titik lokasi anda untuk mempermudah dan mempercepat kurir kami saat mengantar obat";
 				echo json_encode($data);
     			exit;
 			}
@@ -804,7 +804,7 @@ class Profile extends CI_Controller {
 		$run_get_active = $this->db->query($qry_get_active,array($patient_profile_id));
 		if ( $run_get_active->num_rows() > 0 ){
 			$data['code'] = "2";
-			$data['message'] = "Any order still active";
+			$data['message'] = "Anda sudah memiliki pesanan. Mohon maaf, anda hanya dapat melakukan 1(satu) pesanan. Silahkan tunggu hingga pesanan anda selesai";
 			echo json_encode($data);
 			exit;
 		}
@@ -819,7 +819,7 @@ class Profile extends CI_Controller {
 				$diff = ($now - $order_time) / (60 * 60 * 24);
 				if ( $diff <= 7 ){
 					$data['code'] = "3";
-					$data['message'] = "Any order still active and have complaint";
+					$data['message'] = "Anda memiliki keluhan. 72:00:00. Anda memiliki keluhan, silahkan konsultasi ke dokter terlebih dahulu sebelum melakukan pemesanan obat";
 					echo json_encode($data);
 	    			exit;
 				}

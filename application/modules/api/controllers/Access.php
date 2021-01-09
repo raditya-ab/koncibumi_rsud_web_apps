@@ -50,7 +50,7 @@ class Access extends CI_Controller {
 					if ( $run_bpjs->num_rows() <= 0 ){
 						header("HTTP/1.1 422 ");
 				    	$data['code'] = "422 ";
-				    	$data['message'] = "No BPJS atau No Medical tidak ada";
+				    	$data['message'] = "Registrasi Gagal. Maaf No. Rekam Medis yang anda masukan belum terdaftar sebagai pengguna aplikasi Koncibumi";
 				    	echo json_encode($data);
 				    	exit();
 					}
