@@ -204,6 +204,10 @@ class Access extends CI_Controller {
 
 			$res_patient_profile = $run_patient_profile->result_array();
 			$secret_key = $this->config->item('secret_key');
+			$array_notif = array(
+				"0" => false,
+				"1" => true
+			);
 			
 			$data_profile = array();
 			$data_profile['patient_login_id'] = $patient_login_id;
@@ -216,6 +220,8 @@ class Access extends CI_Controller {
 			$data_profile['bpjs_number'] = $res_patient_profile[0]['bpjs_number'];
 			$data_profile['medic_number'] = $res_patient_profile[0]['medical_number'];
 			$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_patient_profile[0]['dob']));
+			$data_profile['push_notif'] = $array_notif[$res_patient_profile[0]['notif_app']];
+			$data_profile['sms_notif'] = $array_notif[$res_patient_profile[0]['notif_sms']];
 
 	        $token = array(
 	            "iss" => $_SERVER['SERVER_NAME'],

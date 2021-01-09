@@ -97,6 +97,8 @@ class Profile extends CI_Controller {
   			$list_profile['latitude'] = "";
   			$list_profile['longitude'] = "";
   			$list_profile['gender'] = "";
+  			$list_profile['push_notif'] = "";
+			$list_profile['sms_notif'] = "";
 
 			if ( $run_profile->num_rows() > 0 ){
 				$res_profile = $run_profile->result_array();
@@ -114,6 +116,8 @@ class Profile extends CI_Controller {
 	  			$list_profile['longitude'] = $res_profile[0]['longitude'];
 
 	  			$list_profile['gender'] = $res_profile[0]['gender'];
+	  			$list_profile['push_notif'] = $array_notif[$res_profile[0]['notif_app']];
+				$list_profile['sms_notif'] = $array_notif[$res_profile[0]['notif_sms']];
 			}
   			
 
@@ -549,6 +553,8 @@ class Profile extends CI_Controller {
 				        $list_profile['latitude'] = $res_profile[0]['latitude'];
 				        $list_profile['longitude'] = $res_profile[0]['longitude'];
 				        $list_profile['gender'] = $res_profile[0]['gender'];
+				        $list_profile['push_notif'] = $array_notif[$res_profile[0]['notif_app']];
+						$list_profile['sms_notif'] = $array_notif[$res_profile[0]['notif_sms']];
 				}
 
 
