@@ -53,8 +53,8 @@
                         <td><?php echo $key + 1 ;?></td>
                         <td><?php echo $value['name'];?></td>
                         <td>
-                          <button class="btn btn-info" onClick="editGroup('<?php echo $value['id'];?>');">Edit</button>
-                          <button class="btn btn-danger" onClick="removeGroup('<?php echo $value['id'];?>');">Remove</button>
+                          <button type="button" class="btn btn-info" onClick="editGroup('<?php echo $value['id'];?>');">Edit</button>
+                          <button type="button" class="btn btn-danger" onClick="removeGroup('<?php echo $value['id'];?>');">Remove</button>
                         </td>
                       </tr>
                       <?php }  ?>
