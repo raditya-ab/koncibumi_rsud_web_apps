@@ -2,7 +2,7 @@
 	<!--begin::Brand-->
 	<div class="aside-brand d-flex flex-column align-items-center flex-column-auto pt-5 pt-lg-18 pb-10">
 		<!--begin::Logo-->
-		<div class="btn p-0 symbol symbol-60 symbol-light-primary" href="?page=index">
+		<div class="btn p-0 symbol symbol-60 symbol-light-primary">
 			<div class="symbol-label">
 				<!-- <img alt="Logo" src="<?php echo base_url('assets/media/svg/avatars/001-boy.svg');?>" class="h-75 align-self-end" /> -->
 				<img alt="Logo" src="<?php echo base_url('assets/media/logos/logo512x512.jpg');?>" class="h-75 align-self-center" />

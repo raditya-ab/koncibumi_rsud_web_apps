@@ -1,7 +1,7 @@
 <div id="kt_header_mobile" class="header-mobile header-mobile-fixed">
 
 	<!--begin::Logo-->
-	<a href="<?php echo base_url();?>">
+	<a href="<?php echo site_url();?>">
 		<img alt="Logo" src="<?php echo base_url('assets/media/logos/rsud-logo-main.png');?>"
 			class="logo-default max-h-30px" />
 	</a>

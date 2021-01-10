@@ -8,19 +8,17 @@
 							<!--begin::Copyright-->
 							<div class="text-dark order-2 order-md-1">
 								<span class="text-muted font-weight-bold mr-2">2020©</span>
-								<a href="http://rsud.sumedangkab.go.id/" target="_blank" class="text-dark-75 text-hover-primary">RSUD Sumedang</a>
+								<a href="http://rsud.sumedangkab.go.id/" target="_blank" class="text-dark-75 text-hover-primary">RSUD Sumedang. All Rights Reserved.</a>
 							</div>
 
 							<!--end::Copyright-->
 
-							<!--begin::Nav-->
+							<!-- begin::Nav-->
 							<div class="nav nav-dark order-1 order-md-2">
-								<a href="http://keenthemes.com/metronic" target="_blank" class="nav-link pr-3 pl-0">About</a>
-								<a href="http://keenthemes.com/metronic" target="_blank" class="nav-link px-3">Team</a>
-								<a href="http://keenthemes.com/metronic" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
+								<a href="https://www.wedocreative.work/" target="_blank" class="nav-link pl-3 pr-0"><b>RH Consulting</b></a>
 							</div>
 
-							<!--end::Nav-->
+							<!--end::Nav -->
 						</div>
 
 						<!--end::Container-->
