@@ -600,9 +600,9 @@ $config['api_post_rs'] = array(
 
 $config['template_sms'] = array(
 	"doctor" => "Pesanan anda telah diproses oleh ",
-	"farmasi_diambil" => "Pesanan anda telah diproses farmasi. Silahkan diambil di tanggal ",
-	"farmasi_dikirim" => "Pesanan anda telah diproses farmasi. Silahkan pesanan diterima di tanggal ",
-	"kurir_dikirim" => "Pesanan anda telah dikirim oleh ",
+	"farmasi_diambil" => "Pesanan anda telah diproses farmasi. Silahkan diambil pada tanggal ",
+	"farmasi_dikirim" => "Pesanan anda telah diproses farmasi. Pesanan akan dikirim pada tanggal ",
+	"kurir_dikirim" => "Pesanan anda sedang dalam proses pengiriman oleh kurir ",
 	"pesanan_diambil" => "Pesanan anda telah diambil di tanggal ",
 	"pesanan_dikirim" => "Pesanan anda telah diterima di tanggal ",
 	"expired" => "Order ini masih menuggu approval anda. Mohon diproses"
