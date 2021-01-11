@@ -142,11 +142,18 @@ Class Admin extends Public_controller
             $status = "1";
         }
         $array_insert = array(
-            "no_bpjs" => $this->input->post("bpjs"),
-            "no_medrec" => $this->input->post("medrek"),
-            "status" => $status
+            "no_bpjs" => $this->input->post("detail_bpjs"),
+            "no_medrec" => $this->input->post("detail_medrek"),
+            "date_created" => date("Y-m-d H:i:s"),
+            "first_name" => $this->input->post("detail_name"),
+            "dob" => date("Y-m-d",strtotime($this->input->post("detail_dob"))),
+            "gender" => $this->input->post("detail_gender"),
+            "blood_type" => $this->input->post("detail_blood"),
+            "address" => $this->input->post("detail_adress"),
+            "mobile_number" => $this->input->post("detail_handphone"),
+            "marrital_status" => $this->input->post("detail_marital")
         );
-
+ 
         $mode = "create";
         if ( $this->input->post("user_id")){
             $mode = "update";
@@ -231,8 +238,23 @@ Class Admin extends Public_controller
                 $data['total_kunjungan'] = 0;
                 $data['message'] = "Data pasien tidak tersedia di SIM Rumah Sakit";
             }else{
-                $response_visit_array = json_decode($response_visit);
-                $data['total_kunjungan'] = count($response_visit_array);
+                $call_login = $this->set_login();
+                $config_sync = $this->config->item("api_rs");
+                $explode_medical_number = explode("-",$medrek);
+
+                $url = $config_sync['url'].'/'.$config_sync['master_path'].'/'.$config_sync['endpoint_path']['patient'].'/'.$medrek;
+                $headers['x-token'] = "Bearer ".$call_login['token'];
+                $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                $call_patient = $this->endpoint->call_endpoint($config_sync,$url,$headers);
+                $array_insert = array(
+                    "endpoint" => $url,
+                    "responses" => $call_patient,
+                    "created_at" => date("Y-m-d H:i:s")
+                );
+                $this->db->insert("log_respons",$array_insert);
+                $data['detail_patient'] = json_decode($call_patient);
+
+                $data['total_kunjungan'] = count($response_visit);
                 $data['message'] = "Sukses Sync Data Kunjungan ke SIM Rumag Sakit";
                 foreach ($response_visit as $key => $value) {
                     $html .= "<tr>";
@@ -247,7 +269,7 @@ Class Admin extends Public_controller
                     $html .= "</tr>";
 
                     $qry_check_doctor = "SELECT * FROM master_doctor WHERE 1 AND first_name like ? AND poli like ? ";
-                    $run_check_doctor = $this->db->query($qry_check, array('%'.$value->id_dokter.'%','%'.$value->id_poli.'%'));
+                    $run_check_doctor = $this->db->query($qry_check_doctor, array('%'.$value->id_dokter.'%','%'.$value->id_poli.'%'));
                     $doctor_id = NULL;
                     if ( $run_check_doctor->num_rows() > 0 ){
                         $res_check_doctor = $run_check_doctor->num_rows();

@@ -35,11 +35,23 @@
                 <div class="card-body">
                   <div class="form-group">
                       <label for="exampleInputPassword1">No. BPJS</label>
-                      <input type="text" class="form-control" id="bpjs" name="bpjs" value="<?php echo $patient[0]['no_bpjs']?>" autocomplete="off" required>  
+                      <input type="text" class="form-control" id="detail_bpjs" name="detail_bpjs" value="<?php echo $patient[0]['no_bpjs']?>" autocomplete="off" required>  
                   </div>
                   <div class="form-group">
                       <label for="exampleInputPassword1">No. Medrek</label>
-                      <input type="text" class="form-control" id="medrek" name="medrek" value="<?php echo $patient[0]['no_medrec']?>" autocomplete="off" required>  
+                      <input type="text" class="form-control" id="detail_medrek" name="detail_medrek" value="<?php echo $patient[0]['no_medrec']?>" autocomplete="off" required>  
+                  </div>
+                  <div class="form-group">
+                      <label for="exampleInputPassword1">Nama</label>
+                      <input type="text" class="form-control" id="detail_name" name="detail_name" value="<?php echo $patient[0]['first_name']?>" autocomplete="off" required>  
+                  </div>
+                  <div class="form-group">
+                      <label for="exampleInputPassword1">Handphone</label>
+                      <input type="text" class="form-control" id="detail_handphone" name="detail_handphone" value="<?php echo $patient[0]['mobile_number']?>" autocomplete="off" required>  
+                  </div>
+                  <div class="form-group">
+                      <label for="exampleInputPassword1">Alamat</label>
+                      <textarea name="detail_adress" cols="30" rows="5" class="form-control"><?php echo $patient[0]['address'];?></textarea>
                   </div>
                   <div class="form-group">
                       <label for="exampleInputPassword1">Status Aktif</label>

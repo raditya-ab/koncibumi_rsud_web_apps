@@ -586,7 +586,8 @@ $config['api_rs'] = array(
 		'login' => 'api/auth/login',
 		'docter' => 'api/main/dokter',
 		'drugs' => 'api/main/obat',
-		'visit' => 'api/main/kunjungan'
+		'visit' => 'api/main/kunjungan',
+		'patient' => 'api/main/patient'
 	)
 );
 

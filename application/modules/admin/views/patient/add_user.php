@@ -33,7 +33,16 @@
               <!-- form start -->
               <form role="form" action="<?php echo base_url();?>admin/register_pasien" method="post">
                 <div class="card-body">
-                  
+                  <input type="hidden" name="detail_name" id="detail_name">
+                  <input type="hidden" name="detail_bpjs" id="detail_bpjs">
+                  <input type="hidden" name="detail_medrek" id="detail_medrek">
+                  <input type="hidden" name="detail_dob" id="detail_dob">
+                  <input type="hidden" name="detail_gender" id="detail_gender">
+                  <input type="hidden" name="detail_blood" id="detail_blood">
+                  <input type="hidden" name="detail_adress" id="detail_adress">
+                  <input type="hidden" name="detail_hadnphone" id="detail_handphone">
+                  <input type="hidden" name="detail_marital" id="detail_marital">
+
                   <div class="form-group">
                       <label for="exampleInputPassword1">No. BPJS</label>
                       <input type="text" class="form-control" id="bpjs" name="bpjs" autocomplete="off" required>  
@@ -145,10 +154,25 @@
           alert(data.message);
           return false;
         }else{
-          $("#body_kunjungan").html(data.html);
+
+          $("#body_kunjungan").append(data.html);
           $("#btn_submit").show();
+          $("#label_name").text(data.detail_patient.patient_name);
+          $("#label_bpjs").text(data.detail_patient.no_bpjs);
+          $("#label_medrec").text(data.detail_patient.no_medical_record);
+
+          $("#detail_name").val(data.detail_patient.patient_name);
+          $("#detail_bpjs").val(data.detail_patient.no_bpjs);
+          $("#detail_medrek").val(data.detail_patient.no_medical_record);
+          $("#detail_dob").val(data.detail_patient.date_of_birth);
+          $("#detail_gender").val(data.detail_patient.sex);
+          $("#detail_blood").val(data.detail_patient.blood_type);
+          $("#detail_adress").val(data.detail_patient.address);
+          $("#detail_handphone").val(data.detail_patient.mobile_no);
+          $("#detail_marital").val(data.detail_patient.marital_status);
+
         }
-      })
+      });
     }
   }
 </script>
