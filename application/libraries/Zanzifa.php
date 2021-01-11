@@ -49,6 +49,31 @@ class Zanzifa{
 		
 		// curl_close($curlHandle);
 	}
+
+	function sendNotif($to, $message){
+ 
+	    $feilds = array('to'=>$to, 'notification'=>$message);
+
+	    $ch = curl_init();
+
+	    curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($ch, CURLOPT_POST, 1);
+	    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($feilds));
+	    
+	    $headers = array();
+	    $headers[] = 'Authorization: Key= AAAATEboWT4:APA91bF4IKAMEnQ2pCs2GAFEiIjKw1BSYWfQ932ZiTRXeqS0kFXUM85QMAeifcsl8mzhy4nn1MzFeGt0ZoQxc7JlhUdatYYS1khzU_ckqGYgf8GdIt-4pPfckPCiMX1RyksI3D6vd4Im';
+	    $headers[] = 'Content-Type: application/json';
+	    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	    
+	    $result = curl_exec($ch);
+	    if (curl_errno($ch)) {
+	        echo 'Error:' . curl_error($ch);
+	    }
+	    curl_close($ch);
+
+	    return true;
+	}
 }
 
 ?>

@@ -167,6 +167,7 @@ Class Farmasi extends Public_controller
 
         if ( $detail_order[0]['notif_sms'] == 1 ){
             $sms = $this->zanzifa->sender("",$detail_order[0]['mobile_number'],$message);
+            $push_notif = $this->zanzifa->sendNotif($detail_order[0]['profile_id'],$message);
         }
 
         $this->db->insert("notification",$array_insert);
