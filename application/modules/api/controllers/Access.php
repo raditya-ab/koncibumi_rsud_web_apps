@@ -204,7 +204,7 @@ class Access extends CI_Controller {
 			$data_user = $run_bpjs->result_array();
 			$patient_login_id = $data_user[0]['id'];
 
-			$qry_patient_profile = "SELECT * FROM patient_profile WHERE patient_login_id = ? ";
+			$qry_patient_profile = "SELECT * FROM patient_profile WHERE patient_login_id = ? AND verification_at = '' ";
 			$run_patient_profile = $this->db->query($qry_patient_profile, array($patient_login_id));
 			if ( $run_patient_profile->num_rows() <= 0 ){
 				header("HTTP/1.1 403");
