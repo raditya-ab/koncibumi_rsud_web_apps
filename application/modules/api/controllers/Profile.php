@@ -99,6 +99,12 @@ class Profile extends CI_Controller {
   			$list_profile['gender'] = "";
   			$list_profile['push_notif'] = "";
 			$list_profile['sms_notif'] = "";
+			$array_notif = array(
+				"0" => false,
+				"1" => true,
+				"" => false,
+				NULL => false
+			);
 
 			if ( $run_profile->num_rows() > 0 ){
 				$res_profile = $run_profile->result_array();
@@ -537,7 +543,13 @@ class Profile extends CI_Controller {
 					INNER JOIN patient_login as pl ON (pl.id = pp.patient_login_id)
 				WHERE 1 AND pp.id = ? ";
 				$run_profile = $this->db->query($qry_profile,array($patient_profile_id));
-
+				$array_notif = array(
+					"0" => false,
+					"1" => true,
+					"" => false,
+					NULL => false
+				);
+				
 				if ( $run_profile->num_rows() > 0  ){ 
 				        $res_profile = $run_profile->result_array();
 				        $list_profile['patient_login_id'] = $res_profile[0]['patient_login_id'];

@@ -207,7 +207,8 @@ class Access extends CI_Controller {
 			$array_notif = array(
 				"0" => false,
 				"1" => true,
-				"" => false
+				"" => false,
+				NULL => false
 			);
 			
 			$data_profile = array();
