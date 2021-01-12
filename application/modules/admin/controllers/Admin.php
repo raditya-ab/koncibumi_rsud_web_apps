@@ -153,7 +153,7 @@ Class Admin extends Public_controller
             "mobile_number" => $this->input->post("detail_handphone"),
             "marrital_status" => $this->input->post("detail_marital")
         );
- 
+        
         $mode = "create";
         if ( $this->input->post("user_id")){
             $mode = "update";
@@ -163,6 +163,14 @@ Class Admin extends Public_controller
             $this->db->insert("patient_login", $array_insert);
             $patient_login_id = $this->db->insert_id();
         }else{
+            $array_insert = array(
+                "no_bpjs" => $this->input->post("detail_bpjs"),
+                "no_medrec" => $this->input->post("detail_medrek"),
+                "first_name" => $this->input->post("detail_name"),
+                "address" => $this->input->post("detail_adress"),
+                "mobile_number" => $this->input->post("detail_handphone")
+            );
+
             $this->db->where('id', $this->input->post("user_id"));
             $this->db->update("patient_login", $array_insert);
             $patient_login_id = $this->input->post("user_id");
