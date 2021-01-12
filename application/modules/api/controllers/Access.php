@@ -206,7 +206,8 @@ class Access extends CI_Controller {
 			$secret_key = $this->config->item('secret_key');
 			$array_notif = array(
 				"0" => false,
-				"1" => true
+				"1" => true,
+				"" => false
 			);
 			
 			$data_profile = array();
