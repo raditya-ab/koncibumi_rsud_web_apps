@@ -367,7 +367,7 @@ class Access extends CI_Controller {
 			$secret_key = $this->config->item('secret_key');
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_login_id = $decoded->profile_data->patient_login_id;
-			$patient_profile_id = $decoded->profile_data->patient_profile_id
+			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 
 			$qry_token = "SELECT * FROM patient_login WHERE 1 AND id = ? ";
 			$run_token = $this->db->query($qry_token,array($patient_login_id));
