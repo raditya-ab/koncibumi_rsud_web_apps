@@ -65,6 +65,8 @@ class Access extends CI_Controller {
 						$res_profile = $run_profile->result_array();
 
 						if ( $res_profile[0]['verification_at'] == NULL ){
+							$patient_profile_id = $res_profile[0]['id'];
+							$this->db->query("DELETE FROM patient_profile WHERE 1 AND id = '$patient_profile_id'");
 							$data['code'] = "200";
 							$data['message'] = "User can Register";
 							echo json_encode($data);
