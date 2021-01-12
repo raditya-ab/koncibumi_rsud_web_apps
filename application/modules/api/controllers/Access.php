@@ -62,11 +62,20 @@ class Access extends CI_Controller {
 					$check_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
 					$run_profile = $this->db->query($check_profile,array($patient_login_id));
 					if ( $run_profile->num_rows() > 0 ){
-						header("HTTP/1.1 422 ");
-						$data['code'] = "422 ";
-						$data['message'] = "Data sudah ada";
-						echo json_encode($data);
-						exit;
+						$res_profile = $run_profile->result_array();
+
+						if ( $res_profile[0]['verification_at'] == NULL ){
+							$data['code'] = "200";
+							$data['message'] = "User can Register";
+							echo json_encode($data);
+						}else{
+							header("HTTP/1.1 422 ");
+							$data['code'] = "422 ";
+							$data['message'] = "Data sudah ada";
+							echo json_encode($data);
+							exit;
+						}
+						
 					}
 
 					$data['code'] = "200";
@@ -110,6 +119,7 @@ class Access extends CI_Controller {
 						echo json_encode($data);
 						exit;
 					}
+
 					$res_bpjs = $run_bpjs->result_array();
 					$login_id = $res_bpjs[0]['id'];
 					$first_name = $res_bpjs[0]['first_name'];
@@ -355,6 +365,7 @@ class Access extends CI_Controller {
 			$secret_key = $this->config->item('secret_key');
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_login_id = $decoded->profile_data->patient_login_id;
+			$patient_profile_id = $decoded->profile_data->patient_profile_id
 
 			$qry_token = "SELECT * FROM patient_login WHERE 1 AND id = ? ";
 			$run_token = $this->db->query($qry_token,array($patient_login_id));
@@ -379,6 +390,8 @@ class Access extends CI_Controller {
 		    	exit();
 			}
 
+			$curr_date = date("Y-m-d H:i:s");
+			$this->db->query("UPDATE patient_profile set verification_at = '$curr_date' WHERE id = '$patient_profile_id'");
 			$data['code'] = "200";
 			$data['message'] = "User Register";
 			echo json_encode($data);
