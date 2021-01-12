@@ -204,7 +204,7 @@ class Access extends CI_Controller {
 			$data_user = $run_bpjs->result_array();
 			$patient_login_id = $data_user[0]['id'];
 
-			$qry_patient_profile = "SELECT * FROM patient_profile WHERE patient_login_id = ? AND verification_at = '' ";
+			$qry_patient_profile = "SELECT * FROM patient_profile WHERE patient_login_id = ?";
 			$run_patient_profile = $this->db->query($qry_patient_profile, array($patient_login_id));
 			if ( $run_patient_profile->num_rows() <= 0 ){
 				header("HTTP/1.1 403");
@@ -215,6 +215,14 @@ class Access extends CI_Controller {
 			}
 
 			$res_patient_profile = $run_patient_profile->result_array();
+			if ( $res_patient_profile[0]['verification_at'] == "" ){
+				header("HTTP/1.1 403");
+				$data['code'] = "403";
+		    	$data['message'] = "User not authorized ";
+		    	echo json_encode($data);
+		    	exit;
+			}
+			
 			$secret_key = $this->config->item('secret_key');
 			$array_notif = array(
 				"0" => false,
