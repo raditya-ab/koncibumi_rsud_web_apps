@@ -46,6 +46,8 @@
                     <th>Tanggal</th>
                     <th>Status</th>
                     <th>Detail</th>
+                    <th>Alamat</th>
+                    <th>No Telepon</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -61,6 +63,8 @@
                     <td><?php echo $value['doctor_name']?></td>
                     <td><?php echo date("d M Y",strtotime($value['created_at']));?></td>
                     <td>Siap Diantar</td>
+                    <td><?php echo $value['address']?></td>
+                    <td><?php echo $value['mobile_number']?></td>
                     <td>
                       <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" onClick="showDetailReceipt(<?php echo $value['receipt_id'];?>)">
                         Lihat Resep
@@ -112,6 +116,18 @@
           <div class="form-group">
             <label>Nama Pasien</label>
             <input type="text" class="form-control" name="patient_name" id="patient_name">
+          </div>
+          <div class="form-group">
+            <label>Nomor Telepon</label>
+            <input type="text" class="form-control" name="phone_number" id="phone_number">
+          </div>
+          <div class="form-group">
+            <label>Alamat</label>
+            <input type="text" class="form-control" name="address" id="address">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <input type="text" class="form-control" name="notes" id="notes">
           </div>
           <div class="form-group">
             <label>Keterangan Pengantaran</label><br/>

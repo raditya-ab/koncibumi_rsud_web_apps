@@ -330,6 +330,19 @@ Class Admin extends Public_controller
         }
         return false;
     }
+
+    public function open_patient(){
+        $data['profile'] = $this->profile_data;
+        $data['blocking'] = $this->admin->all_blocking_patient();
+        $this->load->view("blocking/index",$data);
+    }
+
+    public function open_order(){
+        $order_id = $this->input->post("order_id");
+        $this->db->query("UPDATE order_patient SET status = 6 WHERE id = '$order_id'");
+        $data['status'] = 0;
+        echo json_encode($data);
+    }
 }
 
 ?>
