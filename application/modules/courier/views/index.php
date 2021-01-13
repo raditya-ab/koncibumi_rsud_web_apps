@@ -45,9 +45,9 @@
                     <th>Dokter</th>
                     <th>Tanggal</th>
                     <th>Status</th>
-                    <th>Detail</th>
                     <th>Alamat</th>
                     <th>No Telepon</th>
+                    <th>Detail</th>
                   </tr>
                   </thead>
                   <tbody>
