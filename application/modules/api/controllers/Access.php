@@ -172,7 +172,8 @@ class Access extends CI_Controller {
 			        $secret_key = $this->config->item('secret_key');
 			        $access_token = JWT::encode($token, $secret_key);
 
-
+			        $patient_login_id = $res_bpjs[0]['id'];
+			        $this->db->query("UPDATE kunjungan set patient_id = $patient_profile_id, patient_login_id = $patient_login_id WHERE medical_number = '$medic_number'");
 			        $data['code'] = "200";
 			    	$data['message'] = "Success Registrasi";
 			    	$data['access_token'] = $access_token;

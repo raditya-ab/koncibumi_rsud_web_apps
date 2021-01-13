@@ -285,6 +285,9 @@ Class Admin extends Public_controller
                         $doctor_id = $res_check_doctor[0]['id'];
                     }
 
+                    $qry_check_kunjungan = "SELECT * FROM kunjungan WHERE 1 AND icd_code = ? AND medical_number = ? ";
+                    $run_check_kunjungan = $this->db->query($qry_check_kunjungan,array($value->icd_code,$value->no_medical_record));
+
                     $array_insert = array(
                         "medical_number" => $value->no_medical_record,
                         "icd_code" => $value->icd_code,
