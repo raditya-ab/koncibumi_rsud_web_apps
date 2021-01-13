@@ -126,7 +126,7 @@ class Admin_model extends CI_Model {
 			INNER JOIN patient_profile as pp on ( pp.id = op.patient_id )
 			LEFT JOIN master_doctor as md on ( md.id = op.doctor_id)
 			WHERE 1 AND op.status = 1 AND op.keluhan = 1 order by op.id desc ";
-		$run = $this->db->query($query,array($pasien_id));
+		$run = $this->db->query($query);
 		$result = $run->result_array();
 		return $result;
 	}
