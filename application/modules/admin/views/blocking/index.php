@@ -27,7 +27,6 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <a class="btn btn-success" href="<?php echo base_url();?>admin/add_patient">Tambah Pasien</a>
                 <table id="example2" class="table table-bordered table-hover">
                     <thead class="head_background">
                     <tr>
