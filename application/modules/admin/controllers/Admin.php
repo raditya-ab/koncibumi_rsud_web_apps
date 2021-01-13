@@ -116,7 +116,8 @@ Class Admin extends Public_controller
         $arrayGender = array(
             "L" => "Pria",
             "W" => "Wanita",
-            "" => ""
+            "" => "",
+            "P" => "Perempuan"
         );
 
         $arrayStatus = array(
