@@ -33,7 +33,7 @@ class Access extends CI_Controller {
 
 	}
 
-	public function register($step){
+	public function register($step == ""){
 
 		if ( $_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 			$obj = file_get_contents('php://input');
@@ -90,7 +90,7 @@ class Access extends CI_Controller {
 			    	$data['message'] = "INVALID REQUEST";
 			    	echo json_encode($data);
 				}
-			}else{
+			}else ( $step == "update") {
 				$data_profile = array();
 				$access_token = "";
 				$profile_id = "";
