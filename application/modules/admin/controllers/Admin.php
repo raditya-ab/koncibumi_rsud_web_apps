@@ -281,7 +281,7 @@ Class Admin extends Public_controller
                     $run_check_doctor = $this->db->query($qry_check_doctor, array('%'.$value->id_dokter.'%','%'.$value->id_poli.'%'));
                     $doctor_id = NULL;
                     if ( $run_check_doctor->num_rows() > 0 ){
-                        $res_check_doctor = $run_check_doctor->num_rows();
+                        $res_check_doctor = $run_check_doctor->result_array();
                         $doctor_id = $res_check_doctor[0]['id'];
                     }
 
