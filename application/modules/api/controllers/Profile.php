@@ -266,8 +266,7 @@ class Profile extends CI_Controller {
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 			$patient_login_id = $decoded->profile_data->patient_login_id;
-			$this->db->query("UPDATE patient_profile set address = '$address',latitude = '$latitude', longitude = '$longitude' where id = '$patient_profile_id'");
-			$this->db->query("UPDATE patient_login set address = '$address' where id = '$patient_login_id'");
+			$this->db->query("UPDATE patient_profile latitude = '$latitude', longitude = '$longitude' where id = '$patient_profile_id'");
 
 			$qry_get_latest = "SELECT * FROM order_patient WHERE patient_id = ?  ORDER by id DESC  LIMIT 0,1";
 			$run_get_latest = $this->db->query($qry_get_latest,array($patient_profile_id));
@@ -535,7 +534,7 @@ class Profile extends CI_Controller {
 
  				$this->db->where("id",$patient_profile_id);
  				$this->db->update("patient_profile",$array_update);
- 				$this->db->query("UPDATE patient_login SET address = '$address',mobile_number='$phone_number' WHERE id = '$patient_login_id'");
+ 				$this->db->query("UPDATE patient_login SET mobile_number='$phone_number' WHERE id = '$patient_login_id'");
  				
  				
 				$qry_profile = "SELECT pp.*,pl.gender as gender 
