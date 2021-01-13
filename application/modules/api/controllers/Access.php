@@ -90,7 +90,7 @@ class Access extends CI_Controller {
 			    	$data['message'] = "INVALID REQUEST";
 			    	echo json_encode($data);
 				}
-			}else ( $step == "update") {
+			}else if ( $step == "update") {
 				$data_profile = array();
 				$access_token = "";
 				$profile_id = "";
