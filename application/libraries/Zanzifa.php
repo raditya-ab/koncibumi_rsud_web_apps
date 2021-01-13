@@ -41,7 +41,6 @@ class Zanzifa{
 			));
 		}
 		$result = curl_exec($curlHandle);
-		echo $result;
 		curl_close($curlHandle);
 		return json_decode($result);
 		// $results = json_decode(curl_exec($curlHandle), true);
