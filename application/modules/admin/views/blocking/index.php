@@ -84,7 +84,7 @@
         var request = $.ajax({
           url : "admin/open_order",
           data : {
-            order_id :: order_id
+            order_id : order_id
           },
           type : "post",
           dataType : "json"
