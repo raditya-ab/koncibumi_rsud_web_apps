@@ -101,7 +101,8 @@ Class Order_m extends CI_Model
     public function order_detail($id){
         $qry_detail_order = "SELECT op.*,pp.bpjs_number as bpjs_number,pp.medical_number as medical_number,
             pp.dob as dob,pp.gender as gender,pl.blood_type as gol_darah,
-            md.first_name as first_name, md.poli as poli,op.patient_id as patient_id
+            md.first_name as first_name, md.poli as poli,op.patient_id as patient_id,
+            pp.first_name as patient_name
             FROM order_patient as op
             INNER JOIN patient_profile as pp ON (op.patient_id = pp.id)
             INNER JOIN patient_login as pl ON (pp.patient_login_id = pl.id)

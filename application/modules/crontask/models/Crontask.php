@@ -129,7 +129,8 @@ Class Crontask extends CI_Model
                 "qty" => $value->stock_qty,
                 "satuan" => $value->unit,
                 "description" => $value->keterangan,
-                "code" => $value->kode_obat
+                "code" => $value->kode_obat,
+                "golongan" => $value->golongan
             );
 
             if ( $run_check_medicine->num_rows() > 0 ){

@@ -8,7 +8,7 @@
                     style="background-image:url('<?php echo base_url('assets/media/users/300_21.jpg');?>'); min-width: 150px; min-height: 150px;">
                 </div>
             </div>
-            <h4 class="font-weight-bolder mt-2 mb-5"><?php echo $order_detail[0]['first_name']?></h4>
+            <h4 class="font-weight-bolder mt-2 mb-5"><?php echo $order_detail[0]['patient_name']?></h4>
         </div>
         <!--end::User-->
     </div>
