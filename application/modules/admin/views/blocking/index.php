@@ -37,6 +37,7 @@
                         <th>Dokter</th>
                         <th>Tanggal</th>
                         <th>Status</th>
+                        <th>Update Status</th>
                     </tr>
                     </thead>
                     <tbody>
