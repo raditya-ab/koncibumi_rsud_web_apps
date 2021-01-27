@@ -152,7 +152,8 @@ Class Admin extends Public_controller
             "blood_type" => $this->input->post("detail_blood"),
             "address" => $this->input->post("detail_adress"),
             "mobile_number" => $this->input->post("detail_handphone"),
-            "marrital_status" => $this->input->post("detail_marital")
+            "marrital_status" => $this->input->post("detail_marital"),
+            "sep" => $this->input->post("sep")
         );
         
         $mode = "create";
@@ -169,7 +170,8 @@ Class Admin extends Public_controller
                 "no_medrec" => $this->input->post("detail_medrek"),
                 "first_name" => $this->input->post("detail_name"),
                 "address" => $this->input->post("detail_adress"),
-                "mobile_number" => $this->input->post("detail_handphone")
+                "mobile_number" => $this->input->post("detail_handphone"),
+                "sep" => $this->input->post("sep")
             );
 
             $this->db->where('id', $this->input->post("user_id"));
