@@ -266,8 +266,7 @@ class Profile extends CI_Controller {
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 			$patient_login_id = $decoded->profile_data->patient_login_id;
-			$this->db->query("UPDATE patient_profile set address = '$address',latitude = '$latitude', longitude = '$longitude' where id = '$patient_profile_id'");
-			$this->db->query("UPDATE patient_login set address = '$address' where id = '$patient_login_id'");
+			$this->db->query("UPDATE patient_profile latitude = '$latitude', longitude = '$longitude', notes = '$notes' where id = '$patient_profile_id'");
 
 			$qry_get_latest = "SELECT * FROM order_patient WHERE patient_id = ?  ORDER by id DESC  LIMIT 0,1";
 			$run_get_latest = $this->db->query($qry_get_latest,array($patient_profile_id));
@@ -510,15 +509,15 @@ class Profile extends CI_Controller {
 			$list_profile = array();
 			$obj = file_get_contents('php://input');
 			$edata = json_decode($obj);
-			if ( isset($edata->address)){
-				$address = $edata->address;
+			if ( isset($edata->phone_number)){
+				//$address = $edata->address;
 				$patient_profile_id = $decoded->profile_data->patient_profile_id;
 				$patient_login_id = $decoded->profile_data->patient_login_id;
-				$latitude = $edata->lat;
-				$longitude = $edata->long;
+				//$latitude = $edata->lat;
+				//$longitude = $edata->long;
 				$phone_number = $edata->phone_number;
 
-				if ( trim($edata->address) == "" ){
+				if ( trim($edata->phone_number) == "" ){
 					header("HTTP/1.1 403");
 					$data['code'] = "403";
 			    	$data['message'] = "Address can not empty";
@@ -527,15 +526,12 @@ class Profile extends CI_Controller {
 				}
 
 				$array_update = array(
-					"address" => $edata->address,
-					"latitude" => $edata->lat,
-					"longitude" => $edata->long,
 					"mobile_number" => $phone_number
  				);
 
  				$this->db->where("id",$patient_profile_id);
  				$this->db->update("patient_profile",$array_update);
- 				$this->db->query("UPDATE patient_login SET address = '$address',mobile_number='$phone_number' WHERE id = '$patient_login_id'");
+ 				$this->db->query("UPDATE patient_login SET mobile_number='$phone_number' WHERE id = '$patient_login_id'");
  				
  				
 				$qry_profile = "SELECT pp.*,pl.gender as gender 

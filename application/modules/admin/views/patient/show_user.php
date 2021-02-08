@@ -42,6 +42,10 @@
                       <input type="text" class="form-control" id="detail_medrek" name="detail_medrek" value="<?php echo $patient[0]['no_medrec']?>" autocomplete="off" required>  
                   </div>
                   <div class="form-group">
+                      <label for="exampleInputPassword1">No. SEP</label>
+                      <input type="text" class="form-control" id="detail_sep" name="detail_sep" value="<?php echo $patient[0]['sep']?>" autocomplete="off" required>  
+                  </div>
+                  <div class="form-group">
                       <label for="exampleInputPassword1">Nama</label>
                       <input type="text" class="form-control" id="detail_name" name="detail_name" value="<?php echo $patient[0]['first_name']?>" autocomplete="off" required>  
                   </div>

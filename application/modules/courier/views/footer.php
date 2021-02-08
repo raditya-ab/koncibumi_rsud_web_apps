@@ -50,6 +50,9 @@
       $("#receipt_no").val(data.receipt_no);
       $("#patient_name").val(data.patient_name);
       $("#list_obat").html(data.list_obat);
+      $("#phone_number").val(data.mobile_number);
+      $("#address").val(data.address);
+      $("#notes").html(data.notes);
     });
   }
 

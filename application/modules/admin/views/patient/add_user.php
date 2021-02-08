@@ -51,7 +51,10 @@
                       <label for="exampleInputPassword1">No. Medrek</label>
                       <input type="text" class="form-control" id="medrek" name="medrek" autocomplete="off" required>  
                   </div>
-      
+                  <div class="form-group">
+                      <label for="exampleInputPassword1">No. SEP</label>
+                      <input type="text" class="form-control" id="sep" name="sep" autocomplete="off" required>  
+                  </div>
                   <div class="form-group">
                       <label for="exampleInputPassword1">Status Aktif</label>
                       <input type="checkbox" name="active" > 

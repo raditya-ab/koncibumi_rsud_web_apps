@@ -119,5 +119,17 @@ class Admin_model extends CI_Model {
 		return $result;
 	}
 
+	function all_blocking_patient(){
+		$query = "SELECT op.*, pp.first_name as first_name, pp.bpjs_number as bpjs_number, 
+			pp.medical_number as medical_number , md.first_name as doctor_name
+			FROM order_patient as op 
+			INNER JOIN patient_profile as pp on ( pp.id = op.patient_id )
+			LEFT JOIN master_doctor as md on ( md.id = op.doctor_id)
+			WHERE 1 AND op.status = 1 AND op.keluhan = 1 order by op.id desc ";
+		$run = $this->db->query($query);
+		$result = $run->result_array();
+		return $result;
+	}
+
 
 }

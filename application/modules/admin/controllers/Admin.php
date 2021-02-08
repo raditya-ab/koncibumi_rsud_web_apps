@@ -152,7 +152,8 @@ Class Admin extends Public_controller
             "blood_type" => $this->input->post("detail_blood"),
             "address" => $this->input->post("detail_adress"),
             "mobile_number" => $this->input->post("detail_handphone"),
-            "marrital_status" => $this->input->post("detail_marital")
+            "marrital_status" => $this->input->post("detail_marital"),
+            "sep" => $this->input->post("sep")
         );
         
         $mode = "create";
@@ -169,7 +170,8 @@ Class Admin extends Public_controller
                 "no_medrec" => $this->input->post("detail_medrek"),
                 "first_name" => $this->input->post("detail_name"),
                 "address" => $this->input->post("detail_adress"),
-                "mobile_number" => $this->input->post("detail_handphone")
+                "mobile_number" => $this->input->post("detail_handphone"),
+                "sep" => $this->input->post("sep")
             );
 
             $this->db->where('id', $this->input->post("user_id"));
@@ -281,7 +283,7 @@ Class Admin extends Public_controller
                     $run_check_doctor = $this->db->query($qry_check_doctor, array('%'.$value->id_dokter.'%','%'.$value->id_poli.'%'));
                     $doctor_id = NULL;
                     if ( $run_check_doctor->num_rows() > 0 ){
-                        $res_check_doctor = $run_check_doctor->num_rows();
+                        $res_check_doctor = $run_check_doctor->result_array();
                         $doctor_id = $res_check_doctor[0]['id'];
                     }
 
@@ -329,6 +331,19 @@ Class Admin extends Public_controller
             return $data;
         }
         return false;
+    }
+
+    public function open_patient(){
+        $data['profile'] = $this->profile_data;
+        $data['blocking'] = $this->admin->all_blocking_patient();
+        $this->load->view("blocking/index",$data);
+    }
+
+    public function open_order(){
+        $order_id = $this->input->post("order_id");
+        $this->db->query("UPDATE order_patient SET status = 6 WHERE id = '$order_id'");
+        $data['status'] = 0;
+        echo json_encode($data);
     }
 }
 
