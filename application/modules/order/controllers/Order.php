@@ -52,7 +52,8 @@ Class Order extends Public_controller
         $this->template->build('new_order_list', $this->data);
     }
     public function proses(){
-        $order_id = $_GET['order_id'];
+        $order_id = $this->input->get('order_id', TRUE);
+
         $array_gender = array(
             "L" => "Laki-laki",
             "P" => "Perempuan",
@@ -84,7 +85,7 @@ Class Order extends Public_controller
         $array_type = array(
             "new" => 1,
             "all" => NULL,
-            "" => NULL
+            "done" => 6
         );
 
         $data = array();

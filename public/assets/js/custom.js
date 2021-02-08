@@ -383,26 +383,31 @@ $(document).ready(function () {
 
         var chart;
 
-        $.getJSON(HOST_URL + '', function (response) {
+        $.getJSON(HOST_URL + 'order/list_detail_order/done', function (response) {
             var result = response.results;
-            var data = [],
-                disetujui = 0,
-                ditolak = 0,
-                belumDikonfirmasi = 0;
 
-            $.each(result, function (index, item) {
-                console.log(item);
-                if (item.status.code == 1) belumDikonfirmasi++;
-                else if (item.status.code > 1) disetujui++;
-                else if (item.status.code == 0) ditolak++;
-
-                data = [disetujui, ditolak, belumDikonfirmasi ];
-
-                console.log(data);
-            })
-            options.series = data;
-            chart = new ApexCharts(document.querySelector(apexChart), options);
-            chart.render();
+            if(result.length > 0){
+                var data = [],
+                    disetujui = 0,
+                    ditolak = 0,
+                    belumDikonfirmasi = 0;
+    
+                $.each(result, function (index, item) {
+                    console.log(item);
+                    if (item.status.code == 1) belumDikonfirmasi++;
+                    else if (item.status.code > 1 && item.status.code < 7) disetujui++;
+                    else if (item.status.code == 7) ditolak++;
+    
+                    data = [disetujui, ditolak, belumDikonfirmasi ];
+    
+                    console.log(data);
+                })
+                options.series = data;
+                chart = new ApexCharts(document.querySelector(apexChart), options);
+                chart.render();
+            } else {
+                $("#user_statistics_chart").html("<span class='font-weight-bold'>Data statistik pesanan belum tersedia...</span>");
+            }
         });
     }
 
