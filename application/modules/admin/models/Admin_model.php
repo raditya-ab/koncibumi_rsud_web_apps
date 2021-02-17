@@ -131,5 +131,32 @@ class Admin_model extends CI_Model {
 		return $result;
 	}
 
+	function all_poli(){
+		$array_poli = array();
+		$query = "SELECT DISTINCT poli FROM master_doctor";
+		$run = $this->db->query($query);
+		$res = $run->result_array();
+		foreach ($res as $key => $value) {
+			array_push($array_poli, $value['poli']);
+		}
+		return $array_poli;
+	}
+
+	function get_profile_patient($patient_login_id){
+		$qry_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
+		$run_profile = $this->db->query($qry_profile,array($patient_login_id));
+		$res_profile = $run_profile->result_array();
+		return $res_profile;
+	}
+
+	function get_rujukan($patient_profile_id){
+		$qry_rujukan = "SELECT pr.*, md.first_name as doctor FROM patient_rujukan as pr 
+		INNER JOIN master_doctor as md ON (md.id = pr.doctor_id)
+		WHERE 1 AND pr.patien_profile_id = ?
+		ORDER BY pr.end_date DESC";
+		$run_rujukan = $this->db->query($qry_rujukan,array($patient_profile_id));
+		$res_rujukan = $run_rujukan->result_array();
+		return $res_rujukan;
+	}
 
 }

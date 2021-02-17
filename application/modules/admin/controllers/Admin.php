@@ -134,6 +134,8 @@ Class Admin extends Public_controller
 
     public function add_patient(){
         $data['profile'] = $this->profile_data;
+        $data['doctor'] = $this->admin->all_docter();
+        $data['poli'] = $this->admin->all_poli();
         $this->load->view("patient/add_user",$data);
     }
 
@@ -152,31 +154,61 @@ Class Admin extends Public_controller
             "blood_type" => $this->input->post("detail_blood"),
             "address" => $this->input->post("detail_adress"),
             "mobile_number" => $this->input->post("detail_handphone"),
-            "marrital_status" => $this->input->post("detail_marital"),
-            "sep" => $this->input->post("sep")
+            "marrital_status" => $this->input->post("detail_marital")
         );
         
         $mode = "create";
+        if ( $this->input->post("detail_status_pasien") == "exist"){
+            $mode = "update";
+        }
+
         if ( $this->input->post("user_id")){
             $mode = "update";
         }
 
+        
         if ( $mode == "create"){
             $this->db->insert("patient_login", $array_insert);
             $patient_login_id = $this->db->insert_id();
+            $patien_profile_id = $patient_login_id;
         }else{
-            $array_insert = array(
-                "no_bpjs" => $this->input->post("detail_bpjs"),
-                "no_medrec" => $this->input->post("detail_medrek"),
-                "first_name" => $this->input->post("detail_name"),
-                "address" => $this->input->post("detail_adress"),
-                "mobile_number" => $this->input->post("detail_handphone"),
-                "sep" => $this->input->post("sep")
-            );
+            if ( $this->input->post("user_id")){
+                $array_insert = array(
+                    "no_bpjs" => $this->input->post("detail_bpjs"),
+                    "no_medrec" => $this->input->post("detail_medrek"),
+                    "first_name" => $this->input->post("detail_name"),
+                    "address" => $this->input->post("detail_adress"),
+                    "mobile_number" => $this->input->post("detail_handphone")
+                );
 
-            $this->db->where('id', $this->input->post("user_id"));
-            $this->db->update("patient_login", $array_insert);
-            $patient_login_id = $this->input->post("user_id");
+                $this->db->where('id', $this->input->post("user_id"));
+                $this->db->update("patient_login", $array_insert);
+                $patient_login_id = $this->input->post("user_id");
+                $patien_profile_id = $this->input->post("user_id");
+            }else{
+                $patient_login_id = $this->input->post("patient_login_id");
+            }
+
+            $qry_profile = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ? ";
+            $run_profile = $this->db->query($qry_profile,array($patient_login_id));
+            if ( $run_profile->num_rows() > 0 ){
+                $res_profile = $run_profile->result_array();
+                $patien_profile_id = $res_profile[0]['id'];
+            }
+        }
+
+
+        if ( $this->input->post("sep")){
+            $array_insert_rujukan = array(
+                "patien_profile_id" => $patien_profile_id,
+                "no_rujukan" => $this->input->post("sep"),
+                "end_date" => date("Y-m-d", strtotime($this->input->post("expired_date"))),
+                "created_at" => date("Y-m-d H:i:s"),
+                "created_by" => $_SESSION['user_id'],
+                "doctor_id" => $this->input->post("doctor"),
+                "poli_id" => $this->input->post("poli")
+            );
+            $this->db->insert("patient_rujukan", $array_insert_rujukan);
         }
 
         return redirect("admin/show_pasien/".$patient_login_id);
@@ -186,6 +218,7 @@ Class Admin extends Public_controller
         $data['profile'] = $this->profile_data;
         $data['patient'] = $this->admin->detail_patient($pasien_id);
         $data['user_id'] = $pasien_id;
+        $data['rujukan'] = array();
 
         $data['select_kawin'] = "";
         $data['select_tidak_kawin'] = "";
@@ -201,6 +234,11 @@ Class Admin extends Public_controller
             $data['select_blood_'.strtolower(trim($data['patient'][0]['blood_type']))] = "selected";
         }
 
+        $profile_patient = $this->admin->get_profile_patient($data['patient'][0]['id']);
+
+        if ( count($profile_patient) > 0 ){
+            $data['rujukan'] = $this->admin->get_rujukan($profile_patient[0]['id']);
+        }
         $this->load->view("patient/show_user",$data);
     }
 
@@ -213,17 +251,36 @@ Class Admin extends Public_controller
         $bpjs = $this->input->post("bpjs");
         $medrek = $this->input->post("medrek");
         $data = array();
-        $data['total_kunjungan'] = 0;
         $call_login = $this->set_login();
         $html = "";
+        $status = "new";
+        $data['total_kunjungan'] = 0;
+        $data['patient_login_id'] = "";
 
         $qry_login_id = "SELECT * FROM patient_login WHERE 1 AND no_medrec = ? ";
         $run_login_id = $this->db->query($qry_login_id,array($medrek));
         if ( $run_login_id->num_rows() > 0 ){
-            $data['total_kunjungan'] = 0;
-            $data['message'] = "Data pasien sudah ada sebelumnya";
-            echo json_encode($data);
-            exit();
+            $status = "exist";
+            $res_login_id = $run_login_id->result_array();
+            $patient_login_id = $res_login_id[0]['id'];
+            $run_check_pasien = "SELECT * FROM patient_profile WHERE 1 AND patient_login_id = ?";
+            $run_check_pasien = $this->db->query($run_check_pasien, array($patient_login_id));
+            if ( $run_check_pasien->num_rows() > 0 ){
+                $data['active_rujukan'] = true;
+                $res_profile_id = $run_check_pasien->result_array();
+                $patient_profile_id = $res_profile_id[0]['id'];
+                $qry_check_active_rujukan = "SELECT * FROM  patient_rujukan WHERE 1 AND patien_profile_id = ? AND end_date > NOW() ";
+                $run_check_active_rujukan = $this->db->query($qry_check_active_rujukan,array($patient_profile_id));
+                if ( $run_check_active_rujukan->num_rows() > 0 ){
+                    $res_check_active_rujukan = $run_check_active_rujukan->result_array();
+                    $no_rujukan = $res_check_active_rujukan[0]['no_rujukan'];
+                    $data['total_kunjungan'] = 0;
+                    $data['message'] = "Pasien masih memliki satu No Rujukan yang aktif yaitu : ".$no_rujukan.'. Pasien harap menunggu sampai no rujukan selesai';
+                    echo json_encode($data);
+                    exit();
+                }
+            }
+            $data['patient_login_id'] = $patient_login_id;
         }
 
         if ( $call_login == false ){
@@ -304,8 +361,10 @@ Class Admin extends Public_controller
 
                 }
                 $data['html'] = $html;
+
             }
             
+            $data['status'] = $status;
             echo json_encode($data);
         }
 

@@ -145,7 +145,7 @@ class Access extends CI_Controller {
 
 			        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password' where id = '$login_id'");
 
-			        
+			        $this->db->query("UPDATE patient_rujukan set patien_profile_id ='$patient_profile_id' where patien_profile_id = '$login_id'");
 
 			        $otp_key = $this->master->generateOtp();
 			    	$sms = $this->zanzifa->sender($otp_key,$mobile_number);

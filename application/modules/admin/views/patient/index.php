@@ -42,6 +42,7 @@
                         <th>Nomor Handphone</th>
                         <th>Status Pernikahan</th>
                         <th>Status</th>
+                        <th>Detail</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -60,6 +61,7 @@
                         <td><?php echo $value['mobile_number'];?></td>
                         <td><?php echo $value['marrital_status'];?></td>
                         <td><?php echo $arrayStatus[$value['status']];?></td>
+                        <td><a class="btn btn-info" href="<?php echo base_url('/').'/admin/show_pasien/'.$value['id']?>".>Detail</a></td>
                       </tr>
                       <?php } ?>
                     </tbody>

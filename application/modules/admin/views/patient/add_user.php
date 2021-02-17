@@ -42,6 +42,8 @@
                   <input type="hidden" name="detail_adress" id="detail_adress">
                   <input type="hidden" name="detail_hadnphone" id="detail_handphone">
                   <input type="hidden" name="detail_marital" id="detail_marital">
+                  <input type="hidden" name="detail_status_pasien" id="detail_status_pasien">
+                  <input type="hidden" name="patient_login_id" id="patient_login_id">
 
                   <div class="form-group">
                       <label for="exampleInputPassword1">No. BPJS</label>
@@ -52,9 +54,35 @@
                       <input type="text" class="form-control" id="medrek" name="medrek" autocomplete="off" required>  
                   </div>
                   <div class="form-group">
-                      <label for="exampleInputPassword1">No. SEP</label>
+                      <label for="exampleInputPassword1">No. Rujukan</label>
                       <input type="text" class="form-control" id="sep" name="sep" autocomplete="off" required>  
                   </div>
+                  <div class="form-group">
+                      <label for="exampleInputPassword1">Masa Berlaku</label>
+                      <input type="text" class="form-control" id="expired_date" name="expired_date" autocomplete="off" required>  
+                  </div>
+                  <div class="form-group">
+                      <label for="exampleInputPassword1">Poli</label>
+                      <select class="form-control select2" name="poli" id="poli">
+                        <?php
+                          foreach ( $poli as $value_poli => $key_poli){
+                        ?>
+                        <option value="<?php echo str_replace(' ','_',$key_poli);?>"><?php echo $key_poli;?></option>
+                        <?php } ?>
+                      </select>
+                  </div>
+                  <div class="form-group">
+                      <label for="exampleInputPassword1">Dokter</label>
+                      <select class="form-control select2" name="doctor">
+                        <option value="">(pilih dokter)</option>
+                        <?php
+                          foreach ( $doctor as $value_docter => $key_docter){
+                        ?>
+                        <option value="<?php echo $key_docter['id']?>" class="doctor_select <?php echo str_replace(' ','_',$key_docter['poli']);?>"><?php echo $key_docter['first_name']; ?></option>
+                        <?php } ?>
+                      </select>
+                  </div>
+                  
                   <div class="form-group">
                       <label for="exampleInputPassword1">Status Aktif</label>
                       <input type="checkbox" name="active" > 
@@ -128,6 +156,7 @@
 <script type="text/javascript">
   $(function () {
     $("#dob").datepicker();
+    $("#expired_date").datepicker();
   });
 
   function getKunjungan(){
@@ -173,11 +202,19 @@
           $("#detail_adress").val(data.detail_patient.address);
           $("#detail_handphone").val(data.detail_patient.mobile_no);
           $("#detail_marital").val(data.detail_patient.marital_status);
-
+          $("#detail_status_pasien").val(data.status);
+          $("#patient_login_id").val(data.patient_login_id);
         }
       });
     }
   }
+
+  $("#poli").change(function(){
+    console.log($("#poli").val());
+    $(".doctor_select").hide();
+    $("." + $("#poli").val()).attr("style","");
+    $("." + $("#poli").val()).attr("style","display:inline");
+  });
 </script>
 </body>
 </html>

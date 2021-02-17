@@ -22,7 +22,7 @@
       <div class="container-fluid">
         <div class="row">
           <!-- left column -->
-          <div class="col-md-6">
+          <div class="col-md-12">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
@@ -40,10 +40,6 @@
                   <div class="form-group">
                       <label for="exampleInputPassword1">No. Medrek</label>
                       <input type="text" class="form-control" id="detail_medrek" name="detail_medrek" value="<?php echo $patient[0]['no_medrec']?>" autocomplete="off" required>  
-                  </div>
-                  <div class="form-group">
-                      <label for="exampleInputPassword1">No. SEP</label>
-                      <input type="text" class="form-control" id="detail_sep" name="detail_sep" value="<?php echo $patient[0]['sep']?>" autocomplete="off" required>  
                   </div>
                   <div class="form-group">
                       <label for="exampleInputPassword1">Nama</label>
@@ -73,6 +69,40 @@
                     <a class="btn btn-warning" href="<?php echo base_url().'admin/patient';?>">Back</a>
                 </div>
               </form>
+              <?php
+                if ( count($rujukan) <= 0 ){
+                  echo "Pasien belum mendaftar di Aplikasi";
+                }
+              ?>
+              <h4>Daftar No Rujukan Pasien</h4>
+              <table id="example2" class="table table-bordered table-hover">
+                  <thead class="head_background">
+                    <tr>
+                        <th>No.</th>
+                        <th>No Rujukan</th>
+                        <th>Tanggal Berakhir</th>
+                        <th>Dokter</th>
+                        <th>Poli</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php 
+                      if ( count($rujukan) > 0 ) {
+                      foreach ( $rujukan as $key => $value ){
+                    ?>
+                      <tr>
+                        <td><?php echo $key + 1 ?></td>
+                        <td><?php echo $value['no_rujukan']?></td>
+                        <td><?php echo date("d/M/Y",strtotime($value['end_date']))?></td>
+                        <td><?php echo $value['doctor']?></td>
+                        <td><?php echo $value['poli_id']?></td>
+                      </tr>
+                    <?php   
+                        } 
+                      } 
+                    ?>
+                  </tbody>
+                </table>
             </div>
             <!-- /.card -->
           </div>
