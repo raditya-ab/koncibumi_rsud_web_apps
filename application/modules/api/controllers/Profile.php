@@ -266,7 +266,7 @@ class Profile extends CI_Controller {
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 			$patient_login_id = $decoded->profile_data->patient_login_id;
-			$this->db->query("UPDATE patient_profile latitude = '$latitude', longitude = '$longitude', notes = '$notes' where id = '$patient_profile_id'");
+			$this->db->query("UPDATE patient_profile SET latitude = '$latitude', longitude = '$longitude', notes = '$notes' where id = '$patient_profile_id'");
 
 			$qry_get_latest = "SELECT * FROM order_patient WHERE patient_id = ?  ORDER by id DESC  LIMIT 0,1";
 			$run_get_latest = $this->db->query($qry_get_latest,array($patient_profile_id));
