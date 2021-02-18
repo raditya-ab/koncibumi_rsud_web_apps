@@ -266,7 +266,7 @@ class Profile extends CI_Controller {
 			$decoded = JWT::decode($access_token, $secret_key, array('HS256'));
 			$patient_profile_id = $decoded->profile_data->patient_profile_id;
 			$patient_login_id = $decoded->profile_data->patient_login_id;
-			$this->db->query("UPDATE patient_profile latitude = '$latitude', longitude = '$longitude', notes = '$notes' where id = '$patient_profile_id'");
+			$this->db->query("UPDATE patient_profile SET latitude = '$latitude', longitude = '$longitude', notes = '$notes', address= '$address' where id = '$patient_profile_id'");
 
 			$qry_get_latest = "SELECT * FROM order_patient WHERE patient_id = ?  ORDER by id DESC  LIMIT 0,1";
 			$run_get_latest = $this->db->query($qry_get_latest,array($patient_profile_id));
@@ -834,12 +834,11 @@ class Profile extends CI_Controller {
 			}
 		}
 
-		$qry_check_rujukan = "SELECT * FROM patient_rujukan WHERE 1 AND patient_profile_id = ? AND end_date >= NOW() ";
+		$qry_check_rujukan = "SELECT * FROM patient_rujukan WHERE 1 AND patien_profile_id = ? AND end_date >= NOW() ";
 		$run_check_rujukan = $this->db->query($qry_check_rujukan,array($patient_profile_id));
 		if ( $run_check_rujukan->num_rows() <= 0 ){
 			$data['code'] = 4;
 			$data['message'] = "Anda tidak memiliki No. Rujukan yang aktif";
-			echo json_encode($data);
 		}
 		echo json_encode($data);
     	exit;

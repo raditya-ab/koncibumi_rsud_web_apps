@@ -127,7 +127,8 @@ class Access extends CI_Controller {
 					$first_name = $res_bpjs[0]['first_name'];
 					$last_name = $res_bpjs[0]['last_name'];
 					$address = $res_bpjs[0]['address'];
-
+					$gender = $res_bpjs[0]['gender'];
+					
 					$array_insert = array(
 						"patient_login_id" => $res_bpjs[0]['id'],
 						"first_name" => $first_name,
@@ -137,7 +138,8 @@ class Access extends CI_Controller {
 						"mobile_number" => $mobile_number,
 						"bpjs_number" => $bpjs_number,
 						"medical_number" => $medic_number,
-						"address" => $address
+						"address" => $address,
+						'gender' => $gender
 					);
 					$this->db->insert("patient_profile", $array_insert);
 					$patient_profile_id = $this->db->insert_id();
@@ -146,6 +148,8 @@ class Access extends CI_Controller {
 			        $this->db->query("UPDATE patient_login set last_login='$current_date',last_activity = '$current_date', password ='$password' where id = '$login_id'");
 
 			        $this->db->query("UPDATE patient_rujukan set patien_profile_id ='$patient_profile_id' where patien_profile_id = '$login_id'");
+
+			        $this->db->query("UPDATE kunjungan set patient_id ='$patient_profile_id' where patient_id = '$login_id'");
 
 			        $otp_key = $this->master->generateOtp();
 			    	$sms = $this->zanzifa->sender($otp_key,$mobile_number);
@@ -245,6 +249,7 @@ class Access extends CI_Controller {
 			$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_patient_profile[0]['dob']));
 			$data_profile['push_notif'] = $array_notif[$res_patient_profile[0]['notif_app']];
 			$data_profile['sms_notif'] = $array_notif[$res_patient_profile[0]['notif_sms']];
+			$data_profile['gender'] =  $res_patient_profile[0]['gender'];
 
 	        $token = array(
 	            "iss" => $_SERVER['SERVER_NAME'],
