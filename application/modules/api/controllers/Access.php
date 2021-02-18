@@ -147,6 +147,8 @@ class Access extends CI_Controller {
 
 			        $this->db->query("UPDATE patient_rujukan set patien_profile_id ='$patient_profile_id' where patien_profile_id = '$login_id'");
 
+			        $this->db->query("UPDATE kunjungan set patient_id ='$patient_profile_id' where patient_id = '$login_id'");
+
 			        $otp_key = $this->master->generateOtp();
 			    	$sms = $this->zanzifa->sender($otp_key,$mobile_number);
 			    	
@@ -245,6 +247,7 @@ class Access extends CI_Controller {
 			$data_profile['date_of_birth'] = date("d/m/Y",strtotime($res_patient_profile[0]['dob']));
 			$data_profile['push_notif'] = $array_notif[$res_patient_profile[0]['notif_app']];
 			$data_profile['sms_notif'] = $array_notif[$res_patient_profile[0]['notif_sms']];
+			$data_profile['gender'] =  $res_patient_profile[0]['gender'];
 
 	        $token = array(
 	            "iss" => $_SERVER['SERVER_NAME'],

@@ -141,6 +141,7 @@ Class Admin extends Public_controller
 
     public function register_pasien(){
         $status = "";
+        $call_login = $this->set_login();
         if ( $this->input->post("active") && $this->input->post("active") != "" ){
             $status = "1";
         }
@@ -166,7 +167,7 @@ Class Admin extends Public_controller
             $mode = "update";
         }
 
-        
+        $patien_profile_id = "";
         if ( $mode == "create"){
             $this->db->insert("patient_login", $array_insert);
             $patient_login_id = $this->db->insert_id();
@@ -210,6 +211,38 @@ Class Admin extends Public_controller
             );
             $this->db->insert("patient_rujukan", $array_insert_rujukan);
         }
+
+        $config_sync = $this->config->item("api_rs");
+        $url = $config_sync['url'].'/'.$config_sync['master_path'].'/'.$config_sync['endpoint_path']['visit'].'/'.$this->input->post("detail_medrek");
+        $headers['x-token'] = "Bearer ".$call_login['token'];
+        $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
+        $call_visit = $this->endpoint->call_endpoint($config_sync,$url,$headers);
+        $array_insert = array(
+            "endpoint" => $url,
+            "responses" => $call_visit,
+            "created_at" => date("Y-m-d H:i:s")
+        );
+        $this->db->insert("log_respons",$array_insert);
+
+        $response_visit = json_decode($call_visit);
+        foreach ($response_visit as $key_visit => $value_visit) {
+            $array_kunjungan = array(
+                "medical_number" => $value_visit->no_medical_record,
+                "icd_code" => $value_visit->icd_code,
+                "icd_description" => $value_visit->icd_description,
+                "tanggal_kunjungan" => date("Y-m-d", strtotime($value_visit->tgl_kunjungan)),
+                "action_type" => $value_visit->tindak_lanjut,
+                "id_kunjungan" => $value_visit->id_kunjungan,
+                "patient_login_id" => $patient_login_id,
+                "doctor_id" => $this->input->post("doctor"),
+                "created_at" => date("Y-m-d H:i:s"),
+                "patient_id" => $patien_profile_id,
+                'poli' => $this->input->post("poli")
+            );
+            $this->db->insert("kunjungan",$array_kunjungan);
+        }
+        
 
         return redirect("admin/show_pasien/".$patient_login_id);
     }
@@ -279,6 +312,22 @@ Class Admin extends Public_controller
                     echo json_encode($data);
                     exit();
                 }
+            }else{
+                $qry_check_active_rujukan = "SELECT * FROM  patient_rujukan WHERE 1 AND patien_profile_id = ? AND end_date > NOW() ";
+                 $run_check_active_rujukan = $this->db->query($qry_check_active_rujukan,array($patient_login_id));
+                if ( $run_check_active_rujukan->num_rows() > 0 ){
+                    $res_check_active_rujukan = $run_check_active_rujukan->result_array();
+                    $no_rujukan = $res_check_active_rujukan[0]['no_rujukan'];
+                    $data['total_kunjungan'] = 0;
+                    $data['message'] = "Data Pasien sudah ada namun belum mendaftar di Aplikasi dengan nomor Rujukan ".$no_rujukan;
+                    echo json_encode($data);
+                    exit();
+                }else{
+                    $data['total_kunjungan'] = 0;
+                    $data['message'] = "Data Pasien sudah ada namun belum mendaftar di Aplikasi";
+                    echo json_encode($data);
+                    exit();
+                }
             }
             $data['patient_login_id'] = $patient_login_id;
         }
@@ -344,24 +393,9 @@ Class Admin extends Public_controller
                         $doctor_id = $res_check_doctor[0]['id'];
                     }
 
-                    $array_insert = array(
-                        "medical_number" => $value->no_medical_record,
-                        "icd_code" => $value->icd_code,
-                        "icd_description" => $value->icd_description,
-                        "tanggal_kunjungan" => date("Y-m-d", strtotime($value->tgl_kunjungan)),
-                        "action_type" => $value->tindak_lanjut,
-                        "id_kunjungan" => $value->id_kunjungan,
-                        "patient_login_id" => NULL,
-                        "doctor_id" => $doctor_id,
-                        "created_at" => date("Y-m-d H:i:s"),
-                        "patient_id" => NULL,
-                        'poli' => $value->id_poli
-                    );
-                    $this->db->insert("kunjungan",$array_insert);
-
+                    
                 }
                 $data['html'] = $html;
-
             }
             
             $data['status'] = $status;

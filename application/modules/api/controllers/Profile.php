@@ -834,12 +834,11 @@ class Profile extends CI_Controller {
 			}
 		}
 
-		$qry_check_rujukan = "SELECT * FROM patient_rujukan WHERE 1 AND patient_profile_id = ? AND end_date >= NOW() ";
+		$qry_check_rujukan = "SELECT * FROM patient_rujukan WHERE 1 AND patien_profile_id = ? AND end_date >= NOW() ";
 		$run_check_rujukan = $this->db->query($qry_check_rujukan,array($patient_profile_id));
 		if ( $run_check_rujukan->num_rows() <= 0 ){
 			$data['code'] = 4;
 			$data['message'] = "Anda tidak memiliki No. Rujukan yang aktif";
-			echo json_encode($data);
 		}
 		echo json_encode($data);
     	exit;
