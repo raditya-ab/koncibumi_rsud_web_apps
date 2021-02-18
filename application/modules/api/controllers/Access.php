@@ -127,7 +127,8 @@ class Access extends CI_Controller {
 					$first_name = $res_bpjs[0]['first_name'];
 					$last_name = $res_bpjs[0]['last_name'];
 					$address = $res_bpjs[0]['address'];
-
+					$gender = $res_bpjs[0]['gender'];
+					
 					$array_insert = array(
 						"patient_login_id" => $res_bpjs[0]['id'],
 						"first_name" => $first_name,
@@ -137,7 +138,8 @@ class Access extends CI_Controller {
 						"mobile_number" => $mobile_number,
 						"bpjs_number" => $bpjs_number,
 						"medical_number" => $medic_number,
-						"address" => $address
+						"address" => $address,
+						'gender' => $gender
 					);
 					$this->db->insert("patient_profile", $array_insert);
 					$patient_profile_id = $this->db->insert_id();
