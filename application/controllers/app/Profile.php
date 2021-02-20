@@ -146,7 +146,7 @@ class Profile extends CI_Controller {
 		$edata = json_decode($obj);
 
 		$profile_id = $edata->profile_id; 
-		$keluhan = $edata->keluhanl
+		$keluhan = $edata->keluhan;
 		$access_token = $_SERVER['HTTP_TOKEN'];
 
 		if ( $this->profile->check_token($access_token, $profile_id) == false ){

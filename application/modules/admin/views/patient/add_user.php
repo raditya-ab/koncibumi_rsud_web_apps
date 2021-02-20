@@ -78,7 +78,7 @@
                         <?php
                           foreach ( $doctor as $value_docter => $key_docter){
                         ?>
-                        <option value="<?php echo $key_docter['id']?>" class="doctor_select <?php echo str_replace(' ','_',$key_docter['poli']);?>"><?php echo $key_docter['first_name']; ?></option>
+                        <option value="<?php echo $key_docter['id']?>" class="doctor_select <?php echo str_replace(' ','_',$key_docter['poli']);?>"><?php echo $key_docter['first_name'].' - '.$key_docter['poli']; ?></option>
                         <?php } ?>
                       </select>
                   </div>
