@@ -55,7 +55,24 @@ class Admin_model extends CI_Model {
 		$qry_all = "SELECT * FROM master_group";
 		$run_all = $this->db->query($qry_all);
 		$res_all = $run_all->result_array();
-		return $res_all;
+		$array_group = array();
+		foreach ($res_all as $key => $value) {
+			$can_remove = true;
+			$group_id = $value['id'];
+			$check_member_group = "SELECT mg.* FROM member_group as mg
+				INNER JOIN members ON (members.id = mg.member_id)
+				WHERE 1 AND mg.group_id = ? ";
+			$run_member_group = $this->db->query($check_member_group, $group_id);
+			if ( $run_member_group->num_rows() > 0 ){
+				$can_remove = false;
+			}
+			$array_group[] = array(
+				"name" => $value['name'],
+				'id' => $value['id'],
+				'can_remove' => $can_remove
+			);
+		}
+		return $array_group;
 	}
 
 	function save_group($data){
@@ -157,6 +174,15 @@ class Admin_model extends CI_Model {
 		$run_rujukan = $this->db->query($qry_rujukan,array($patient_profile_id));
 		$res_rujukan = $run_rujukan->result_array();
 		return $res_rujukan;
+	}
+
+	function detail_group($id){
+		$qry_detail_group = "SELECT mg.*, mr.username as username , mr.email as email FROM member_group as mg 
+			INNER JOIN members as mr ON (mg.member_id = mr.id )
+			WHERE 1 AND mg.group_id = ?";
+		$run_detail_group = $this->db->query($qry_detail_group,array($id));
+		$res_detail_group = $run_detail_group->result_array();
+		return $res_detail_group;
 	}
 
 }

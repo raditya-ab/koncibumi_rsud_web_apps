@@ -27,41 +27,26 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <form role="form" action="<?php echo base_url();?>admin/group/add" method="post">
-                <input type="hidden" name="akses_id" id="akses_id">
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Nama Grup Akses</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" autocomplete="off" required>
-                  </div>
-                  <div class="form-group">
-                    <button class="btn btn-info" type="submit">Simpan</button>
-                  </div>
-                </form>
+                
+                <a href="<?php echo base_url()?>admin/group" class="btn btn-info">Kembali</a>
                 <table id="example2" class="table table-bordered table-hover">
                     <thead class="head_background">
                     <tr>
                         <th>No.</th>
-                        <th>Nama</th>
-                        <th>Edit/Delete</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
                       <?php
-                          foreach ( $group as $key => $value ){
+                          foreach ( $detail_group as $key => $value ){
                       ?>
                       <tr>
                         <td><?php echo $key + 1 ;?></td>
-                        <td><?php echo $value['name'];?></td>
-                        <td>
-                          <button type="button" class="btn btn-info" onClick="editGroup('<?php echo $value['id'];?>','<?php echo $value['name'];?>');">Edit</button>
-                          <?php if ( $value['can_remove'] == true ) { ?>
-                          <button type="button" class="btn btn-danger" onClick="removeGroup('<?php echo $value['id'];?>');">Remove</button>
-                          <?php } else { ?>
-                            <a href="<?php echo base_url()?>admin/group/detail/<?php echo $value['id'] ?>" class="btn btn-primary">Detail</a>
-                            <span class="badge badge-success">Grup ini tidak bisa dihapus.<br/> Silahkan hapus member terlebih dahulu</span>
-                          <?php } ?>
-                        </td>
+                        <td><?php echo $value['username'];?></td>
+                        <td><?php echo $value['email'];?></td>
+                        <td><button class="btn btn-danger" onClick="removeMember('<?php echo $value['id']?>')">Delete</button></td>
                       </tr>
                       <?php }  ?>
                     </tbody>
@@ -92,10 +77,10 @@
     $("#akses_id").val(id);
   }
 
-  function removeGroup(id){
-    if ( confirm("Apakah anda yakin ingin menghapus data ini ? ")){
+  function removeMember(id){
+    if ( confirm("Apakah anda yakin ingin menghapus member dari group ini ? ")){
       var request = $.ajax({
-        url : "<?php echo base_url();?>/admin/group/delete",
+        url : "<?php echo base_url();?>/admin/group/deleteMember",
         dataType : "json",
         data : {
           id : id

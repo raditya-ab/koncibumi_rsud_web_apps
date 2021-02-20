@@ -47,4 +47,17 @@ Class Group extends Public_controller
         echo json_encode($data);
     }
 
+    public function detail($id){
+        $data['profile'] = $this->profile_data;
+        $data['detail_group'] = $this->admin->detail_group($id);
+        $this->load->view("group/detail",$data);
+    }
+
+    public function deleteMember(){
+        $id = $this->input->post("id");
+        $this->db->query("DELETE FROM member_group WHERE id = '$id'");
+        $data['status'] = 0;
+        echo json_encode($data);
+    }
+
 }
