@@ -139,7 +139,8 @@ class Access extends CI_Controller {
 						"bpjs_number" => $bpjs_number,
 						"medical_number" => $medic_number,
 						"address" => $address,
-						'gender' => $gender
+						'gender' => $gender,
+						'verification_at' => date("Y-m-d H:i:s")
 					);
 					$this->db->insert("patient_profile", $array_insert);
 					$patient_profile_id = $this->db->insert_id();
