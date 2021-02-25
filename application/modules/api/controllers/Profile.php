@@ -801,7 +801,7 @@ class Profile extends CI_Controller {
 		if ( $run_profile->num_rows() > 0 ){
 			$res_profile = $run_profile->result_array();
 			if ( $res_profile[0]['latitude'] == "" && $res_profile[0]['longitude'] == "" ){
-				$data['code'] = "1";
+				$data['code'] = "2";
 				$data['message'] = "Aktifkan GPS lokasi anda. Aktifkan GPS/titik lokasi anda untuk mempermudah dan mempercepat kurir kami saat mengantar obat";
 				echo json_encode($data);
     			exit;
@@ -811,7 +811,7 @@ class Profile extends CI_Controller {
 		$qry_get_active = "SELECT * FROM order_patient WHERE 1 AND status NOT IN (6,3,7) AND patient_id = ? ";
 		$run_get_active = $this->db->query($qry_get_active,array($patient_profile_id));
 		if ( $run_get_active->num_rows() > 0 ){
-			$data['code'] = "2";
+			$data['code'] = "1";
 			$data['message'] = "Anda sudah memiliki pesanan. Mohon maaf, anda hanya dapat melakukan 1(satu) pesanan. Silahkan tunggu hingga pesanan anda selesai";
 			echo json_encode($data);
 			exit;
