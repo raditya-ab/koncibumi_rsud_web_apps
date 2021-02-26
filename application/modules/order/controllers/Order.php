@@ -206,7 +206,7 @@ Class Order extends Public_controller
 
         $post = "";
         $qry_order = "SELECT op.*, rh.receipt_no as receipt_no,rh.description as keterangan,
-            pf.medical_number as medical_number,pf.mobile_number as mobile_number,pf.notif_app as notif_app,pf.notif_sms as notif_sms,pp.id as profile_id 
+            pf.medical_number as medical_number,pf.mobile_number as mobile_number,pf.notif_app as notif_app,pf.notif_sms as notif_sms,pf.id as profile_id 
             FROM order_patient as op 
             INNER JOIN receipt_header as rh ON ( rh.kunjungan_id = op.id )
             INNER JOIN patient_profile as pf ON ( pf.id = op.patient_id)
